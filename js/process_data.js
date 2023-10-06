@@ -67,6 +67,7 @@ class ProcessData {
         this.done_processing = true
         console.log("Done processing data!")
         console.log(this.restaurants[0])
+        return this.restaurants
     }
 
     /*
