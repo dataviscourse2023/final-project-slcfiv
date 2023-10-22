@@ -40,9 +40,9 @@
 
 <body>
   <div>
-    <h6>
+    <h3>
       SLCFVIS
-    </h6>
+    </h3>
     <!-- <h6>
       Email: u1472593@utah.edu, elizaan199834@gmail.com
     </h6>
@@ -50,6 +50,46 @@
       uID: u1472593
     </h6> -->
   </div>
+
+  <div class="toolbox">
+  
+    <span>
+      <label>Filter by:</label>
+      <select id="filter-by">
+        <option value="address">Address</option>
+        <option selected value=" ">None</option>
+        <option value="nameStartsWith">Name starts with</option>
+        <option value="nameContains">Name contains</option>
+        <option value="town">Town</option>
+      </select>
+    
+      <input type="text" id="filter-what" name="filter-what">
+
+      <input type="checkbox" id="filter-sort" /> Sort alphabetically <br><br>
+    </span>
+
+    <span>
+      <label>Sort by:</label>
+      <select id="sort-by">
+        <option value="address">Address</option>
+        <option selected value=" ">None</option>
+        <option value="critical">Number of critical violations</option>
+        <option value="id">Establishment ID</option>
+        <option value="name">Establishment Name</option>
+        <option value="noncritical">Average number of non-critical violations per inspection</option>
+        <option value="town">Town</option>
+        <option value="violations">Average number of violations per inspection</option>
+      </select>
+    </span>
+    </div>
+  <br />
+
+  <div class="row chart">
+    <div class="chart">
+      <h4>Bar Chart</h4>
+      <div id="Barchart-div">
+      </div>
+    </div>
 </body>
 
 </html>
