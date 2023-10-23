@@ -28,4 +28,6 @@ class Inspection{
         }
         return amount
     }
+
+    
 }
