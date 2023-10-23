@@ -63,9 +63,9 @@ function update(processdata, change) {
     filterwhat = d3.select("#filter-what").node().value;
     filtersort = d3.select("#filter-sort").node().value;
     if (filtersort === "on") {
-      filtersort = True;
+      filtersort = true;
     } else {
-      filtersort = False;
+      filtersort = false;
     }
     curr_data = processdata.filtered_by(
       processdata.restaurants,
