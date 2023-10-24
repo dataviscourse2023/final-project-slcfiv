@@ -5,6 +5,8 @@
 * @param {function} callback - The callback function to execute once the result is available
 */
 let restaurant_list;
+let pd = null
+let current_restaurant = null
 function fetchJSONFile (path, callback) {
     const httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function () {
@@ -20,24 +22,33 @@ function fetchJSONFile (path, callback) {
     httpRequest.send();
   } 
 
-function populateTable(data) {
-  const table = d3.select('#restaurant-table tbody');
-    
-  data.forEach(function(restaurant) {
-    const row = table.append('tr');
-    row.append('td').text(restaurant.name);
-    row.append('td').text(restaurant.address);
-  });
-}
+
   
   // call fetchJSONFile then build and render a tree
   // this is the function executed as a callback when parsing is done
 fetchJSONFile('data/data_with_towns.json', function (data){
-    const proccessData = new ProcessData(data);
-    restaurant_list = proccessData.process_data();
-    populateTable(restaurant_list);
+    pd = new ProcessData(data);
+    restaurant_list = pd.process_data();
+    // populateTable(restaurant_list);
+
+     // set button callback:
+    document.getElementById("tempMenuButton").addEventListener("click", function(){
+      let restaurant_search = document.getElementById("tempMenuTextbox").value
+      let test_restaurant = pd.filtered_by(pd.restaurants, "nameContains", restaurant_search)[0]
+      if(!test_restaurant){
+        document.getElementById("tempMenuWarning").style.display = "block";
+      }
+      else{
+        document.getElementById("tempMenuWarning").style.display = "none";
+        current_restaurant = test_restaurant
+        tabulate(restaurant_list, ['name', 'address']);
+      }
+    })
+    tabulate(restaurant_list, ['name', 'address']);
 
 });
+
+
 
 
 

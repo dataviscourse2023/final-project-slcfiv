@@ -15,6 +15,15 @@ class ProcessData {
         this.restaurants = [];
         this.done_processing = false;
         this.data = json.data;
+
+        // keys are years, 
+        // values are a list of 
+        // [ average violations per inspection, average critical violations per inspection, average noncritical violatiosn per inspection]
+        this.averageViolationsPerInspectionPerYear = {}
+
+        // list of
+        // [average violations per inspection, average critical violations per inspection, average noncritical violations per inspection]
+        this.averageViolationsPerInspection = [0,0,0]
     }
 
     process_data(){ 
@@ -64,10 +73,53 @@ class ProcessData {
         restaurant.calculate_statistics()
         this.restaurants.push(restaurant)
     
+        // calculate average violations per inspection
+        let totalInspectionsPerYear = {}
+        let totalInspections = 0
+        let years = []
+        for(let i = 0; i < this.restaurants.length; i++){
+            let restaurant = this.restaurants[i]
+            for(let j = 0; j < restaurant.inspections.length; j++){
+                totalInspections++;
+                let datestring = restaurant.inspections[j].date
+                let year = datestring.substring(datestring.length-4)
+                let violations = restaurant.inspections[j].total_violations()
+                this.averageViolationsPerInspection[0] += violations[0] + violations[1] + violations[2];
+                this.averageViolationsPerInspection[1] += violations[1] + violations[2];
+                this.averageViolationsPerInspection[2] += violations[0];
+                if(year in totalInspectionsPerYear){
+                    totalInspectionsPerYear[year] += 1;
+                    (this.averageViolationsPerInspectionPerYear[year])[0] += violations[0] + violations[1] + violations[2];
+                    (this.averageViolationsPerInspectionPerYear[year])[1] += violations[1] + violations[2];
+                    (this.averageViolationsPerInspectionPerYear[year])[2] += violations[0];
+                }
+                else{
+                    years.push(year)
+                    totalInspectionsPerYear[year] = 1
+                    this.averageViolationsPerInspectionPerYear[year] = [
+                    violations[0] + violations[1] + violations[2],
+                    violations[1] + violations[2],
+                    violations[0] ]
+                }
+            }
+        }
+
+        for(let i = 0; i < years.length; i++){
+            (this.averageViolationsPerInspectionPerYear[years[i]])[0] /= totalInspectionsPerYear[years[i]];
+            (this.averageViolationsPerInspectionPerYear[years[i]])[1] /= totalInspectionsPerYear[years[i]];
+            (this.averageViolationsPerInspectionPerYear[years[i]])[2] /= totalInspectionsPerYear[years[i]];
+        }
+
+        this.averageViolationsPerInspection[0] /= totalInspections;
+        this.averageViolationsPerInspection[1] /= totalInspections;
+        this.averageViolationsPerInspection[2] /= totalInspections;        
+
+        console.log(this.averageViolationsPerInspectionPerYear)
+        console.log(this.averageViolationsPerInspection)
+
         this.done_processing = true
         console.log("Done processing data!")
         console.log(this.restaurants[0])
-        return this.restaurants
     }
 
     /*
@@ -108,7 +160,7 @@ class ProcessData {
             restaurant_list = restaurant_list.filter( (x) => filter_function(x).indexOf(what) == 0 )
             derivative_function = filter_function
             if( sort ){
-                restaurant_list.sort( derivative_compare )
+                restaurant_list.sort( this.derivative_compare )
             }
         }
         else{        
@@ -117,11 +169,11 @@ class ProcessData {
             if( sort ){
                 // sort globally by what we are filtering by
                 derivative_function = filter_function
-                restaurant_list.sort( derivative_compare )
+                restaurant_list.sort( this.derivative_compare )
 
                 // sort so that things that match the search term earlier are earlier in the list
                 derivative_function = (x) => filter_function(x).indexOf(what)            
-                restaurant_list.sort( derivative_compare )
+                restaurant_list.sort( this.derivative_compare )
             }
         }
         return restaurant_list
@@ -170,10 +222,10 @@ class ProcessData {
         }
 
         if(ascending){
-            restaurant_list.sort( derivative_compare )
+            restaurant_list.sort( this.derivative_compare )
         }
         else{
-            restaurant_list.sort( reverse_derivative_compare )
+            restaurant_list.sort( this.reverse_derivative_compare )
         }
         return restaurant_list
     }
@@ -198,11 +250,15 @@ class ProcessData {
     // allows us to sort by derivative compare,
     // but in reverse
     reverse_derivative_compare(x,y){
-        return -1*derivative_compare(x,y)
+        let val1 = derivative_function(x)
+        let val2 = derivative_function(y)
+        if(val1 < val2){
+            return 1
+        }
+        if(val1 > val2){
+            return -1
+        }
+        return 0
     }
 
 }
-
-
-
-

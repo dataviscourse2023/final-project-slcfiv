@@ -4,40 +4,34 @@
 <head>
   <meta charset="utf-8">
   <title>SLCFVIS</title>
-  <script src="https://d3js.org/d3.v7.min.js" charset="utf-8"></script>
-  <link rel='stylesheet' href='style.css'>
-  <!-- <script src="js/Violation.js"></script>
+  
+  <script src="js/d3.v7.js"></script>
   <script src="js/Inspection.js"></script>
+  <script src="js/Violation.js"></script>
   <script src="js/Restaurant.js"></script>
   <script src="js/process_data.js"></script>
-  <script src="js/script.js"></script> -->
+  <script src="js/script.js"></script>
+  <script src="js/table.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/css/style.css"/>
+
 </head>
 
 <body>
   <div>
-    <h6>
+    <h2>
       SLCFVIS
-    </h6>
+    </h2>
   </div>
-  <div class="container">
-    <h1>Restaurant Data</h1>
-    <table id="restaurant-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Address</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Table rows will be populated here dynamically -->
-      </tbody>
-    </table>
+
+  <!-- This is just a temporary menu option. Enter the restaurant name and press enter -->
+  <input type="text" id="tempMenuTextbox"/>
+  <button id="tempMenuButton">Search</button>
+  <p id="tempMenuWarning" style="color:red; display: none">No such restaurant found. Remember to use all caps.</p>
+  <!-- This is our container to hold table-->
+  <div class="table-container">
+      
   </div>
-  <script src="js/Violation.js"></script>
-  <script src="js/Inspection.js"></script>
-  <script src="js/Restaurant.js"></script>
-  <script src="js/process_data.js"></script>
-  <script src="js/script.js"></script>
   
 </body>
 
