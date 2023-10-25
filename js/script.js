@@ -33,6 +33,26 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
   pd = new ProcessData(data);
   pd.process_data();
 
+  // set button callback:
+  document
+    .getElementById("tempMenuButton")
+    .addEventListener("click", function () {
+      let restaurant_search = document.getElementById("tempMenuTextbox").value;
+      let test_restaurant = pd.filtered_by(
+        pd.restaurants,
+        "nameContains",
+        restaurant_search
+      )[0];
+      if (!test_restaurant) {
+        document.getElementById("tempMenuWarning").style.display = "block";
+      } else {
+        document.getElementById("tempMenuWarning").style.display = "none";
+        current_restaurant = test_restaurant;
+        tabulate(restaurant_list, ["name", "address"]);
+      }
+    });
+  tabulate(restaurant_list, ["name", "address"]);
+
   current_restaurant = pd.filtered_by(
     pd.restaurants,
     "nameStartsWith",
