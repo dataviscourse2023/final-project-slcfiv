@@ -29,26 +29,28 @@ function fetchJSONFile(path, callback) {
 // call fetchJSONFile then build and render a tree
 // this is the function executed as a callback when parsing is done
 fetchJSONFile("data/data_with_towns.json", function (data) {
-  console.log("this  ran first");
   pd = new ProcessData(data);
   pd.process_data();
 
   // set button callback:
   document
-    .getElementById("tempMenuButton")
+    .getElementById("menu-submit-search")
     .addEventListener("click", function () {
-      let restaurant_search = document.getElementById("tempMenuTextbox").value;
+      let restaurant_search = document.getElementById("menu-search-box").value;
       let test_restaurant = pd.filtered_by(
         pd.restaurants,
         "nameContains",
         restaurant_search
       )[0];
       if (!test_restaurant) {
-        document.getElementById("tempMenuWarning").style.display = "block";
+        document.getElementById("menu-restaurant-warning").style.display =
+          "block";
       } else {
-        document.getElementById("tempMenuWarning").style.display = "none";
+        document.getElementById("menu-restaurant-warning").style.display =
+          "none";
         current_restaurant = test_restaurant;
         tabulate(restaurant_list, ["name", "address"]);
+        drawAllGraphs();
       }
     });
   tabulate(restaurant_list, ["name", "address"]);
@@ -64,25 +66,6 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
     .getElementById("lineGraphTypeSelection")
     .addEventListener("change", function () {
       drawLineGraph();
-    });
-
-  // set button callback:
-  document
-    .getElementById("tempMenuButton")
-    .addEventListener("click", function () {
-      let restaurant_search = document.getElementById("tempMenuTextbox").value;
-      let test_restaurant = pd.filtered_by(
-        pd.restaurants,
-        "nameContains",
-        restaurant_search
-      )[0];
-      if (!test_restaurant) {
-        document.getElementById("tempMenuWarning").style.display = "block";
-      } else {
-        document.getElementById("tempMenuWarning").style.display = "none";
-        current_restaurant = test_restaurant;
-        drawAllGraphs();
-      }
     });
 
   drawAllGraphs();
