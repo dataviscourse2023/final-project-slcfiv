@@ -30,7 +30,8 @@ function fetchJSONFile(path, callback) {
 // this is the function executed as a callback when parsing is done
 fetchJSONFile("data/data_with_towns.json", function (data) {
   pd = new ProcessData(data);
-  restaurant_list = pd.process_data();
+  pd.process_data();
+  restaurant_list = pd.restaurants;
 
   // set button callback:
   document
