@@ -23,7 +23,7 @@ svg{
 
 body, h1, h2, h3, p, ul, li {
     margin: 0;
-    padding: 0;
+    padding: 20px;
   }
   
   .container {
@@ -59,8 +59,24 @@ body, h1, h2, h3, p, ul, li {
     background-color: #f2f2f2;
     font-weight: bold;
   }
-  
- 
-  h1 {
-    margin-top: 20px;
+
+  /* Table Styling
+  tbody {
+    display: block;
+    width: 100%;
+    overflow: hidden;
   }
+
+  thead tr {
+    display: block;
+  }
+
+  .table th,
+  .table td {
+    padding: 5px 10px;
+    width: 100%;
+  }
+
+  th {
+    background: #93bedd;
+  } */

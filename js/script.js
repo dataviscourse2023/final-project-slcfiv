@@ -26,35 +26,46 @@ function fetchJSONFile(path, callback) {
   httpRequest.send();
 }
 
-// call fetchJSONFile then build and render a tree
+// call fetchJSONFile
 // this is the function executed as a callback when parsing is done
 fetchJSONFile("data/data_with_towns.json", function (data) {
+  // Create a new ProcessData object and get list of restaurants
   pd = new ProcessData(data);
   pd.process_data();
   restaurant_list = pd.restaurants;
 
-  // set button callback:
+  // Create an event listener for the menu's search elements
   document
     .getElementById("menu-submit-search")
     .addEventListener("click", function () {
-      let restaurant_search = document.getElementById("menu-search-box").value;
-      let test_restaurant = pd.filtered_by(
+      // get submitted search term
+      let restaurant_search_term =
+        document.getElementById("menu-search-box").value;
+      // filter the restaurants by those that contain the search term
+      let restaurant_search_result = pd.filtered_by(
         pd.restaurants,
         "nameContains",
-        restaurant_search
+        restaurant_search_term
       )[0];
-      if (!test_restaurant) {
+      // if no results are found, display messages
+      if (!restaurant_search_result) {
         document.getElementById("menu-restaurant-warning").style.display =
           "block";
-      } else {
+      }
+      // otherwise, update the currently selected restaurant and update the menu accordingly
+      else {
         document.getElementById("menu-restaurant-warning").style.display =
           "none";
-        current_restaurant = test_restaurant;
+        current_restaurant = restaurant_search_result;
         tabulate(restaurant_list, ["name", "address"]);
+
+        // redraw graphs now, to display them quickly for the user
         drawAllGraphs();
       }
     });
-  tabulate(restaurant_list, ["name", "address"]);
+
+  // create a table of the restaurant data, display name and address
+  createTable(restaurant_list);
 
   current_restaurant = pd.filtered_by(
     pd.restaurants,

@@ -1,66 +1,70 @@
-// function to create the table
-function tabulate(data, columns) {
-  console.log("data iiiisss: ", data);
-  var table = d3
-    .select(".table-container")
-    .append("table")
-    .attr("class", "restaurant-table");
-  // var table = d3.select('body').append('table').attr("class", "restaurant-table");
-  var thead = table.append("thead");
-  var tbody = table.append("tbody");
+// Update the table in the menu
+// ref: https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array
+function createTable(dataObj) {
+  console.log("data is", dataObj);
+  // select the table body in index.html
+  // ref: https://stackoverflow.com/questions/43612014/how-to-get-values-of-tbody-element-from-the-table-using-the-table-id-and-without
+  var tableBody = document.getElementsByTagName("tbody")[0];
+  // console.log("tabbdy is", tableBody[0]);
 
-  // append the header row
-  thead
-    .append("tr")
-    .selectAll("th")
-    .data(columns)
-    .enter()
-    .append("th")
-    .text(function (column) {
-      return column.charAt(0).toUpperCase() + column.slice(1);
+  // for each Restaurant in data
+  dataObj.forEach(function (data, index) {
+    // create a new row object
+    var row = document.createElement("tr");
+
+    // create new cells to hold Restaurant attributes
+    var id_cell = document.createElement("td");
+    var name_cell = document.createElement("td");
+    var addr_cell = document.createElement("td");
+    var town_cell = document.createElement("td");
+    var noncrit_cell = document.createElement("td");
+    var crit1_cell = document.createElement("td");
+    var crit2_cell = document.createElement("td");
+
+    // append attributes to cell objects accordingly
+    id_cell.appendChild(document.createTextNode(data["id"]));
+    name_cell.appendChild(document.createTextNode(data["name"]));
+    addr_cell.appendChild(document.createTextNode(data["address"]));
+    town_cell.appendChild(document.createTextNode(data["town"]));
+    noncrit_cell.appendChild(document.createTextNode(data["inspections"][0]));
+    crit1_cell.appendChild(document.createTextNode(data["inspections"][1]));
+    crit2_cell.appendChild(document.createTextNode(data["inspections"][2]));
+
+    // append the cells to the created row object
+    row.appendChild(name_cell);
+    row.appendChild(addr_cell);
+
+    // append the row to the table body
+    tableBody.appendChild(row);
+  });
+
+  // create a scrollable searchable table
+  var table = new DataTable("#example", {
+    paging: false,
+    scrollCollapse: true,
+    scrollY: "50vh",
+  });
+
+  // create column filters
+  table
+    .columns()
+    .flatten()
+    .each(function (colIdx) {
+      // Create the select list and search operation
+      var select = $("<select />")
+        .appendTo(table.column(colIdx).footer())
+        .on("change", function () {
+          table.column(colIdx).search($(this).val()).draw();
+        });
+
+      // Get the search data for the first column and add to the select list
+      table
+        .column(colIdx)
+        .cache("search")
+        .sort()
+        .unique()
+        .each(function (d) {
+          select.append($('<option value="' + d + '">' + d + "</option>"));
+        });
     });
-
-  // create a row for each object in the data
-  var rows = tbody.selectAll("tr").data(data).enter().append("tr");
-
-  // create a cell in each row for each column
-  var cells = rows
-    .selectAll("td")
-    .data(function (row) {
-      return columns.map(function (column) {
-        return { column: column, value: row[column] };
-      });
-    })
-    .enter()
-    .append("td")
-    .text(function (d) {
-      return d.value;
-    });
-
-  // set the height of the table body div to the desired height and set its overflow-y property to scroll
-  // const tableBody = d3.select('.table-container').select('tbody');
-  // tableBody.style('height', '250px');
-  // tableBody.style('overflow-y', 'scroll');
-
-  // // set the height of the table header div to the height of the table header and set its position property to sticky
-  // const tableHeader = d3.select('.table-container').select('thead');
-  // tableHeader.style('height', '30px');
-  // tableHeader.style('position', 'sticky');
-  // tableHeader.style('top', '0');
-
-  const tableBody = d3.select(".table-container").select("tbody");
-  const tableHeader = d3.select(".table-container").select("thead");
-  const padding = 20; // adjust this value to match your padding
-  const height =
-    parseInt(d3.select(".table-container").style("height")) -
-    parseInt(tableHeader.style("height")) -
-    padding;
-  tableBody.style("height", height + "px");
-  tableBody.style("overflow-y", "scroll");
-
-  // set the height of the table header div to the height of the table header and set its position property to sticky
-  tableHeader.style("position", "sticky");
-  tableHeader.style("top", "0");
-
-  return table;
 }
