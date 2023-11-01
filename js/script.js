@@ -10,6 +10,7 @@ let current_restaurant = null;
 
 function drawAllGraphs() {
   drawLineGraph();
+  drawBarChart();
 }
 
 function fetchJSONFile(path, callback) {
@@ -26,47 +27,53 @@ function fetchJSONFile(path, callback) {
   httpRequest.send();
 }
 
-// call fetchJSONFile
+// call fetchJSONFile then build and render a tree
 // this is the function executed as a callback when parsing is done
 fetchJSONFile("data/data_with_towns.json", function (data) {
-  // Create a new ProcessData object and get list of restaurants
+  console.log("this  ran first");
   pd = new ProcessData(data);
   pd.process_data();
-  restaurant_list = pd.restaurants;
 
-  // Create an event listener for the menu's search elements
-  document
-    .getElementById("menu-submit-search")
-    .addEventListener("click", function () {
-      // get submitted search term
-      let restaurant_search_term =
-        document.getElementById("menu-search-box").value;
-      // filter the restaurants by those that contain the search term
-      let restaurant_search_result = pd.filtered_by(
-        pd.restaurants,
-        "nameContains",
-        restaurant_search_term
-      )[0];
-      // if no results are found, display messages
-      if (!restaurant_search_result) {
-        document.getElementById("menu-restaurant-warning").style.display =
-          "block";
-      }
-      // otherwise, update the currently selected restaurant and update the menu accordingly
-      else {
-        document.getElementById("menu-restaurant-warning").style.display =
-          "none";
-        current_restaurant = restaurant_search_result;
-        tabulate(restaurant_list, ["name", "address"]);
+  // call fetchJSONFile
+  // this is the function executed as a callback when parsing is done
+  fetchJSONFile("data/data_with_towns.json", function (data) {
+    // Create a new ProcessData object and get list of restaurants
+    // pd is also called in drawAllGraphs() functions
+    pd = new ProcessData(data);
+    pd.process_data();
+    restaurant_list = pd.restaurants;
 
-        // redraw graphs now, to display them quickly for the user
-        drawAllGraphs();
-      }
-    });
+    // initialize line graph:
+    document
+      .getElementById("lineGraphTypeSelection")
+      .addEventListener("change", function () {
+        drawLineGraph();
+      });
 
-  // create a table of the restaurant data, display name and address
-  createTable(restaurant_list);
+    // set button callback:
+    document
+      .getElementById("tempMenuButton")
+      .addEventListener("click", function () {
+        let restaurant_search =
+          document.getElementById("tempMenuTextbox").value;
+        let test_restaurant = pd.filtered_by(
+          pd.restaurants,
+          "nameContains",
+          restaurant_search
+        )[0];
+        if (!test_restaurant) {
+          document.getElementById("tempMenuWarning").style.display = "block";
+        } else {
+          document.getElementById("tempMenuWarning").style.display = "none";
+          current_restaurant = test_restaurant;
+          drawAllGraphs();
+        }
+      });
 
+    drawAllGraphs();
+  });
+  // TODO: the user selects the restaurant, this should be updated
+  // for use in drawAllGraphs() accordingly
   current_restaurant = pd.filtered_by(
     pd.restaurants,
     "nameStartsWith",
