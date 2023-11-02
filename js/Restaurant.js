@@ -6,6 +6,12 @@ class Restaurant {
     this.name = name.toUpperCase();
     this.address = address;
     this.town = town.toUpperCase();
+
+    // average number of inspections for each of the types
+    this.noncrit = null;
+    this.crit1 = null;
+    this.crit2 = null;
+
     // array holding objects of type inspection. Must be added with add_inspection.
     this.inspections = [];
     // will have length 3. First entry is average non-critical, then average critical 1, then average critical 2.
@@ -30,5 +36,10 @@ class Restaurant {
     this.average_violations[0] /= this.inspections.length;
     this.average_violations[1] /= this.inspections.length;
     this.average_violations[2] /= this.inspections.length;
+
+    this.noncrit = this.average_violations[0];
+    this.crit1 = this.average_violations[1];
+    this.crit2 = this.average_violations[2];
+    // assign average inspections accordingly, for use in creating the table
   }
 }
