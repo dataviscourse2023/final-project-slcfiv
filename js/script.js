@@ -27,6 +27,36 @@ function fetchJSONFile(path, callback) {
   httpRequest.send();
 }
 
+function tableIntegrationwithCharts(restaurantList){
+
+  createTable(restaurantList);
+
+  const rows = document.querySelectorAll("tr");
+  rows.forEach((row) => {
+    row.addEventListener("click", function() {
+      // get the restaurant name from the table row
+      let restaurant_name = row.cells[0].innerText;
+      // filter the restaurants by those that contain the search term
+      current_restaurant = pd.filtered_by(
+        pd.restaurants,
+        "nameContains",
+        restaurant_name
+      )[0];
+      drawAllGraphs();
+    });
+  });
+}
+
+function deafultRestaurantSelection(){
+  const rows = document.querySelectorAll("tr");
+  const deafult_restaurant_name = rows[2].cells[0].innerText;
+  current_restaurant = pd.filtered_by(
+    pd.restaurants,
+    "nameContains",
+    deafult_restaurant_name
+  )[0];
+}
+
 // call fetchJSONFile
 // this is the function executed as a callback when parsing is done
 fetchJSONFile("data/data_with_towns.json", function (data) {
@@ -66,17 +96,12 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
       }
     });
 
-  // create a table of the restaurant data, display name and address
-  createTable(restaurant_list);
+  // Create an event listener for the menu's each restaurant element
+  tableIntegrationwithCharts(restaurant_list);
 
-  // TODO: the user selects the restaurant, this should be updated
-  // for use in drawAllGraphs() accordingly
-  current_restaurant = pd.filtered_by(
-    pd.restaurants,
-    "nameStartsWith",
-    "CAJUN"
-  )[0];
-
+  // By deafult the drawAllgraphs() should show the first restaurant in the list
+  deafultRestaurantSelection();
+  
   // initialize line graph:
   document
     .getElementById("lineGraphTypeSelection")
