@@ -45,3 +45,26 @@ First, we handled data cleaning and derivation in these steps:
 Finally, we have converted the data we pre-processed as CSV into the JSON format. It helps to read data easily for creating the menu, tables of the restaurants, and all the necessary charts.
 
 We are currently considering using Javascript and D3.JS to develop our web-based visualization. 
+
+### Menu Creation
+To get the data ready for the menu, we created a javascript file that iterates through all of the data and assigns it to a relevant class hierarchy. This hierarchy has three classes. The Restaurant class represents a single restaurant. Each restaurant has a collection of instances of the Inspection class. 
+This Inspection class represents a single time a health inspector inspected that restaurant. Each Inspection contains a collection of instances of the Violation class. The Violation class represents a single violation found during a health inspection. Our MenuBar has several options such as ‘Filtered by,’ ‘Sort by,’ and ‘Search.’ 
+We will eventually integrate these functionalities with the table that holds the names and addresses of the restaurants in a tabular format. Currently, only ‘Filter by’ works fine with the existing table.
+We have created the table using jQuery and HTML in a  javascript file (table.js). For now, each row of the table contains the name and address of each restaurant. The rows of the table are clickable, and it updates the line chart and bar chart according to the selection of the restaurant by click. 
+Note that our feature has only a single selection functionality.
+
+### Line Graph Creation
+To make the line graph, the first thing that needed to be accomplished was to calculate the average number of violations per inspection for Utah County for each year. This was not difficult to accomplish. After this, the line chart was made using standard procedures in D3. 
+It was not initially clear how to plot the Utah County average each year as a single vertex on a line chart. This is because the rightmost endpoint of the x-axis of the line chart is the first day of the first year outside of the date range being represented. 
+To that end, it did not make sense to put a data point there. We ultimately decided to place each data point at the midpoint of each calendar year, which it represented. 
+
+### Bar Chart Creation
+The bar chart involves creating two bars, one that shows average Salt Lake City violations and the other showing the violations of the user-selected restaurant. The Salt Lake City averages are precomputed on the JSON data. The total violations for a selected restaurant are obtained from our JSON data structures as well. 
+The next step in creating the bar charts involves coloring the bars specifically based on the types of violations the restaurant / Salt Lake City average has. As of now, we have created the axes for our bar chart and still need to code up the bars being drawn accordingly. 
+
+
+### Visualizing Code Violations
+Initially, we had planned to visualize the code violations for the chosen/selected restaurant in a pie chart. While proceeding with the implementation, we printed the violation codes that occurred for random restaurants and found that, on average, they are usually 6/7 for each restaurant. 
+Some codes occur twice or thrice, but mostly, they occur once within the total number of inspections they went through. Now, we are rethinking whether to visualize this with the pie chart because we are confused if it will make sense or not because, mostly, it will show occurrence 1 for most of the codes.  However, we are thinking about two alternatives over pie chart:
+  1. Treemap / D3 | Observable, and 2. Bubble chart / D3 | Observable.
+We will assess the pros and cons of three of the visualizations and will implement the appropriate one in the next iteration. 
