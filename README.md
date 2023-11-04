@@ -66,5 +66,5 @@ The next step in creating the bar charts involves coloring the bars specifically
 ### Visualizing Code Violations
 Initially, we had planned to visualize the code violations for the chosen/selected restaurant in a pie chart. While proceeding with the implementation, we printed the violation codes that occurred for random restaurants and found that, on average, they are usually 6/7 for each restaurant. 
 Some codes occur twice or thrice, but mostly, they occur once within the total number of inspections they went through. Now, we are rethinking whether to visualize this with the pie chart because we are confused if it will make sense or not because, mostly, it will show occurrence 1 for most of the codes.  However, we are thinking about two alternatives over pie chart:
-  1. Treemap / D3 | Observable, and 2. Bubble chart / D3 | Observable.
+  1. [Treemap / D3 | Observable](https://observablehq.com/@d3/treemap/2?intent=fork), and 2. [Bubble chart / D3 | Observable](https://observablehq.com/@d3/bubble-chart/2).
 We will assess the pros and cons of three of the visualizations and will implement the appropriate one in the next iteration. 
