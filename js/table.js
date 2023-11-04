@@ -7,6 +7,19 @@ function createTable(dataObj) {
   var tableBody = document.getElementsByTagName("tbody")[0];
   // console.log("tabbdy is", tableBody[0]);
 
+  // Check if DataTable already exists
+  var tableElement = $('#example');
+  var existingTable = $.fn.dataTable.isDataTable(tableElement);
+  if (existingTable) {
+    // Destroy the existing DataTable before re-creating new rows
+    tableElement.DataTable().destroy();
+    // Clear the table body to ensure new data does not stack on old data
+    // $('#example tbody').empty();
+  }
+
+  tableElement.find('tbody').empty();
+
+
   // for each Restaurant in data
   dataObj.forEach(function (data, index) {
     // create a new row object
@@ -39,7 +52,13 @@ function createTable(dataObj) {
   });
 
   // create a scrollable searchable table
-  var table = new DataTable("#example", {
+  // var table = new DataTable("#example", {
+  //   paging: false,
+  //   scrollCollapse: true,
+  //   scrollY: "50vh",
+  // });
+
+  var table = tableElement.DataTable({
     paging: false,
     scrollCollapse: true,
     scrollY: "50vh",
