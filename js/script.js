@@ -10,8 +10,6 @@ let current_restaurant = null;
 
 const default_restaurant_name = "Red Iguana Restaurant"
 
-console.log(window.innerHeight)
-
 function drawAllGraphs() {
   drawLineGraph();
   drawBarChart();
@@ -70,6 +68,22 @@ function defaultRestaurantSelection(restaurants){
     "nameStartsWith",
     default_restaurant_name
   )[0];
+
+  const sortBy = document.getElementById("sort-by").value;
+  const ascendingText = document.getElementById("ascending").value
+
+  // update the ascending/descending values depending on what type of filter is selected
+  // this needs to go here to make sure that the labels update properly when the page is
+  // refreshed
+  if( sortBy === "name" || sortBy === "address" || sortBy === "town"){
+    document.getElementById("ascending-option-1").innerHTML = "A-Z"
+    document.getElementById("ascending-option-2").innerHTML = "Z-A"
+  }
+  else{
+    document.getElementById("ascending-option-1").innerHTML = "most - least"
+    document.getElementById("ascending-option-2").innerHTML = "least - most"
+  }
+
   drawAllGraphs();
 }
 
