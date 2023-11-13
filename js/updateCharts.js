@@ -88,7 +88,6 @@ function drawLineGraph() {
   tickValues.push(
     new Date((years[years.length - 1] + 1).toString() + "-01-02")
   );
-  console.log(tickValues);
 
   let xscale = d3
     .scaleTime()
@@ -288,7 +287,6 @@ function drawBarChart() {
 
   // determine domain for y-axis
   let y_scale_domain = [0, d3.max([value, avg_value])];
-  console.log("d3.max([value, avg_value]) = ", d3.max([value, avg_value]));
 
   // domain is just the 2 aggregates we wanna show
   let xScale = d3

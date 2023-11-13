@@ -31,51 +31,56 @@
     </h2>
   </div>
 
-  <div class="menu">
-    <span>
+<div id="menu">
+  <div id="menu-search">
+    <div id="filter">
       <label>Filter by:</label>
-      <select id="filter-by">
-        <option value="address">Address</option>
-        <option selected value=" ">None</option>
-        <option value="nameStartsWith">Name starts with</option>
-        <option value="nameContains">Name contains</option>
-        <option value="town">Town</option>
-      </select>
-    
-      <input type="text" id="filter-what" name="filter-what">
+      <div id="filter-input-wrapper">
+        <select id="filter-by">
+          <option selected value="nameContains">Name</option>
+          <option value="address">Address</option>
+          <option value="town">Town</option>
+        </select>
+      
+        <input type="text" id="filter-what" name="filter-what">
+      </div>
+    </div>
 
-      <input type="checkbox" id="filter-sort" /> Sort alphabetically
-    </span>
-
-    <span>
+    <div id="sort">
       <label>Sort by:</label>
       <select id="sort-by">
+        <option value="name">Alphabetical</option>
         <option value="address">Address</option>
-        <option selected value=" ">None</option>
-        <option value="critical">Number of critical violations</option>
-        <option value="id">Establishment ID</option>
-        <option value="name">Establishment Name</option>
-        <option value="noncritical">Average number of non-critical violations per inspection</option>
+        <option value="critical">Critical Violations</option>
+        <option value="noncritical">Non-Critical Violations</option>
+        <option value="violations">Total Violations</option>
         <option value="town">Town</option>
-        <option value="violations">Average number of violations per inspection</option>
       </select>
-    </span>
+      <select id="ascending">
+        <option id="ascending-option-1" value="1">A-Z</option>
+        <option id="ascending-option-2" value="2">Z-A</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- This is our container to hold the table-->
+  <table id="example" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Address</th>
+      </tr>
+    </thead>
+    <tbody><!-- elements are added to the table as defined in table.js --></tbody>
+  </table>
+
 </div>
 
-<!-- This is just a temporary menu option. Enter the restaurant name and press enter -->
-<input type="text" id="menu-search-box"/>
-<button id="menu-submit-search">Search</button>
-<p id="menu-restaurant-warning" style="color:red; display: none">No such restaurant found. Remember to use all caps.</p>
-<!-- This is our container to hold the table-->
-<table id="example" class="display" style="width:100%">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Address</th>
-    </tr>
-  </thead>
-  <tbody><!-- elements are added to the table as defined in table.js --></tbody>
-</table>
+<div id="barChart">
+  <svg>
+    <g id="barChart-g"></g>
+  </svg>
+</div>
 
 <div id="lineGraph">
   <select name="lineGraphType" id="lineGraphTypeSelection">
@@ -93,11 +98,6 @@
   </svg>
 </div>
 
-<div id="barChart">
-  <svg>
-    <g id="barChart-g"></g>
-  </svg>
-</div>
 </body>
 
 </html>

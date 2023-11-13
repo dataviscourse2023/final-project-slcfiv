@@ -131,12 +131,8 @@ class ProcessData {
     this.averageViolationsPerInspection[1] /= totalInspections;
     this.averageViolationsPerInspection[2] /= totalInspections;
 
-    console.log(this.averageViolationsPerInspectionPerYear);
-    console.log(this.averageViolationsPerInspection);
-
     this.done_processing = true;
     console.log("Done processing data!");
-    console.log(this.restaurants[0]);
   }
 
   /*
@@ -161,6 +157,7 @@ class ProcessData {
    */
   filtered_by(restaurant_list, by, what, sort = true) {
     let filter_function = null;
+    what = what.toUpperCase()
     switch (by) {
       case "address":
         filter_function = (x) => x.address;
