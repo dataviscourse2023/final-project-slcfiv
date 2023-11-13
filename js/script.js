@@ -44,12 +44,21 @@ function tableIntegrationwithCharts(restaurants){
       try {
         // get the restaurant name from the table row
           let restaurant_name = row.cells[0].innerText;
+          let address = row.cells[1].innerText
           // filter the restaurants by those that contain the search term
           current_restaurant = pd.filtered_by(
             restaurants,
             "nameContains",
             restaurant_name
-          )[0];
+          );
+
+          current_restaurant = pd.filtered_by(
+            current_restaurant,
+            "address",
+            address
+          );
+
+          current_restaurant = current_restaurant[0];
           if (!current_restaurant) throw new Error(`Restaurant "${restaurant_name}" not found.`);
           drawAllGraphs();
       }
@@ -97,8 +106,8 @@ function applyFilterAndSort() {
   let sortAscending = true
   // update the ascending/descending values depending on what type of filter is selected
   if( sortBy === "name" || sortBy === "address" || sortBy === "town"){
-    document.getElementById("ascending-option-1").innerHTML = "A-Z"
-    document.getElementById("ascending-option-2").innerHTML = "Z-A"
+    document.getElementById("ascending-option-1").innerHTML = "A - Z"
+    document.getElementById("ascending-option-2").innerHTML = "Z - A"
     if( ascendingText === "2" ){
       sortAscending = false
     }
