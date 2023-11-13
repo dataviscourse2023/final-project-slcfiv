@@ -16,6 +16,10 @@ body, h1, h2, h3, p, ul, li {
 
 /* MENU */
 
+#ascending{
+  width: 110px;
+}
+
 #filter{
   width: calc(100% - 295px);
   float: left;

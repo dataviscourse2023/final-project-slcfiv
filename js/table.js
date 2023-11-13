@@ -24,26 +24,19 @@ function createTable(dataObj) {
     var row = document.createElement("tr");
 
     // create new cells to hold Restaurant attributes
-    var id_cell = document.createElement("td");
     var name_cell = document.createElement("td");
     var addr_cell = document.createElement("td");
     var town_cell = document.createElement("td");
-    var noncrit_cell = document.createElement("td");
-    var crit1_cell = document.createElement("td");
-    var crit2_cell = document.createElement("td");
 
     // append attributes to cell objects accordingly
-    id_cell.appendChild(document.createTextNode(data["id"]));
     name_cell.appendChild(document.createTextNode(data["name"]));
     addr_cell.appendChild(document.createTextNode(data["address"]));
     town_cell.appendChild(document.createTextNode(data["town"]));
-    noncrit_cell.appendChild(document.createTextNode(data["inspections"][0]));
-    crit1_cell.appendChild(document.createTextNode(data["inspections"][1]));
-    crit2_cell.appendChild(document.createTextNode(data["inspections"][2]));
 
     // append the cells to the created row object
     row.appendChild(name_cell);
     row.appendChild(addr_cell);
+    row.appendChild(town_cell);
 
     // append the row to the table body
     tableBody.appendChild(row);
