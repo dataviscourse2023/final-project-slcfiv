@@ -7,8 +7,10 @@
 
 let pd = null;
 let current_restaurant = null;
+let current_restaurant_2 = null;
 
 const default_restaurant_name = "Red Iguana Restaurant"
+const default_restaurant_name_2 = "Vessel Kitchen"
 
 function drawAllGraphs() {
   drawLineGraph();
@@ -45,21 +47,28 @@ function tableIntegrationwithCharts(restaurants){
         // get the restaurant name from the table row
           let restaurant_name = row.cells[0].innerText;
           let address = row.cells[1].innerText
+          let updateRestaurant = null;
           // filter the restaurants by those that contain the search term
-          current_restaurant = pd.filtered_by(
+          updateRestaurant = pd.filtered_by(
             restaurants,
             "nameContains",
             restaurant_name
           );
 
-          current_restaurant = pd.filtered_by(
-            current_restaurant,
+          updateRestaurant = pd.filtered_by(
+            updateRestaurant,
             "address",
             address
           );
 
-          current_restaurant = current_restaurant[0];
+          if(selectionMode == 1){
+            current_restaurant = updateRestaurant[0];
+          }
+          else{
+            current_restaurant_2 = updateRestaurant[0];
+          }
           if (!current_restaurant) throw new Error(`Restaurant "${restaurant_name}" not found.`);
+          document.getElementById("multiselection-title").innerHTML = updateRestaurant[0].name
           drawAllGraphs();
       }
       catch (error) {
@@ -69,31 +78,6 @@ function tableIntegrationwithCharts(restaurants){
       
     });
   });
-}
-
-function defaultRestaurantSelection(restaurants){
-  current_restaurant = pd.filtered_by(
-    restaurants,
-    "nameStartsWith",
-    default_restaurant_name
-  )[0];
-
-  const sortBy = document.getElementById("sort-by").value;
-  const ascendingText = document.getElementById("ascending").value
-
-  // update the ascending/descending values depending on what type of filter is selected
-  // this needs to go here to make sure that the labels update properly when the page is
-  // refreshed
-  if( sortBy === "name" || sortBy === "address" || sortBy === "town"){
-    document.getElementById("ascending-option-1").innerHTML = "A-Z"
-    document.getElementById("ascending-option-2").innerHTML = "Z-A"
-  }
-  else{
-    document.getElementById("ascending-option-1").innerHTML = "most - least"
-    document.getElementById("ascending-option-2").innerHTML = "least - most"
-  }
-
-  drawAllGraphs();
 }
 
 function applyFilterAndSort() {
@@ -122,10 +106,7 @@ function applyFilterAndSort() {
 
   // filter the restaurants by the filterBy and filterValue
   let filteredRestaurants = pd.filtered_by( restaurant_list, filterBy, filterValue, false )
-  console.log(sortBy)
   filteredRestaurants = pd.sorted_by( filteredRestaurants, sortBy, sortAscending )
-  console.log( pd.sorted_by(filteredRestaurants, "violations", false) )
-  console.log(filteredRestaurants)
 
   // Destroy and recreate the table with the filtered and sorted restaurant list
   createTable(filteredRestaurants);
@@ -134,7 +115,6 @@ function applyFilterAndSort() {
   tableIntegrationwithCharts(filteredRestaurants);
  
 }
-
 
 // call fetchJSONFile
 // this is the function executed as a callback when parsing is done
@@ -164,6 +144,15 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
   });
   document.getElementById("ascending").addEventListener("change", function(){
     applyFilterAndSort();
+  })
+  document.getElementById("multiselection-button-1").addEventListener("click", function(){
+    multiselectionButton(1);
+  })
+  document.getElementById("multiselection-button-2").addEventListener("click", function(){
+    multiselectionButton(2);
+  })
+  document.getElementById("multiselection-clear").addEventListener("click", function(){
+    multiselectionClear();
   })
 
   // initialize line graph:

@@ -42,4 +42,13 @@ class Restaurant {
     this.crit2 = this.average_violations[2];
     // assign average inspections accordingly, for use in creating the table
   }
+
+  still_open(){
+    for( let i = 0; i < this.inspections.length; i++){
+      if(this.inspections[i].date.includes("2023")){
+        return true;
+      }
+    }
+    return false;
+  }
 }

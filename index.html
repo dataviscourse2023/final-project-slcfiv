@@ -15,7 +15,7 @@
   <script src="js/process_data.js"></script>
   <script src="js/updateCharts.js"></script>
   <script src="js/script.js"></script>
-  <script src="js/table.js"></script>
+  <script src="js/menu.js"></script>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/css/style.css"/>
@@ -33,6 +33,14 @@
 
 <div id="menu">
   <div id="menu-search">
+    <div id="multiselection">
+      <span id="multiselection-buttons">
+        <button id="multiselection-button-1" class="button-primary">Restaurant 1</button>
+        <button id="multiselection-button-2">Restaurant 2</button>
+      </span>
+      <span id="multiselection-title">Loading...</span>
+      <button id="multiselection-clear" style="display:none">clear</button>
+    </div>
     <div id="filter">
       <label>Filter by:</label>
       <div id="filter-input-wrapper">
@@ -41,7 +49,6 @@
           <option value="address">Address</option>
           <option value="town">Town</option>
         </select>
-      
         <input type="text" id="filter-what" name="filter-what">
       </div>
     </div>
@@ -89,12 +96,14 @@
     <option value="1">Non-Critical Violations</option>
     <option value="2">Critical Violations</option>
   </select>
-  <svg>
+  <svg id="lineGraphSvg">
     <g class="h"></g>
     <g class="v"></g>
     <path id="restaurantLine"></path>
+    <path id="restaurantLine2"></path>    
     <path id="averageLine"></path>
     <g id="restaurantVertices"></g>
+    <g id="restaurantVertices2"></g>    
     <g id="averageVertices"></g>  
   </svg>
 </div>

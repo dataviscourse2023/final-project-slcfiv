@@ -12,6 +12,9 @@ let derivative_function = function (x) {
   return x;
 };
 
+// set to true if we only want to consider restaurants which are still open
+const only_open_restaurants = false
+
 class ProcessData {
   constructor(json) {
     this.restaurants = [];
@@ -50,8 +53,11 @@ class ProcessData {
         restaurant.add_inspection(inspection);
 
         // calculate the statistics of the previous restaurant and add to list
-        restaurant.calculate_statistics();
-        this.restaurants.push(restaurant);
+        // if the restaurant is still open, add it. Otherwise skip
+        if(!only_open_restaurants || restaurant.still_open()){
+          restaurant.calculate_statistics();
+          this.restaurants.push(restaurant);
+        }
 
         // make a new restaurant and inspection
         restaurant = new Restaurant(row[0], row[2], row[3], row[4]);
@@ -81,10 +87,13 @@ class ProcessData {
 
     // add the rest of the data
     restaurant.add_inspection(inspection);
-    restaurant.calculate_statistics();
-    this.restaurants.push(restaurant);
+    // if the restaurant is still open, then add it to the list. Otherwise, skip
+    if( !only_open_restaurants || restaurant.still_open() ){
+      restaurant.calculate_statistics();
+      this.restaurants.push(restaurant);
+    }
 
-    // calculate average violations per inspection
+    // calculate average violations per inspection per year
     let totalInspectionsPerYear = {};
     let totalInspections = 0;
     let years = [];
