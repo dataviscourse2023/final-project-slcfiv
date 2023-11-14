@@ -9,6 +9,8 @@ let pd = null;
 let current_restaurant = null;
 let current_restaurant_2 = null;
 
+let require_password = false;
+
 const default_restaurant_name = "Red Iguana Restaurant"
 const default_restaurant_name_2 = "Vessel Kitchen"
 
@@ -80,40 +82,17 @@ function tableIntegrationwithCharts(restaurants){
   });
 }
 
-function applyFilterAndSort() {
-  const filterBy = document.getElementById("filter-by").value;
-  const filterValue = document.getElementById("filter-what").value;
 
-  const sortBy = document.getElementById("sort-by").value;
-  const ascendingText = document.getElementById("ascending").value
-
-  let sortAscending = true
-  // update the ascending/descending values depending on what type of filter is selected
-  if( sortBy === "name" || sortBy === "address" || sortBy === "town"){
-    document.getElementById("ascending-option-1").innerHTML = "A - Z"
-    document.getElementById("ascending-option-2").innerHTML = "Z - A"
-    if( ascendingText === "2" ){
-      sortAscending = false
-    }
+// checks the password that the user identified at the beginning
+function checkPassword(){
+  const passwordCheck = document.getElementById("password-entry").value;
+  if(passwordCheck == "Rosen"){
+    document.getElementById("password").style.display = "none"
   }
   else{
-    document.getElementById("ascending-option-1").innerHTML = "most - least"
-    document.getElementById("ascending-option-2").innerHTML = "least - most"
-    if( ascendingText === "1" ){
-      sortAscending = false
-    }
+    document.getElementById("password-entry").value = ""
+    document.getElementById("password-incorrect").style.display = "inline"
   }
-
-  // filter the restaurants by the filterBy and filterValue
-  let filteredRestaurants = pd.filtered_by( restaurant_list, filterBy, filterValue, false )
-  filteredRestaurants = pd.sorted_by( filteredRestaurants, sortBy, sortAscending )
-
-  // Destroy and recreate the table with the filtered and sorted restaurant list
-  createTable(filteredRestaurants);
-
-  // Update the table integration with charts and reselect the default restaurant
-  tableIntegrationwithCharts(filteredRestaurants);
- 
 }
 
 // call fetchJSONFile
@@ -154,6 +133,14 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
   document.getElementById("multiselection-clear").addEventListener("click", function(){
     multiselectionClear();
   })
+  if(require_password){
+    document.getElementById("password-confirm").addEventListener("click", function(){
+      checkPassword();
+    })
+  }
+  else{
+    document.getElementById("password").style.display = "none"
+  }
 
   // initialize line graph:
   document.getElementById("lineGraphTypeSelection")

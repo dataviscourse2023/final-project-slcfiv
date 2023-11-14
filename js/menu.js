@@ -31,6 +31,43 @@ function defaultRestaurantSelection(restaurants){
     drawAllGraphs();
 }
 
+function applyFilterAndSort() {
+    const filterBy = document.getElementById("filter-by").value;
+    const filterValue = document.getElementById("filter-what").value;
+  
+    const sortBy = document.getElementById("sort-by").value;
+    const ascendingText = document.getElementById("ascending").value
+  
+    let sortAscending = true
+    // update the ascending/descending values depending on what type of filter is selected
+    if( sortBy === "name" || sortBy === "address" || sortBy === "town"){
+      document.getElementById("ascending-option-1").innerHTML = "A - Z"
+      document.getElementById("ascending-option-2").innerHTML = "Z - A"
+      if( ascendingText === "2" ){
+        sortAscending = false
+      }
+    }
+    else{
+      document.getElementById("ascending-option-1").innerHTML = "most - least"
+      document.getElementById("ascending-option-2").innerHTML = "least - most"
+      if( ascendingText === "1" ){
+        sortAscending = false
+      }
+    }
+  
+    // filter the restaurants by the filterBy and filterValue
+    let filteredRestaurants = pd.filtered_by( restaurant_list, filterBy, filterValue, false )
+    filteredRestaurants = pd.sorted_by( filteredRestaurants, sortBy, sortAscending )
+  
+    // Destroy and recreate the table with the filtered and sorted restaurant list
+    createTable(filteredRestaurants);
+  
+    // Update the table integration with charts and reselect the default restaurant
+    tableIntegrationwithCharts(filteredRestaurants);
+   
+}
+  
+
 // Update the table in the menu
 // ref: https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array
 function createTable(dataObj) {
