@@ -1,6 +1,6 @@
 // Constants for the charts, that would be useful.
-const chartXOffset = 30;
-const chartYOffset = 30;
+const CHART_WIDTH = 500;
+const CHART_HEIGHT = 250;
 const MARGIN = { left: 50, bottom: 20, top: 20, right: 20 };
 
 // mode 0: all violations
@@ -8,6 +8,9 @@ const MARGIN = { left: 50, bottom: 20, top: 20, right: 20 };
 // mode 2: critical violations
 function drawLineGraph() {
   let mode = parseInt(document.getElementById("lineGraphTypeSelection").value);
+
+  let chartXOffset = 30;
+  let chartYOffset = 30;
 
   let chartRightMargin = 30;
   let chartBottomMargin = 110;
@@ -370,97 +373,75 @@ function drawLineGraph() {
 }
 
 function drawBarChart() {
-  // get selected restaurants
-  restaurants = [];
-  if (current_restaurant) {
-    restaurants.push(current_restaurant);
-  }
-  if (current_restaurant_2) {
-    restaurants.push(current_restaurant_2);
-  }
-  console.log("restaurants arr: ", restaurants);
+  // select the svg under the barChart div
+  let svg = d3.select("#barChart").select("svg");
 
   // to store total violations of selected restaurant
-  let rest1_val = -1;
-  let rest2_val = -1;
-  let rest_vals = [rest1_val, rest2_val];
+  let value = 0;
   // look at all of restaurant's inspections
-  for (let i = 0; i < restaurants.length; i++) {
-    for (let j = 0; j < restaurants[i].inspections.length; j++) {
-      // get violation array, sum values in array
-      total_violations = current_restaurant.inspections[i].total_violations();
-      rest_vals[i] =
-        total_violations[0] + total_violations[1] + total_violations[2];
-    }
+  for (let i = 0; i < current_restaurant.inspections.length; i++) {
+    // get violation array, sum values in array
+    total_violations = current_restaurant.inspections[i].total_violations();
+    value = total_violations[0] + total_violations[1] + total_violations[2];
   }
+
   // get the average number of non-critical, critical 1, and critical 2 violations
   avg_value =
     pd.averageViolationsPerInspection[0] +
     pd.averageViolationsPerInspection[1] +
     pd.averageViolationsPerInspection[2];
 
-  // dynamically determine barchart width based on size of window
-  let svg = d3.select("#barChartSvg");
-  let boxWidth = parseInt(
-    svg.style("width").substring(0, svg.style("width").length - 2)
-  );
-  let boxHeight = svg
-    .style("height")
-    .substring(0, svg.style("height").length - 2);
-  let chartWidth = boxWidth - MARGIN.right;
-  let chartHeight = boxHeight - MARGIN.bottom;
-
-  /* Create X-Axis */
-  // an array of the appropriate tick labels
-  let tickLabels = ["SALT LAKE CITY AVERAGE"];
-  for (let i = 0; i < restaurants.length; i++) {
-    if (restaurants[i]) {
-      tickLabels.push(restaurants[i].name);
-    }
-  }
+  // determine domain for y-axis
+  let y_scale_domain = [0, d3.max([value, avg_value])];
 
   // domain is just the 2 aggregates we wanna show
   let xScale = d3
     .scalePoint()
-    .domain(tickLabels)
-    .range([MARGIN.left, chartWidth - MARGIN.right]);
-  console.log("ugh: ", restaurants.length + 1);
+    .domain([0, 1])
+    .range([MARGIN.left, CHART_WIDTH - MARGIN.right]);
 
-  //draw the x-axis
-  d3.select("#barChart-x-axis")
-    .attr("transform", `translate(0,${boxHeight - MARGIN.bottom})`)
-    .call(d3.axisBottom(xScale).tickFormat((d, i) => tickLabels[i]));
+  // an array of the appropriate tick labels
+  let tickLabels = ["SALT LAKE CITY AVERAGE", current_restaurant.name];
 
-  /* Create Y-Axis */
-  // determine domain for y-axis
-  let y_scale_domain = [0, d3.max([rest1_val, rest2_val, avg_value])];
-  // create yscale
-  let yScale = d3.scaleLinear().domain(y_scale_domain).range([chartHeight, 0]);
+  // create xAxis for bar chart
+  let xAxis = d3
+    .select("#x-axis")
+    .call(
+      d3
+        .axisBottom(xScale)
+        .tickFormat((d, i) => tickLabels[i])
+        .ticks(2)
+    )
+    .attr("transform", `translate(0,${CHART_HEIGHT - MARGIN.bottom})`);
 
-  //draw y axis
+  // create yscale and yaxis for barchart
+  let yScale = d3.scaleLinear().domain(y_scale_domain).range([300, 0]);
   let yAxis = d3
-    .select("#barChart-y-axis")
-    .attr("transform", "translate(30,${MARGIN.top})")
+    .select("#y-axis")
+    .attr("transform", "translate(30,0)")
     .attr("transform", `translate(${MARGIN.left},0)`)
     .call(d3.axisLeft(yScale));
-  // // create title
-  // let title = "Total Average Violations";
-  // //   // update svg with axes, bars, and title
-  // //   g.selectAll("rect")
-  // //     .data(data)
-  // //     .join("rect")
-  // //     .attr("id", "bar")
-  // //     .attr("x", (d) => xScale(d.date))
-  // //     .attr("y", (d) => yScale(d[metric]))
-  // //     .attr("height", (d) => yScale(0) - yScale(d[metric]))
-  // //     .attr("width", xScale.bandwidth());
-  // // add the title
-  // d3.select("#barChart-title")
-  //   .append("text")
-  //   .attr("x", boxWidth / 2)
-  //   .attr("y", MARGIN.top)
-  //   .attr("text-anchor", "middle")
-  //   .attr("class", "temp")
-  //   .style("font-size", "16px")
-  //   .text(title);
+
+  // create title
+  let title = "Total Average Violations";
+
+  //   // update svg with axes, bars, and title
+  //   g.selectAll("rect")
+  //     .data(data)
+  //     .join("rect")
+  //     .attr("id", "bar")
+  //     .attr("x", (d) => xScale(d.date))
+  //     .attr("y", (d) => yScale(d[metric]))
+  //     .attr("height", (d) => yScale(0) - yScale(d[metric]))
+  //     .attr("width", xScale.bandwidth());
+
+  // add the title
+  svg
+    .append("text")
+    .attr("x", CHART_WIDTH / 2)
+    .attr("y", 0)
+    .attr("text-anchor", "middle")
+    .attr("class", "temp")
+    .style("font-size", "16px")
+    .text(title);
 }
