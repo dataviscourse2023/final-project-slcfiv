@@ -428,20 +428,34 @@ function drawBarChart() {
 
   //draw the x-axis
   d3.select("#barChart-x-axis")
-    .attr("transform", `translate(0,${boxHeight - MARGIN.bottom})`)
+    .attr(
+      "transform",
+      "translate(" +
+        chartXOffset.toString() +
+        "," +
+        (chartHeight + chartYOffset).toString() +
+        ")"
+    )
     .call(d3.axisBottom(xScale).tickFormat((d, i) => tickLabels[i]));
 
   /* Create Y-Axis */
   // determine domain for y-axis
   let y_scale_domain = [0, d3.max([rest1_val, rest2_val, avg_value])];
+
   // create yscale
   let yScale = d3.scaleLinear().domain(y_scale_domain).range([chartHeight, 0]);
 
   //draw y axis
   let yAxis = d3
     .select("#barChart-y-axis")
-    .attr("transform", "translate(30,${MARGIN.top})")
-    .attr("transform", `translate(${MARGIN.left},0)`)
+    .attr(
+      "transform",
+      "translate(" +
+        chartXOffset.toString() +
+        "," +
+        chartYOffset.toString() +
+        ")"
+    )
     .call(d3.axisLeft(yScale));
   // // create title
   // let title = "Total Average Violations";
