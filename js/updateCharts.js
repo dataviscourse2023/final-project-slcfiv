@@ -424,18 +424,10 @@ function drawBarChart() {
     .scalePoint()
     .domain(tickLabels)
     .range([MARGIN.left, chartWidth - MARGIN.right]);
-  console.log("ugh: ", restaurants.length + 1);
 
   //draw the x-axis
   d3.select("#barChart-x-axis")
-    .attr(
-      "transform",
-      "translate(" +
-        chartXOffset.toString() +
-        "," +
-        (chartHeight + chartYOffset).toString() +
-        ")"
-    )
+    .attr("transform", `translate(0, ${chartHeight - MARGIN.bottom})`)
     .call(d3.axisBottom(xScale).tickFormat((d, i) => tickLabels[i]));
 
   /* Create Y-Axis */
@@ -448,14 +440,7 @@ function drawBarChart() {
   //draw y axis
   let yAxis = d3
     .select("#barChart-y-axis")
-    .attr(
-      "transform",
-      "translate(" +
-        chartXOffset.toString() +
-        "," +
-        chartYOffset.toString() +
-        ")"
-    )
+    .attr("transform", `translate(${MARGIN.left}, 0)`)
     .call(d3.axisLeft(yScale));
   // // create title
   // let title = "Total Average Violations";

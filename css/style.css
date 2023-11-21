@@ -105,8 +105,9 @@ body, h1, h2, h3, p, ul, li {
 
 /* BAR GRAPH */
 #barChartSvg {
-  width: 100%;
-  height: calc(212px + 50vh);
+  width: 50%;
+  height: 33vw;
+  display: flex;
 }
 
 /* LINE GRAPH */

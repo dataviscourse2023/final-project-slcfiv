@@ -142,6 +142,11 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
     document.getElementById("password").style.display = "none";
   }
 
+  // Attach event listener to redraw all graphs on window resize
+  window.addEventListener("resize", (event) => {
+    drawAllGraphs();
+  });
+
   // initialize line graph:
   document
     .getElementById("lineGraphTypeSelection")
