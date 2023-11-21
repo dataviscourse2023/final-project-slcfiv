@@ -145,14 +145,13 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
     document.getElementById("password").style.display = "none";
   }
 
-  // // Attach event listener to redraw all graphs on window resize
-  // window.addEventListener("resize", (event) => {
-  //   console.log("im resizing");
-  //   clearTimeout(timeOut);
-  //   timeOut = setTimeout(function () {
-  //     drawAllGraphs();
-  //   }, 1000);
-  // });
+  // Attach event listener to redraw all graphs on window resize
+  window.addEventListener("resize", (event) => {
+    clearTimeout(timeOut);
+    timeOut = setTimeout(function () {
+      drawAllGraphs();
+    }, 50);
+  });
 
   // initialize line graph:
   document
