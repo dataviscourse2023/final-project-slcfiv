@@ -11,6 +11,9 @@ let current_restaurant_2 = null;
 
 let require_password = false;
 
+// to use for timing out execution while window resizes
+let timeOut;
+
 const default_restaurant_name = "Red Iguana Restaurant";
 const default_restaurant_name_2 = "Vessel Kitchen";
 
@@ -142,10 +145,14 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
     document.getElementById("password").style.display = "none";
   }
 
-  // Attach event listener to redraw all graphs on window resize
-  window.addEventListener("resize", (event) => {
-    drawAllGraphs();
-  });
+  // // Attach event listener to redraw all graphs on window resize
+  // window.addEventListener("resize", (event) => {
+  //   console.log("im resizing");
+  //   clearTimeout(timeOut);
+  //   timeOut = setTimeout(function () {
+  //     drawAllGraphs();
+  //   }, 1000);
+  // });
 
   // initialize line graph:
   document

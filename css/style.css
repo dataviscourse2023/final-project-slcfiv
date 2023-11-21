@@ -107,7 +107,6 @@ body, h1, h2, h3, p, ul, li {
 #barChartSvg {
   width: 50%;
   height: 33vw;
-  display: flex;
 }
 
 /* LINE GRAPH */

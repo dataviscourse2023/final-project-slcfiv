@@ -27,6 +27,7 @@ function drawLineGraph() {
 
   // clean up elements from the previous line graph
   svg.selectAll(".temp").remove();
+  d3.selectAll("#lineGraphTooltip").remove();
 
   // the max value for the y axis
   let max_y_axis_value = -1;
@@ -369,7 +370,7 @@ function drawLineGraph() {
     .attr("alignment-baseline", "middle");
 }
 
-function drawBarChart() {
+function drawBarChart(redraw) {
   // get selected restaurants
   restaurants = [];
   if (current_restaurant) {
@@ -378,7 +379,7 @@ function drawBarChart() {
   if (current_restaurant_2) {
     restaurants.push(current_restaurant_2);
   }
-  console.log("restaurants arr: ", restaurants);
+  // console.log("restaurants arr: ", restaurants);
 
   // to store total violations of selected restaurant
   let rest1_val = -1;
