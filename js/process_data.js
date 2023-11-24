@@ -13,7 +13,7 @@ let derivative_function = function (x) {
 };
 
 // set to true if we only want to consider restaurants which are still open
-const only_open_restaurants = false
+const only_open_restaurants = false;
 
 class ProcessData {
   constructor(json) {
@@ -54,7 +54,7 @@ class ProcessData {
 
         // calculate the statistics of the previous restaurant and add to list
         // if the restaurant is still open, add it. Otherwise skip
-        if(!only_open_restaurants || restaurant.still_open()){
+        if (!only_open_restaurants || restaurant.still_open()) {
           restaurant.calculate_statistics();
           this.restaurants.push(restaurant);
         }
@@ -88,7 +88,7 @@ class ProcessData {
     // add the rest of the data
     restaurant.add_inspection(inspection);
     // if the restaurant is still open, then add it to the list. Otherwise, skip
-    if( !only_open_restaurants || restaurant.still_open() ){
+    if (!only_open_restaurants || restaurant.still_open()) {
       restaurant.calculate_statistics();
       this.restaurants.push(restaurant);
     }
@@ -166,7 +166,7 @@ class ProcessData {
    */
   filtered_by(restaurant_list, by, what, sort = true) {
     let filter_function = null;
-    what = what.toUpperCase()
+    what = what.toUpperCase();
     switch (by) {
       case "address":
         filter_function = (x) => x.address;

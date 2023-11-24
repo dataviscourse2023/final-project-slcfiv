@@ -373,21 +373,22 @@ function drawLineGraph() {
 function drawBarChart() {
   /* Prepare Data for SLC Averages */
   // get the average number of non-critical, critical 1, and critical 2 violations
-  avgNonCrit = pd.averageViolationsPerInspection[0];
-  avgCrit1 = pd.averageViolationsPerInspection[1];
-  avgCrit2 = pd.averageViolationsPerInspection[2];
+  avgTotal = pd.averageViolationsPerInspection[0];
+  avgCrit = pd.averageViolationsPerInspection[1];
+  avgNonCrit = pd.averageViolationsPerInspection[2];
+
+  let yoffset = 15;
 
   // create dictionary to use for drawing bars, start by adding in slc average
   let barData = [
     {
       name: "SALT LAKE CITY AVERAGE",
-      noncrit: avgNonCrit,
-      crit1: avgCrit1,
-      crit2: avgCrit2,
+      avgcrit: avgCrit,
+      avgnoncrit: avgNonCrit,
     },
   ];
   // to hold the max violations of slc vs rest1 vs rest2
-  let maxViolations = avgNonCrit + avgCrit1 + avgCrit2;
+  let maxViolations = avgTotal;
 
   // get selected restaurants
   restaurants = [];
@@ -398,22 +399,21 @@ function drawBarChart() {
     restaurants.push(current_restaurant_2);
   }
 
-  // get all of restaurant's inspections and store in dictionary
+  // calculate averages of restaurant's inspections and store in dictionary
   for (let i = 0; i < restaurants.length; i++) {
     // get violation array, sum values in array
-    total_violations = restaurants[i].inspections[i].total_violations();
+    avg_violations = restaurants[i].average_violations;
     // add restaurant to barData
     barData.push({
       name: restaurants[i].name,
-      noncrit: total_violations[0],
-      crit1: total_violations[1],
-      crit2: total_violations[2],
+      avgcrit: avg_violations[1] + avg_violations[2],
+      avgnoncrit: avg_violations[0],
     });
     // plus 1 bc barData[0] is avgs
     currBar = barData[i + 1];
     maxViolations = d3.max([
       maxViolations,
-      [currBar.noncrit, currBar.crit1, currBar.crit2].reduce(
+      [currBar.avgcrit, currBar.avgnoncrit].reduce(
         (partialSum, a) => partialSum + a,
         0
       ),
@@ -423,7 +423,7 @@ function drawBarChart() {
   // get subgroups to display as a stacked bar:
   // ref: https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
   // ref: https://observablehq.com/@stuartathompson/a-step-by-step-guide-to-the-d3-v4-stacked-bar-chart
-  let keys = ["noncrit", "crit1", "crit2"];
+  let keys = ["avgcrit", "avgnoncrit"];
   let stack = d3.stack().keys(keys)(barData);
   // map keys onto data to label subgroups by color
   stack.map((d, i) => {
@@ -463,7 +463,7 @@ function drawBarChart() {
 
   //draw the x-axis
   d3.select("#barChart-x-axis")
-    .attr("transform", `translate(0, ${chartHeight - MARGIN.bottom})`)
+    .attr("transform", `translate(0, ${yoffset + chartHeight - MARGIN.bottom})`)
     .call(d3.axisBottom(xScale).tickFormat((d, i) => tickLabels[i]));
 
   /* Create Y-Axis */
@@ -479,7 +479,7 @@ function drawBarChart() {
   //draw y axis
   let yAxis = d3
     .select("#barChart-y-axis")
-    .attr("transform", `translate(${MARGIN.left}, 0)`)
+    .attr("transform", `translate(${MARGIN.left}, ${yoffset})`)
     .call(d3.axisLeft(yScale));
 
   /* Draw the Bars */
@@ -504,39 +504,29 @@ function drawBarChart() {
     .attr("height", (d) => {
       return yScale(d[0]) - yScale(d[1]);
     })
-    .attr("y", (d) => yScale(d[1]))
+    .attr("y", (d) => yScale(d[1]) + yoffset)
     .attr("fill", (d) => {
-      if (d.key == "noncrit") {
-        return "#ebcc34";
+      if (d.key == "avgcrit") {
+        return "#d11800";
       }
-      if (d.key == "crit1") {
-        return "#eb8034";
-      }
-      if (d.key == "crit2") {
-        return "#911111";
+      if (d.key == "avgnoncrit") {
+        return "#ffde3b";
       }
     })
-    .attr("stroke", "gray")
-    .attr("stroke-width", 1);
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5);
 
-  // // create title
-  // let title = "Total Average Violations";
-  // //   // update svg with axes, bars, and title
-  // //   g.selectAll("rect")
-  // //     .data(data)
-  // //     .join("rect")
-  // //     .attr("id", "bar")
-  // //     .attr("x", (d) => xScale(d.date))
-  // //     .attr("y", (d) => yScale(d[metric]))
-  // //     .attr("height", (d) => yScale(0) - yScale(d[metric]))
-  // //     .attr("width", xScale.bandwidth());
-  // // add the title
-  // d3.select("#barChart-title")
-  //   .append("text")
-  //   .attr("x", boxWidth / 2)
-  //   .attr("y", MARGIN.top)
-  //   .attr("text-anchor", "middle")
-  //   .attr("class", "temp")
-  //   .style("font-size", "16px")
-  //   .text(title);
+  // create title
+  let title = "Total Average Violations";
+  // update the title
+  d3.select("#barChart-title").remove();
+  svg
+    .append("text")
+    .attr("id", "barChart-title")
+    .attr("x", boxWidth / 2)
+    .attr("y", yoffset)
+    .attr("text-anchor", "middle")
+    .attr("class", "temp")
+    .style("font-size", "16px")
+    .text(title);
 }
