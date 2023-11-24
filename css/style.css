@@ -104,6 +104,18 @@ body, h1, h2, h3, p, ul, li {
 }
 
 /* BAR GRAPH */
+#barChartTooltip {
+  position: absolute;
+  text-align: center;
+  padding: .5rem;
+  background: #FFFFFF;
+  color: #313639;
+  border: 1px solid #313639;
+  border-radius: 8px;
+  pointer-events: none;
+  font-size: 1.3rem;
+}
+
 #barChartSvg {
   width: 50%;
   height: 35vw;

@@ -423,7 +423,7 @@ function drawBarChart() {
   // get subgroups to display as a stacked bar:
   // ref: https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
   // ref: https://observablehq.com/@stuartathompson/a-step-by-step-guide-to-the-d3-v4-stacked-bar-chart
-  let keys = ["avgcrit", "avgnoncrit"];
+  let keys = ["avgnoncrit", "avgcrit"];
   let stack = d3.stack().keys(keys)(barData);
   // map keys onto data to label subgroups by color
   stack.map((d, i) => {
@@ -482,15 +482,30 @@ function drawBarChart() {
     .attr("transform", `translate(${MARGIN.left}, ${yoffset})`)
     .call(d3.axisLeft(yScale));
 
-  /* Draw the Bars */
+  /* Draw the Bars, Legend, and interactivity */
+  // colors to use for the bars and legend
+  colors = [
+    ["avgcrit", "#f1a340"],
+    ["avgnoncrit", "#998ec3"],
+  ];
   // ref: https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
-  // delete all bars
-  svg.select("#barChart-bars").remove();
+  // delete all barchart temporary elements
+  svg.select(".barChart-temp").remove();
+
+  // as done by Nathan above
+  // based on this article: https://medium.com/@kj_schmidt/show-data-on-mouse-over-with-d3-js-3bf598ff8fc2
+  let tooltip = d3
+    .select("#barChart")
+    .append("div")
+    .attr("class", "barChart-temp")
+    .attr("id", "barChartTooltip")
+    .style("opacity", 0);
+
   // define bar width
   let barWidth = chartWidth / 10;
   svg
     .append("g")
-    .attr("id", "barChart-bars")
+    .attr("class", "barChart-temp")
     .selectAll("g")
     .data(stack)
     .enter()
@@ -499,6 +514,7 @@ function drawBarChart() {
     .data((d) => d)
     .enter()
     .append("rect")
+    .attr("id", "bar")
     .attr("x", (d) => xScale(d.data.name) - barWidth / 2)
     .attr("width", barWidth)
     .attr("height", (d) => {
@@ -507,14 +523,34 @@ function drawBarChart() {
     .attr("y", (d) => yScale(d[1]) + yoffset)
     .attr("fill", (d) => {
       if (d.key == "avgcrit") {
-        return "#d11800";
+        return colors[0][1];
       }
       if (d.key == "avgnoncrit") {
-        return "#ffde3b";
+        return colors[1][1];
       }
     })
     .attr("stroke", "black")
-    .attr("stroke-width", 0.5);
+    .attr("stroke-width", 0.5)
+    .on("mouseover", function (e, d) {
+      // lighten the rectangle to indicated its being hovered over
+      d3.select(this).attr("opacity", ".85");
+      // get the average violations for the subgroup being hovered over, to nearest 10ths place
+      let avg = Math.round(d.data[d.key] * 10) / 10;
+      // label based on key (avgcrit or avgnoncrit)
+      let label =
+        d.key === "avgcrit"
+          ? "Average Critical Violations:"
+          : "Average Non-Critical Violations";
+      tooltip
+        .html(`${label} <br> ${avg}`)
+        .style("opacity", 1)
+        .style("left", (e.pageX + 10).toString() + "px")
+        .style("top", (e.pageY - 15).toString() + "px");
+    })
+    .on("mouseout", function (e, d) {
+      d3.select(this).attr("opacity", "1");
+      tooltip.style("opacity", 0);
+    });
 
   // create title
   let title = "Total Average Violations";
