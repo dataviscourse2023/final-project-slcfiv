@@ -27,7 +27,7 @@ function drawLineGraph() {
 
   // clean up elements from the previous line graph
   svg.selectAll(".temp").remove();
-  d3.selectAll("#lineGraphTooltip").remove();
+  d3.selectAll("#tooltip").remove();
 
   // the max value for the y axis
   let max_y_axis_value = -1;
@@ -228,7 +228,7 @@ function drawLineGraph() {
     .select("body")
     .append("div")
     .attr("class", "temp")
-    .attr("id", "lineGraphTooltip")
+    .attr("id", "tooltip")
     .style("opacity", 0);
 
   // add vertices to each line:
@@ -483,12 +483,13 @@ function drawBarChart() {
     .call(d3.axisLeft(yScale));
 
   /* Draw the Bars, Legend, and interactivity */
+  // ref: https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
   // colors to use for the bars and legend
   colors = [
     ["avgcrit", "#f1a340"],
     ["avgnoncrit", "#998ec3"],
   ];
-  // ref: https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
+
   // delete all barchart temporary elements
   svg.select(".barChart-temp").remove();
 
@@ -498,7 +499,7 @@ function drawBarChart() {
     .select("#barChart")
     .append("div")
     .attr("class", "barChart-temp")
-    .attr("id", "barChartTooltip")
+    .attr("id", "tooltip")
     .style("opacity", 0);
 
   // define bar width
@@ -551,6 +552,8 @@ function drawBarChart() {
       d3.select(this).attr("opacity", "1");
       tooltip.style("opacity", 0);
     });
+
+  // add legend
 
   // create title
   let title = "Total Average Violations";
