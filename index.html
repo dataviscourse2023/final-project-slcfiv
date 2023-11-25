@@ -41,66 +41,68 @@
   <div class="password-item" id="password-incorrect">Password is incorrect. Please try again.</div>
 </div>
 
-<div id="menu">
-  <div id="menu-search">
-    <div id="multiselection">
-      <span id="multiselection-buttons">
-        <button id="multiselection-button-1" class="button-primary">Restaurant 1</button>
-        <button id="multiselection-button-2">Restaurant 2</button>
-      </span>
-      <span id="multiselection-title">Loading...</span>
-      <button id="multiselection-clear" style="display:none">clear</button>
-    </div>
-    <div id="filter">
-      <label>Filter by:</label>
-      <div id="filter-input-wrapper">
-        <select id="filter-by">
-          <option selected value="nameContains">Name</option>
+<div id="firstRow">
+  <div id="menu">
+    <div id="menu-search">
+      <div id="multiselection">
+        <span id="multiselection-buttons">
+          <button id="multiselection-button-1" class="button-primary">Restaurant 1</button>
+          <button id="multiselection-button-2">Restaurant 2</button>
+        </span>
+        <span id="multiselection-title">Loading...</span>
+        <button id="multiselection-clear" style="display:none">clear</button>
+      </div>
+      <div id="filter">
+        <label>Filter by:</label>
+        <div id="filter-input-wrapper">
+          <select id="filter-by">
+            <option selected value="nameContains">Name</option>
+            <option value="address">Address</option>
+            <option value="town">Town</option>
+          </select>
+          <input type="text" id="filter-what" name="filter-what">
+        </div>
+      </div>
+
+      <div id="sort">
+        <label>Sort by:</label>
+        <select id="sort-by">
+          <option value="name">Alphabetical</option>
           <option value="address">Address</option>
+          <option value="critical">Critical Violations</option>
+          <option value="noncritical">Non-Critical Violations</option>
+          <option value="violations">Total Violations</option>
           <option value="town">Town</option>
         </select>
-        <input type="text" id="filter-what" name="filter-what">
+        <select id="ascending">
+          <option id="ascending-option-1" value="1"></option>
+          <option id="ascending-option-2" value="2"></option>
+        </select>
       </div>
     </div>
 
-    <div id="sort">
-      <label>Sort by:</label>
-      <select id="sort-by">
-        <option value="name">Alphabetical</option>
-        <option value="address">Address</option>
-        <option value="critical">Critical Violations</option>
-        <option value="noncritical">Non-Critical Violations</option>
-        <option value="violations">Total Violations</option>
-        <option value="town">Town</option>
-      </select>
-      <select id="ascending">
-        <option id="ascending-option-1" value="1"></option>
-        <option id="ascending-option-2" value="2"></option>
-      </select>
-    </div>
+    <!-- This is our container to hold the table-->
+    <table id="example" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Town</th>
+        </tr>
+      </thead>
+      <tbody><!-- elements are added to the table as defined in table.js --></tbody>
+    </table>
+
   </div>
 
-  <!-- This is our container to hold the table-->
-  <table id="example" class="display" style="width:100%">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Town</th>
-      </tr>
-    </thead>
-    <tbody><!-- elements are added to the table as defined in table.js --></tbody>
-  </table>
-
-</div>
-
-<div id="barChart">
-  <svg id="barChartSvg">
-    <g id="barChart-title"></g>
-    <g id="barChart-x-axis"></g>
-    <g id="barChart-y-axis"></g>
-    <g id="barChart-bars"></g>
-  </svg>
+  <div id="barChart">
+    <svg id="barChartSvg">
+      <g id="barChart-title"></g>
+      <g id="barChart-x-axis"></g>
+      <g id="barChart-y-axis"></g>
+      <g id="barChart-bars"></g>
+    </svg>
+  </div>
 </div>
 
 <div id="lineGraph">

@@ -1,6 +1,6 @@
 // Constants for the charts, that would be useful.
 const chartXOffset = 30;
-const chartYOffset = 30;
+const chartYOffset = 40;
 const MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
 
 // these update based on the window size
@@ -126,6 +126,7 @@ function drawLineGraph() {
     }
   }
 
+  // set up scales and axes
   let y_scale_domain = [0, max_y_axis_value];
   let tickValues = [];
   for (let i = 0; i < years.length; i++) {
@@ -173,6 +174,7 @@ function drawLineGraph() {
     )
     .call(yAxis);
 
+  // draw the actual lines
   let lineFunction = d3
     .line()
     .x((d) => xscale(d[0]) + chartXOffset)
@@ -218,7 +220,7 @@ function drawLineGraph() {
   svg
     .append("text")
     .attr("x", chartXOffset + chartWidth / 2)
-    .attr("y", 15)
+    .attr("y", 30)
     .attr("text-anchor", "middle")
     .attr("class", "temp")
     .attr("id", "chart-title")
@@ -473,8 +475,8 @@ function drawBarChart() {
     .selectAll("text")
     .style("text-anchor", "end")
     .attr("dx", ".16em")
-    .attr("dy", "-.30em")
-    .attr("transform", "rotate(45)");
+    // .attr("dy", "-.30em")
+    .attr("transform", "rotate(-15)");
 
   /* Create Y-Axis */
   // determine domain for y-axis
