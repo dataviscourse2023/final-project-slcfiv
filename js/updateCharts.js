@@ -1,7 +1,11 @@
 // Constants for the charts, that would be useful.
 const chartXOffset = 30;
 const chartYOffset = 30;
-const MARGIN = { left: 50, bottom: 20, top: 20, right: 20 };
+const MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
+
+// these update based on the window size
+let titleFontSize = 20;
+let legendFontSize = 15;
 
 // mode 0: all violations
 // mode 1: non critical violations
@@ -217,7 +221,7 @@ function drawLineGraph() {
     .attr("y", 15)
     .attr("text-anchor", "middle")
     .attr("class", "temp")
-    .style("font-size", "20px")
+    .attr("id", "chart-title")
     .text(title);
 
   // do the tooltip hovering
@@ -332,7 +336,7 @@ function drawLineGraph() {
     .attr("y", legendBaseY + 5)
     .attr("class", "temp")
     .text(current_restaurant.name)
-    .style("font-size", "15px")
+    .style("font-size", `${legendFontSize}px`)
     .attr("alignment-baseline", "middle");
 
   if (current_restaurant_2) {
@@ -349,7 +353,7 @@ function drawLineGraph() {
       .attr("y", legendBaseY + 35)
       .attr("class", "temp")
       .text(current_restaurant_2.name)
-      .style("font-size", "15px")
+      .style("font-size", `${legendFontSize}px`)
       .attr("alignment-baseline", "middle");
   }
 
@@ -366,7 +370,7 @@ function drawLineGraph() {
     .attr("y", legendBaseY + averageTitleY + 5)
     .attr("class", "temp")
     .text("Salt Lake County Average")
-    .style("font-size", "15px")
+    .style("font-size", `${legendFontSize}px`)
     .attr("alignment-baseline", "middle");
 }
 
@@ -444,6 +448,7 @@ function drawBarChart() {
     .substring(0, svg.style("height").length - 2);
   let chartWidth = boxWidth - MARGIN.right;
   let chartHeight = boxHeight - MARGIN.bottom;
+  console.log(`chartHeight:chartWidth = ${chartHeight}:${chartWidth}`);
 
   /* Create X-Axis */
   // an array of the appropriate tick labels
@@ -464,7 +469,12 @@ function drawBarChart() {
   //draw the x-axis
   d3.select("#barChart-x-axis")
     .attr("transform", `translate(0, ${yoffset + chartHeight - MARGIN.bottom})`)
-    .call(d3.axisBottom(xScale).tickFormat((d, i) => tickLabels[i]));
+    .call(d3.axisBottom(xScale).tickFormat((d, i) => tickLabels[i]))
+    .selectAll("text")
+    .style("text-anchor", "end")
+    .attr("dx", ".16em")
+    .attr("dy", "-.30em")
+    .attr("transform", "rotate(45)");
 
   /* Create Y-Axis */
   // determine domain for y-axis
@@ -485,13 +495,13 @@ function drawBarChart() {
   /* Draw the Bars, Legend, and interactivity */
   // ref: https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
   // colors to use for the bars and legend
-  colors = [
+  let colors = [
     ["avgcrit", "#f1a340"],
     ["avgnoncrit", "#998ec3"],
   ];
 
   // delete all barchart temporary elements
-  svg.select(".barChart-temp").remove();
+  d3.selectAll(".barChart-temp").remove();
 
   // as done by Nathan above
   // based on this article: https://medium.com/@kj_schmidt/show-data-on-mouse-over-with-d3-js-3bf598ff8fc2
@@ -515,6 +525,7 @@ function drawBarChart() {
     .data((d) => d)
     .enter()
     .append("rect")
+    .attr("class", "barChart-temp")
     .attr("id", "bar")
     .attr("x", (d) => xScale(d.data.name) - barWidth / 2)
     .attr("width", barWidth)
@@ -554,18 +565,62 @@ function drawBarChart() {
     });
 
   // add legend
+  // ref: https://stackoverflow.com/questions/16178710/d3js-create-legend-for-bar-chart
+  let legend = svg
+    .append("g")
+    .attr("class", "legend")
+    .attr("class", "barChart-temp")
+    //.attr("x", w - 65)
+    //.attr("y", 50)
+    .attr("height", 100)
+    .attr("width", 100)
+    .attr("transform", "translate(-20,50)");
+
+  let legendRect = legend.selectAll("rect").data(colors);
+  let legendRectXPos = chartWidth - MARGIN.left - chartWidth / 8;
+  legendRect
+    .enter()
+    .append("rect")
+    .attr("class", "barChart-temp")
+    .attr("x", legendRectXPos)
+    .attr("width", 10)
+    .attr("height", 10)
+    .attr("y", function (d, i) {
+      return i * 20;
+    })
+    .style("fill", function (d) {
+      return d[1];
+    })
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5);
+
+  let legendText = legend.selectAll("text").data(colors);
+
+  legendText
+    .enter()
+    .append("text")
+    .attr("class", "barChart-temp")
+    .attr("x", legendRectXPos + d3.max([legendRectXPos / 30, 15]))
+    .attr("y", function (d, i) {
+      return i * 20 + 9;
+    })
+    .text(function (d) {
+      return d[0] === "avgcrit"
+        ? "Avg. Critical Violations:"
+        : "Avg. Non-Critical Violations";
+    })
+    .style("font-size", `${legendFontSize}px`);
 
   // create title
   let title = "Total Average Violations";
   // update the title
-  d3.select("#barChart-title").remove();
+  // d3.select("#barChart-title").remove();
   svg
     .append("text")
-    .attr("id", "barChart-title")
+    .attr("class", "barChart-temp")
+    .attr("id", "chart-title")
     .attr("x", boxWidth / 2)
-    .attr("y", yoffset)
+    .attr("y", yoffset + MARGIN.top - chartHeight / 20)
     .attr("text-anchor", "middle")
-    .attr("class", "temp")
-    .style("font-size", "16px")
     .text(title);
 }

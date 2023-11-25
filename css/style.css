@@ -132,6 +132,9 @@ rect {
 }
 
 /* ALL GRAPHS */
+#chart-title{
+  font-size: 1.5vw;
+}
 
 #tooltip {
   position: absolute;
