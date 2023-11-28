@@ -141,6 +141,12 @@ rect {
   height: 100%;
 }
 
+#bubbleChart{
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
 /* ALL GRAPHS */
 #chart-title{
   font-size: 1.5vw;

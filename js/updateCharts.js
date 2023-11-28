@@ -630,11 +630,12 @@ function drawBarChart() {
 
 function drawBubblechart() {
   // get the svg element
-  let svg = d3.select("#bubbleChartSvg");
+  let svg = d3.select("#bubbleChart").select("svg");
   
 
   // delete all bubblechart temporary elements
   d3.selectAll(".bubbleChart-temp").remove();
+ 
 
   // dynamically determine barchart width based on size of window
   let boxWidth = parseInt(
@@ -651,7 +652,7 @@ function drawBubblechart() {
   const color = d3.scaleOrdinal(d3.schemeTableau10);
   const pack = d3.pack().size([chartWidth, chartHeight]).padding(3);
 
-  // get the data
+  // Process the data
   const violationCounts = {};
 
   current_restaurant.inspections.forEach(inspection => {
@@ -669,16 +670,16 @@ function drawBubblechart() {
 
   const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
 
-  const bsvg = d3.select("#bubbleChart").append("svg")
+  const bsvg = d3.select("#bubbleChart").select("svg")
           .attr("width", chartWidth)
           .attr("height", chartHeight)
-          .attr("text-anchor", "middle");
+          .attr("text-anchor", "middle")
 
   const node = bsvg.append("g")
           .selectAll("g")
+          .attr("class", "bubbleChart-temp")
           .data(root.leaves())
           .enter().append("g")
-          .attr("class", "bubbleChart-temp")
           .attr("transform", d => `translate(${d.x},${d.y})`);
 
   node.append("chart-title")
@@ -695,13 +696,6 @@ function drawBubblechart() {
   .attr("x", 0)
   .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.9}em`)
   .text(d => d);
-
-  // text.selectAll("tspan")
-  //         .data(d => d.data.id.split('.'))
-  //         .enter().append("tspan")
-  //         .attr("x", 0)
-  //         .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.9}em`)
-  //         .text(d => d);
         
   node.append("tspan")
           .attr("x", 0)
@@ -709,4 +703,6 @@ function drawBubblechart() {
           .attr("fill-opacity", 0.7)
           .text(d => format(d.value));
 
+  
 }
+
