@@ -678,6 +678,7 @@ function drawBubblechart() {
           .selectAll("g")
           .data(root.leaves())
           .enter().append("g")
+          .attr("class", "bubbleChart-temp")
           .attr("transform", d => `translate(${d.x},${d.y})`);
 
   node.append("chart-title")
@@ -688,16 +689,21 @@ function drawBubblechart() {
           .attr("fill", d => color(d.data.id))
           .attr("r", d => d.r);
 
-  const text = node.append("text");
+ node.append("text").selectAll("tspan")
+  .data(d => d.data.id.split('.'))
+  .enter().append("tspan")
+  .attr("x", 0)
+  .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.9}em`)
+  .text(d => d);
 
-  text.selectAll("tspan")
-          .data(d => d.data.id.split('.'))
-          .enter().append("tspan")
-          .attr("x", 0)
-          .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.9}em`)
-          .text(d => d);
+  // text.selectAll("tspan")
+  //         .data(d => d.data.id.split('.'))
+  //         .enter().append("tspan")
+  //         .attr("x", 0)
+  //         .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.9}em`)
+  //         .text(d => d);
         
-  text.append("tspan")
+  node.append("tspan")
           .attr("x", 0)
           .attr("y", d => `${d.data.id.split('.').length / 2 + 0.9}em`)
           .attr("fill-opacity", 0.7)
