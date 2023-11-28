@@ -20,6 +20,7 @@ const default_restaurant_name_2 = "Vessel Kitchen";
 function drawAllGraphs() {
   drawLineGraph();
   drawBarChart();
+  drawBubblechart();
 }
 
 function fetchJSONFile(path, callback) {

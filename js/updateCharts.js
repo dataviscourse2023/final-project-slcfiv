@@ -41,6 +41,7 @@ function drawLineGraph() {
 
   // the data that will be applied for each restaurant
   let restaurant_data = [];
+  console.log("printing the current restaurants " + current_restaurant.inspections[0].violations[0].family, current_restaurant.inspections[0].violations[0].code, current_restaurant.inspections[0].violations[0].occurrences, current_restaurant.inspections[0].violations[0].critical_1, current_restaurant.inspections[0].violations[0].critical_2, current_restaurant.inspections[0].violations[0].emergency, current_restaurant.inspections[0].violations[0].variance);
   for (let i = 0; i < current_restaurant.inspections.length; i++) {
     total_violations = current_restaurant.inspections[i].total_violations();
     if (mode == 1) {
@@ -625,4 +626,81 @@ function drawBarChart() {
     .attr("y", yoffset + MARGIN.top - chartHeight / 20)
     .attr("text-anchor", "middle")
     .text(title);
+}
+
+function drawBubblechart() {
+  // get the svg element
+  let svg = d3.select("#bubbleChartSvg");
+  
+
+  // delete all bubblechart temporary elements
+  d3.selectAll(".bubbleChart-temp").remove();
+
+  // dynamically determine barchart width based on size of window
+  let boxWidth = parseInt(
+    svg.style("width").substring(0, svg.style("width").length - 2)
+  );
+  let boxHeight = svg
+    .style("height")
+    .substring(0, svg.style("height").length - 2);
+  let chartWidth = boxWidth - MARGIN.right;
+  let chartHeight = boxHeight - MARGIN.bottom;
+  console.log(`chartHeight:chartWidth = ${chartHeight}:${chartWidth}`);
+
+  const format = d3.format(",d");
+  const color = d3.scaleOrdinal(d3.schemeTableau10);
+  const pack = d3.pack().size([chartWidth, chartHeight]).padding(3);
+
+  // get the data
+  const violationCounts = {};
+
+  current_restaurant.inspections.forEach(inspection => {
+    inspection.violations.forEach(violation => {
+      const code = `${violation.family}.${violation.code}`;
+      violationCounts[code] = (violationCounts[code] || 0) + violation.occurrences;
+    });
+  });
+
+  let data =  Object.keys(violationCounts).map(code => {
+    return { id: code, value: violationCounts[code] };
+  });
+
+  console.log(data);
+
+  const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
+
+  const bsvg = d3.select("#bubbleChart").append("svg")
+          .attr("width", chartWidth)
+          .attr("height", chartHeight)
+          .attr("text-anchor", "middle");
+
+  const node = bsvg.append("g")
+          .selectAll("g")
+          .data(root.leaves())
+          .enter().append("g")
+          .attr("transform", d => `translate(${d.x},${d.y})`);
+
+  node.append("chart-title")
+          .text(d => `${d.data.id}\n${format(d.value)}`);
+
+  node.append("circle")
+          .attr("fill-opacity", 0.7)
+          .attr("fill", d => color(d.data.id))
+          .attr("r", d => d.r);
+
+  const text = node.append("text");
+
+  text.selectAll("tspan")
+          .data(d => d.data.id.split('.'))
+          .enter().append("tspan")
+          .attr("x", 0)
+          .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.9}em`)
+          .text(d => d);
+        
+  text.append("tspan")
+          .attr("x", 0)
+          .attr("y", d => `${d.data.id.split('.').length / 2 + 0.9}em`)
+          .attr("fill-opacity", 0.7)
+          .text(d => format(d.value));
+
 }

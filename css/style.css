@@ -135,6 +135,12 @@ rect {
   width: 100%;
 }
 
+/* BUBBLE GRAPH */
+#bubbleChartSvg {
+  width: 50vw;
+  height: 100%;
+}
+
 /* ALL GRAPHS */
 #chart-title{
   font-size: 1.5vw;
