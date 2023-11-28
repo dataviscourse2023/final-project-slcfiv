@@ -166,17 +166,17 @@ class ProcessData {
    */
   filtered_by(restaurant_list, by, what, sort = true) {
     let filter_function = null;
-    what = what.toUpperCase();
+    what = what.toLowerCase();
     switch (by) {
       case "address":
-        filter_function = (x) => x.address;
+        filter_function = (x) => x.address.toLowerCase();
         break;
       case "nameStartsWith":
       case "nameContains":
-        filter_function = (x) => x.name;
+        filter_function = (x) => x.name.toLowerCase();
         break;
       case "town":
-        filter_function = (x) => x.town;
+        filter_function = (x) => x.town.toLowerCase();
         break;
     }
     if (by === "nameStartsWith") {

@@ -3,9 +3,9 @@ class Restaurant {
   // parameters are direct from the spreadsheet. All are strings.
   constructor(id, name, address, town) {
     this.id = id;
-    this.name = name.toUpperCase();
+    this.name = name
     this.address = address;
-    this.town = town.toUpperCase();
+    this.town = town
 
     // array holding objects of type inspection. Must be added with add_inspection.
     this.inspections = [];

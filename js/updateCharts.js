@@ -388,7 +388,7 @@ function drawBarChart() {
   // create dictionary to use for drawing bars, start by adding in slc average
   let barData = [
     {
-      name: "SALT LAKE CITY AVERAGE",
+      name: "Salt Lake County Average",
       avgcrit: avgCrit,
       avgnoncrit: avgNonCrit,
     },
@@ -454,7 +454,7 @@ function drawBarChart() {
 
   /* Create X-Axis */
   // an array of the appropriate tick labels
-  let tickLabels = ["SALT LAKE CITY AVERAGE"];
+  let tickLabels = ["Salt Lake County Average"];
   for (let i = 0; i < restaurants.length; i++) {
     if (restaurants[i]) {
       tickLabels.push(restaurants[i].name);
