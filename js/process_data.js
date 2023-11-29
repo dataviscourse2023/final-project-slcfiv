@@ -76,6 +76,7 @@ class ProcessData {
         inspection.add_violation(
           code.substring(0, code_period),
           code.substring(code_period + 1),
+          row[6],
           row[7],
           row[8],
           row[9],

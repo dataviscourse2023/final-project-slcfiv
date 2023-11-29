@@ -637,19 +637,20 @@ function drawBubblechart() {
   d3.selectAll(".bubbleChart-temp").remove();
  
 
-  // dynamically determine barchart width based on size of window
+  // dynamically determine bubblechart width based on size of window
   let boxWidth = parseInt(
     svg.style("width").substring(0, svg.style("width").length - 2)
   );
   let boxHeight = svg
     .style("height")
     .substring(0, svg.style("height").length - 2);
-  let chartWidth = boxWidth - MARGIN.right;
-  let chartHeight = boxHeight - MARGIN.bottom;
+  let chartWidth = boxWidth - MARGIN.right; // 100% of the width of the box to make it not too big
+  let chartHeight = boxHeight * 0.5 - MARGIN.bottom; // 50% of the height of the box to make it not too big
   console.log(`chartHeight:chartWidth = ${chartHeight}:${chartWidth}`);
 
   const format = d3.format(",d");
-  const color = d3.scaleOrdinal(d3.schemeTableau10);
+  // const color = d3.scaleOrdinal(d3.schemeTableau10); //It has 10 distinct colors
+  const color = d3.scaleOrdinal(d3.schemeSet2); //It has 8 distinct colors
   const pack = d3.pack().size([chartWidth, chartHeight]).padding(3);
 
   // Process the data
@@ -658,18 +659,34 @@ function drawBubblechart() {
   current_restaurant.inspections.forEach(inspection => {
     inspection.violations.forEach(violation => {
       const code = `${violation.family}.${violation.code}`;
-      violationCounts[code] = (violationCounts[code] || 0) + violation.occurrences;
+      // If the code doesn't exist in the violationCounts object, initialize it
+      if (!violationCounts[code]) {
+        violationCounts[code] = {
+          occurrences: 0,
+          description: violation.description // assuming `description` is a property of violation
+        };
+      }
+      // Add the occurrences for this violation
+      violationCounts[code].occurrences += violation.occurrences;
+      
+      // violationCounts[code] = (violationCounts[code] || 0) + violation.occurrences;
     });
   });
 
   let data =  Object.keys(violationCounts).map(code => {
-    return { id: code, value: violationCounts[code] };
+    return { id: code, value: violationCounts[code].occurrences, description: violationCounts[code].description };
   });
 
   console.log(data);
 
-  const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
+  // Function to extract the first two parts of the id
+  function getGroupKey(id) {
+    const parts = id.split(".");
+    return parts.slice(0, 2).join(".");
+  }
 
+  const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
+  
   const bsvg = d3.select("#bubbleChart").select("svg")
           .attr("width", chartWidth)
           .attr("height", chartHeight)
@@ -677,31 +694,49 @@ function drawBubblechart() {
 
   const node = bsvg.append("g")
           .selectAll("g")
-          .attr("class", "bubbleChart-temp")
           .data(root.leaves())
           .enter().append("g")
-          .attr("transform", d => `translate(${d.x},${d.y})`);
+          .attr("transform", d => `translate(${d.x},${d.y})`)
+          .attr("class", "bubbleChart-temp");
 
   node.append("chart-title")
-          .text(d => `${d.data.id}\n${format(d.value)}`);
+          .text(d => `${d.data.id}\n${format(d.value)}`)
+          .attr("class", "bubbleChart-temp");
+
+  // define the tooltip element
+  let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "bubbleChart-temp")
+    .attr("id", "tooltip")
+    .style("opacity", 0)
+    .style("position", "absolute")
 
   node.append("circle")
+          .attr("id", d => d.data.id)
           .attr("fill-opacity", 0.7)
-          .attr("fill", d => color(d.data.id))
-          .attr("r", d => d.r);
+          .attr("fill", d => color(getGroupKey(d.data.id)))
+          .attr("class", "bubbleChart-temp")
+          .attr("r", d => d.r)
+          .on("mouseover", function(event, d) {
+            tooltip.style("opacity", 1);
+            tooltip.html(d.data.description)
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d) {
+            tooltip.style("opacity", 0);
+        });   
 
- node.append("text").selectAll("tspan")
-  .data(d => d.data.id.split('.'))
-  .enter().append("tspan")
-  .attr("x", 0)
-  .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.9}em`)
-  .text(d => d);
-        
-  node.append("tspan")
+  node.append("text")
+          .selectAll("tspan")
+          .data(d => [d.data.id, format(d.value)]) // Combine ID and value in one array
+          .enter().append("tspan")
           .attr("x", 0)
-          .attr("y", d => `${d.data.id.split('.').length / 2 + 0.9}em`)
-          .attr("fill-opacity", 0.7)
-          .text(d => format(d.value));
+          .attr("y", (d, i) => `${i * 1.2}em`)
+          .text(d => d)
+          .attr("fill-opacity", (d, i) => i ? 0.8 : 1) // Reduce opacity for the value
+          .style("font-size", (d, i) => i ? "14px" : "18px"); // Smaller font size for value, larger for ID
 
   
 }
