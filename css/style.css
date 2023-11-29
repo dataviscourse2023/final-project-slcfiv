@@ -58,8 +58,9 @@ body, h1, h2, h3, p, ul, li {
   position: relative;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
-  width: 25vw
+  width: 25vw;
 }
+
 
 /* Style the buttons that are used to open the tab content */
 .tab button {
@@ -68,8 +69,11 @@ body, h1, h2, h3, p, ul, li {
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 14px 16px;
   transition: 0.3s;
+  padding: 5px 20px;
+  height: 100%;
+  /* explicitly set to 0, to override skeleton.css */
+  margin-bottom: 0rem;
 }
 
 /* Change background color of buttons on hover */
@@ -90,9 +94,8 @@ body, h1, h2, h3, p, ul, li {
 }
 
 .tabcontent {
+  /* Fading effect takes .5 seconds */
   animation: fadeEffect .5s;
-  
-  /* Fading effect takes 1 second */
 }
 
 /* Go from zero to full opacity */

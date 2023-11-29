@@ -146,6 +146,9 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
     document.getElementById("password").style.display = "none";
   }
 
+  // Open the search tab
+  document.getElementById("defaultOpen").click();
+
   // Attach event listener to redraw all graphs on window resize
   window.addEventListener("resize", (event) => {
     clearTimeout(timeOut);
