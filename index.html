@@ -82,7 +82,7 @@
     </div>
 
     <!-- This is our container to hold the table-->
-    <table id="example" class="display" style="width:100%">
+    <table id="menuOptions" class="display" style="width:100%">
       <thead>
         <tr>
           <th>Name</th>
@@ -104,6 +104,7 @@
     </svg>
   </div>
 </div>
+
 <div id="secondRow">
   <div id="lineGraph">
     <select name="lineGraphType" id="lineGraphTypeSelection">
@@ -111,22 +112,24 @@
       <option value="1">Non-Critical Violations</option>
       <option value="2">Critical Violations</option>
     </select>
-    <svg id="lineGraphSvg">
-      <g class="h"></g>
-      <g class="v"></g>
-      <path id="restaurantLine"></path>
-      <path id="restaurantLine2"></path>    
-      <path id="averageLine"></path>
-      <g id="restaurantVertices"></g>
-      <g id="restaurantVertices2"></g>    
-      <g id="averageVertices"></g>  
+    <div id="lineGraphSvgWrapper">
+      <svg id="lineGraphSvg">
+        <g class="h"></g>
+        <g class="v"></g>
+        <path id="restaurantLine"></path>
+        <path id="restaurantLine2"></path>    
+        <path id="averageLine"></path>
+        <g id="restaurantVertices"></g>
+        <g id="restaurantVertices2"></g>    
+        <g id="averageVertices"></g>  
+      </svg>
+    </div>
+  </div>
+  
+  <div id="bubbleChart">
+    <svg id="bubbleChartSvg">
     </svg>
   </div>
-</div>
-
-<div id="bubbleChart">
-  <svg id="bubbleChartSvg">
-  </svg>
 </div>
 
 </body>

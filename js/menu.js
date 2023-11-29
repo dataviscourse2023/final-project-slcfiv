@@ -81,7 +81,7 @@ function createTable(dataObj) {
   var tableBody = document.getElementsByTagName("tbody")[0];
 
   // Check if DataTable already exists
-  var tableElement = $("#example");
+  var tableElement = $("#menuOptions");
   var existingTable = $.fn.dataTable.isDataTable(tableElement);
   if (existingTable) {
     // Destroy the existing DataTable before re-creating new rows

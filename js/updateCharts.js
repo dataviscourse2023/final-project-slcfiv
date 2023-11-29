@@ -1,6 +1,7 @@
 // Constants for the charts, that would be useful.
 const BARCHART_MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
-const LINECHART_MARGIN = {left: 30, bottom: 110, top: 40, right: 30};
+const BUBBLECHART_MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
+const LINECHART_MARGIN = {left: 30, bottom: 20, top: 150, right: 30};
 
 // these update based on the window size
 let titleFontSize = 20;
@@ -13,7 +14,7 @@ function drawLineGraph() {
   let mode = parseInt(document.getElementById("lineGraphTypeSelection").value);
 
   // how far below the chart the legend begins
-  let legendOffset = 30;
+  let legendOffset = 45;
 
   let svg = d3.select("#lineGraph").select("svg");
   let boxWidth = parseInt(
@@ -320,7 +321,7 @@ function drawLineGraph() {
     averageTitleY = 60;
   }
 
-  let legendBaseY = legendOffset + chartHeight + LINECHART_MARGIN.top;
+  let legendBaseY = legendOffset
   svg
     .append("circle")
     .attr("cx", LINECHART_MARGIN.left)
@@ -621,4 +622,179 @@ function drawBarChart() {
     .attr("y", yoffset + BARCHART_MARGIN.top - chartHeight / 20)
     .attr("text-anchor", "middle")
     .text(title);
+}
+
+// first is set to true if we are drawing bubble chart 1, and false if drawing bubble chart 2
+function drawBubblechart(first, small) {
+  // get the svg element
+  let svg = d3.select("#bubbleChart").select("svg");
+  
+  // delete all bubblechart temporary elements
+  d3.selectAll(".bubbleChart-temp").remove();
+ 
+  // dynamically determine bubblechart width based on size of window
+  let boxWidth = parseInt(
+    svg.style("width").substring(0, svg.style("width").length - 2)
+  );
+  let boxHeight = svg
+    .style("height")
+    .substring(0, svg.style("height").length - 2);
+ 
+    let chartWidth = boxWidth - BUBBLECHART_MARGIN.right;
+  let chartHeight = boxHeight - BUBBLECHART_MARGIN.bottom;
+
+  const format = d3.format(",d");
+  const color = d3.scaleOrdinal(d3.schemeSet2); //It has 8 distinct colors
+  const pack = d3.pack().size([chartWidth, chartHeight]).padding(3);
+
+  // Process the data
+  const violationCounts = {};
+
+  current_restaurant.inspections.forEach(inspection => {
+    inspection.violations.forEach(violation => {
+      const code = `${violation.family}.${violation.code}`;
+      // If the code doesn't exist in the violationCounts object, initialize it
+      if (!violationCounts[code]) {
+        violationCounts[code] = {
+          occurrences: 0,
+          description: violation.description // assuming `description` is a property of violation
+        };
+      }
+      // Add the occurrences for this violation
+      violationCounts[code].occurrences += violation.occurrences;
+      
+      // violationCounts[code] = (violationCounts[code] || 0) + violation.occurrences;
+    });
+  });
+
+  // assemble the hierarchy
+  let codeFamilies = {}
+  let data = Object.keys(violationCounts)
+
+  // first, make lists of all codes grouped by parent
+  for(let i = 0; i < data.length; i++){
+    let code = data[i]
+    let parts = code.split(".")
+    let leaf = { id: parts[1] + "." + parts[2], value: violationCounts[code].occurrences, description: violationCounts[code].description }
+    if( parts[1] in codeFamilies ){
+      codeFamilies[parts[1]].children.push(leaf)
+    }
+    else{
+      codeFamilies[parts[1]] = {id: parts[1], children: [leaf]}
+    }
+  }
+
+  // then assemble all of the parents into one rooted hierarchy
+  let codeFamiliesKeys = Object.keys(codeFamilies)
+  let hierarchy = { children: [] }
+  for( let i = 0; i < codeFamiliesKeys.length; i++ ){
+    codeFamilies[codeFamiliesKeys[i]]["value"] = 0
+    hierarchy.children.push( codeFamilies[codeFamiliesKeys[i]] )
+  }
+
+  // let data =  Object.keys(violationCounts).map(code => {
+  //   const parts = code.split(".");
+  //   console.log(parts)
+  //   all_families.push(parts)
+  //   return { family: parts[1], member: parts[2], value: violationCounts[code].occurrences, description: violationCounts[code].description };
+  // });
+
+  // Function to extract the first two parts of the id
+  function getGroupKey(id) {
+    const parts = id.split(".");
+    return parts.slice(0, 1).join(".");
+  }
+
+  // const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
+  const root = pack(d3.hierarchy(hierarchy).sum( d => d.value ))
+  
+  const bsvg = d3.select("#bubbleChart").select("svg")
+
+  const node = bsvg.append("g")
+          .selectAll("g")
+          .data(root.leaves())
+          .enter().append("g")
+          .attr("transform", d => `translate(${d.x},${d.y})`)
+          .attr("class", "bubbleChart-temp");
+
+  node.append("chart-title")
+          .text(d => `${d.data.id}\n${format(d.value)}`)
+          .attr("class", "bubbleChart-temp");
+
+  // define the tooltip element
+  let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "bubbleChart-temp")
+    .attr("id", "tooltip")
+    .style("opacity", 0)
+    .style("position", "absolute")
+
+  node.append("circle")
+          .attr("id", d => "c" + d.data.id.replace(".", "-"))
+          .attr("fill-opacity", 0.7)
+          .attr("fill", d => color(getGroupKey(d.data.id)))
+          .attr("class", "bubbleChart-temp")
+          .attr("class", "bubbleChart-circle")
+          .attr("stroke", "black")
+          .attr("stroke-width", 3)
+          .attr("stroke-opacity", 0)          
+          .attr("r", d => d.r)
+          .on("mouseover", function(event, d) {
+            tooltip.style("opacity", 1);
+            tooltip.html(d.data.description)
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY - 28) + "px");
+            d3.selectAll(".bubbleChart-circle")
+              .attr("stroke-opacity", 0)
+            d3.select(this)
+              .attr("stroke-opacity", 0.5)
+        })
+        .on("mouseout", function(d) {
+            tooltip.style("opacity", 0);
+            d3.selectAll(".bubbleChart-circle")
+              .attr("stroke-opacity", 0)
+        });   
+
+  node.append("text")
+          .selectAll("tspan")
+          .data(d => [[d.data.id, d.value, d.data.id.replace(".", "-")], [format(d.value), d.value, d.data.id.replace(".", "-")]]) // Combine ID and value in one array
+          .enter().append("tspan")
+          .on("mouseover", function(event, d) {
+            tooltip.style("opacity", 1);
+            d3.selectAll(".bubbleChart-circle")
+              .attr("stroke-opacity", 0)
+            d3.select("#c" + d[2])
+              .attr("stroke-opacity", 0.5)              
+            console.log(d)
+          })
+          .on("mouseout", function(d) {
+              tooltip.style("opacity", 0);
+              d3.selectAll(".bubbleChart-circle")
+                .attr("stroke-opacity", 0)
+          })                    
+          .attr("text-anchor", "middle")
+          .attr("x", 0)
+          .attr("y", (d, i) => `${i * 1.2}em`)
+          .text(d => d[0])
+          .attr("fill-opacity", (d, i) => i ? 0.8 : 1) // Reduce opacity for the value
+          .style("font-size", function(d, i){ 
+            if(d[1] == 1){ 
+              if(i == 0){
+                return "14px"
+              }
+              else{
+                return "12px"
+              }
+            }
+            else{
+              if(i == 0){
+                return "18px"
+              }
+              else{
+                return "14px"
+              }
+            } 
+          }); // Smaller font size for value, larger for ID)
+  
 }

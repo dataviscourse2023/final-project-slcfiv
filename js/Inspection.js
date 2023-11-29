@@ -7,8 +7,8 @@ class Inspection{
     }
 
     // parameters are direct from the spreadsheet. First 3 are strings. Last 4 are bools.
-    add_violation(family, code, occurrences, critical_1, critical_2, emergency, variance){
-        this.violations.push(new Violation(family, code, occurrences, critical_1, critical_2, emergency, variance))
+    add_violation(family, code, description, occurrences, critical_1, critical_2, emergency, variance){
+        this.violations.push(new Violation(family, code, description, occurrences, critical_1, critical_2, emergency, variance))
     }
 
     // returns an array of length 3. The first 
