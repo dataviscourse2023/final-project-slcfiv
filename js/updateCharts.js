@@ -1,7 +1,6 @@
 // Constants for the charts, that would be useful.
-const chartXOffset = 30;
-const chartYOffset = 40;
-const MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
+const BARCHART_MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
+const LINECHART_MARGIN = {left: 30, bottom: 110, top: 40, right: 30};
 
 // these update based on the window size
 let titleFontSize = 20;
@@ -13,9 +12,6 @@ let legendFontSize = 15;
 function drawLineGraph() {
   let mode = parseInt(document.getElementById("lineGraphTypeSelection").value);
 
-  let chartRightMargin = 30;
-  let chartBottomMargin = 110;
-
   // how far below the chart the legend begins
   let legendOffset = 30;
 
@@ -26,8 +22,8 @@ function drawLineGraph() {
   let boxHeight = svg
     .style("height")
     .substring(0, svg.style("height").length - 2);
-  let chartWidth = boxWidth - chartXOffset - chartRightMargin;
-  let chartHeight = boxHeight - chartYOffset - chartBottomMargin;
+  let chartWidth = boxWidth - LINECHART_MARGIN.left - LINECHART_MARGIN.right;
+  let chartHeight = boxHeight - LINECHART_MARGIN.top - LINECHART_MARGIN.bottom;
 
   // clean up elements from the previous line graph
   svg.selectAll(".temp").remove();
@@ -153,9 +149,9 @@ function drawLineGraph() {
     .attr(
       "transform",
       "translate(" +
-        chartXOffset.toString() +
+        LINECHART_MARGIN.left.toString() +
         "," +
-        (chartHeight + chartYOffset).toString() +
+        (chartHeight + LINECHART_MARGIN.top).toString() +
         ")"
     )
     .call(xAxis);
@@ -167,9 +163,9 @@ function drawLineGraph() {
     .attr(
       "transform",
       "translate(" +
-        chartXOffset.toString() +
+        LINECHART_MARGIN.left.toString() +
         "," +
-        chartYOffset.toString() +
+        LINECHART_MARGIN.top.toString() +
         ")"
     )
     .call(yAxis);
@@ -177,8 +173,8 @@ function drawLineGraph() {
   // draw the actual lines
   let lineFunction = d3
     .line()
-    .x((d) => xscale(d[0]) + chartXOffset)
-    .y((d) => yscale(d[1]) + chartYOffset);
+    .x((d) => xscale(d[0]) + LINECHART_MARGIN.left)
+    .y((d) => yscale(d[1]) + LINECHART_MARGIN.top);
 
   svg
     .select("#restaurantLine")
@@ -219,7 +215,7 @@ function drawLineGraph() {
   // add the title
   svg
     .append("text")
-    .attr("x", chartXOffset + chartWidth / 2)
+    .attr("x", LINECHART_MARGIN.left + chartWidth / 2)
     .attr("y", 30)
     .attr("text-anchor", "middle")
     .attr("class", "temp")
@@ -245,8 +241,8 @@ function drawLineGraph() {
     .enter()
     .append("circle")
     .attr("class", "temp")
-    .attr("cx", (d) => xscale(d[0]) + chartXOffset)
-    .attr("cy", (d) => yscale(d[1]) + chartYOffset)
+    .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
+    .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
     .attr("r", 5)
     .attr("fill", "darkgreen")
     .on("mouseover", function (e, d) {
@@ -270,8 +266,8 @@ function drawLineGraph() {
       .enter()
       .append("circle")
       .attr("class", "temp")
-      .attr("cx", (d) => xscale(d[0]) + chartXOffset)
-      .attr("cy", (d) => yscale(d[1]) + chartYOffset)
+      .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
+      .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
       .attr("r", 5)
       .attr("fill", "maroon")
       .on("mouseover", function (e, d) {
@@ -295,8 +291,8 @@ function drawLineGraph() {
     .enter()
     .append("circle")
     .attr("class", "temp")
-    .attr("cx", (d) => xscale(d[0]) + chartXOffset)
-    .attr("cy", (d) => yscale(d[1]) + chartYOffset)
+    .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
+    .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
     .attr("r", 5)
     .attr("fill", "darkblue")
     .on("mouseover", function (e, d) {
@@ -324,17 +320,17 @@ function drawLineGraph() {
     averageTitleY = 60;
   }
 
-  let legendBaseY = legendOffset + chartHeight + chartYOffset;
+  let legendBaseY = legendOffset + chartHeight + LINECHART_MARGIN.top;
   svg
     .append("circle")
-    .attr("cx", chartXOffset)
+    .attr("cx", LINECHART_MARGIN.left)
     .attr("cy", legendBaseY)
     .attr("r", 5)
     .attr("class", "temp")
     .style("fill", "darkgreen");
   svg
     .append("text")
-    .attr("x", 20 + chartXOffset)
+    .attr("x", 20 + LINECHART_MARGIN.left)
     .attr("y", legendBaseY + 5)
     .attr("class", "temp")
     .text(current_restaurant.name)
@@ -344,14 +340,14 @@ function drawLineGraph() {
   if (current_restaurant_2) {
     svg
       .append("circle")
-      .attr("cx", chartXOffset)
+      .attr("cx", LINECHART_MARGIN.left)
       .attr("cy", legendBaseY + 30)
       .attr("r", 5)
       .attr("class", "temp")
       .style("fill", "maroon");
     svg
       .append("text")
-      .attr("x", 20 + chartXOffset)
+      .attr("x", 20 + LINECHART_MARGIN.left)
       .attr("y", legendBaseY + 35)
       .attr("class", "temp")
       .text(current_restaurant_2.name)
@@ -361,14 +357,14 @@ function drawLineGraph() {
 
   svg
     .append("circle")
-    .attr("cx", chartXOffset)
+    .attr("cx", LINECHART_MARGIN.left)
     .attr("cy", legendBaseY + averageTitleY)
     .attr("r", 5)
     .attr("class", "temp")
     .style("fill", "darkblue");
   svg
     .append("text")
-    .attr("x", 20 + chartXOffset)
+    .attr("x", 20 + LINECHART_MARGIN.left)
     .attr("y", legendBaseY + averageTitleY + 5)
     .attr("class", "temp")
     .text("Salt Lake County Average")
@@ -448,8 +444,8 @@ function drawBarChart() {
   let boxHeight = svg
     .style("height")
     .substring(0, svg.style("height").length - 2);
-  let chartWidth = boxWidth - MARGIN.right;
-  let chartHeight = boxHeight - MARGIN.bottom;
+  let chartWidth = boxWidth - BARCHART_MARGIN.right - BARCHART_MARGIN.right;
+  let chartHeight = boxHeight - BARCHART_MARGIN.bottom - BARCHART_MARGIN.top;
   console.log(`chartHeight:chartWidth = ${chartHeight}:${chartWidth}`);
 
   /* Create X-Axis */
@@ -465,12 +461,12 @@ function drawBarChart() {
   let xScale = d3
     .scalePoint()
     .domain(tickLabels)
-    .range([MARGIN.left, chartWidth - MARGIN.right])
+    .range([BARCHART_MARGIN.left, chartWidth - BARCHART_MARGIN.right])
     .padding([0.7]);
 
   //draw the x-axis
   d3.select("#barChart-x-axis")
-    .attr("transform", `translate(0, ${yoffset + chartHeight - MARGIN.bottom})`)
+    .attr("transform", `translate(0, ${yoffset + chartHeight - BARCHART_MARGIN.bottom})`)
     .call(d3.axisBottom(xScale).tickFormat((d, i) => tickLabels[i]))
     .selectAll("text")
     .style("text-anchor", "end")
@@ -486,12 +482,12 @@ function drawBarChart() {
   let yScale = d3
     .scaleLinear()
     .domain(y_scale_domain)
-    .range([chartHeight - MARGIN.bottom, MARGIN.top]);
+    .range([chartHeight - BARCHART_MARGIN.bottom, BARCHART_MARGIN.top]);
 
   //draw y axis
   let yAxis = d3
     .select("#barChart-y-axis")
-    .attr("transform", `translate(${MARGIN.left}, ${yoffset})`)
+    .attr("transform", `translate(${BARCHART_MARGIN.left}, ${yoffset})`)
     .call(d3.axisLeft(yScale));
 
   /* Draw the Bars, Legend, and interactivity */
@@ -579,7 +575,7 @@ function drawBarChart() {
     .attr("transform", "translate(-20,50)");
 
   let legendRect = legend.selectAll("rect").data(colors);
-  let legendRectXPos = chartWidth - MARGIN.left - chartWidth / 8;
+  let legendRectXPos = chartWidth - BARCHART_MARGIN.left - chartWidth / 8;
   legendRect
     .enter()
     .append("rect")
@@ -622,7 +618,7 @@ function drawBarChart() {
     .attr("class", "barChart-temp")
     .attr("id", "chart-title")
     .attr("x", boxWidth / 2)
-    .attr("y", yoffset + MARGIN.top - chartHeight / 20)
+    .attr("y", yoffset + BARCHART_MARGIN.top - chartHeight / 20)
     .attr("text-anchor", "middle")
     .text(title);
 }

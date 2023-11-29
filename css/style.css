@@ -107,6 +107,18 @@ body, h1, h2, h3, p, ul, li {
   padding: 10px; 
 }
 
+/* BUBBLE GRAPH */
+#bubbleChartSvg {
+  width: 50vw;
+  height: 60vh;
+}
+
+#bubbleChart{
+  /* padding-top: 50px;
+  display: flex;
+  flex-direction: column; */
+}
+
 /* BAR GRAPH */
 
 #barChartSvg {
