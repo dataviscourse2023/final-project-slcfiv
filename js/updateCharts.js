@@ -751,15 +751,14 @@ function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX, number
 
     packG.append("text")
       .selectAll("tspan")
-      .data(d => [[format(d.value), d.r]]) // Combine ID and value in one array
+      .data(d => [[format(d.value), d.r, d.data.id]]) // Combine ID and value in one array
       .enter().append("tspan")
       .on("mouseover", function(event, d) {
         tooltip.style("opacity", 1);
         d3.selectAll(".bubbleChart-circle")
           .attr("stroke-opacity", 0)
-        let parent = d3.select("#c" + number + "-" + d[2])
+        let parent = d3.select("#c" + number + "-" + d[2].replace(".","-"))
           .attr("stroke-opacity", 0.5)
-        console.log(parent)
       })
       .on("mouseout", function(d) {
           tooltip.style("opacity", 0);
@@ -771,6 +770,7 @@ function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX, number
       .text(d => d[0])
       .attr("dominant-baseline", "central")
       .style("alignment-baseline", "middle")          
+      .style("cursor", "default")
       .style("font-size", function(d,i){
         testSize = d[1]/20
         if(testSize > 5){
