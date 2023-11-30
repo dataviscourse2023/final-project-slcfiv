@@ -688,7 +688,7 @@ function bubbleChartDataProcessing(firstRestaurant){
   return [hierarchy, codeFamiliesKeys]
 }
 
-function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX){
+function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX, number){
   let legendchartspace = 50; // space between legend and chart  
   const format = d3.format(",d");  
   const pack = d3.pack().size(size);
@@ -714,8 +714,17 @@ function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX){
     .style("opacity", 0)
     .style("position", "absolute")
 
+    function sIfPlural(number){
+      if(number == 1){
+        return ""
+      }
+      else{
+        return "s"
+      }
+    }
+
     packG.append("circle")
-      .attr("id", d => "c" + d.data.id.replace(".", "-"))
+      .attr("id", d => "c" + number +"-" + d.data.id.replace(".", "-"))
       .attr("fill-opacity", 0.7)
       .attr("fill", d => color(getGroupKey(d.data.id)))
       .attr("class", "bubbleChart-temp")
@@ -726,7 +735,7 @@ function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX){
       .attr("r", d => d.r)
       .on("mouseover", function(event, d) {
         tooltip.style("opacity", 1);
-        tooltip.html(`4.${d.data.id}: ${d.data.description}`)
+        tooltip.html(`4.${d.data.id}: ${d.data.description.replaceAll("*","")} (${d.data.value} occurrence${sIfPlural(d.data.value)})`)
             .style("left", (event.pageX) + "px")
             .style("top", (event.pageY - 28) + "px");
         d3.selectAll(".bubbleChart-circle")
@@ -748,7 +757,7 @@ function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX){
         tooltip.style("opacity", 1);
         d3.selectAll(".bubbleChart-circle")
           .attr("stroke-opacity", 0)
-        let parent = d3.select("#c" + d[2])
+        let parent = d3.select("#c" + number + "-" + d[2])
           .attr("stroke-opacity", 0.5)
         console.log(parent)
       })
@@ -756,7 +765,7 @@ function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX){
           tooltip.style("opacity", 0);
           d3.selectAll(".bubbleChart-circle")
             .attr("stroke-opacity", 0)
-      })                    
+      })
       .attr("text-anchor", "middle")
       .attr("y", 2)
       .text(d => d[0])
@@ -768,9 +777,11 @@ function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX){
           testSize = 5;
         }
         if(testSize < 1){
-          testSize = d[1]/10
-          if(testSize < 1){
+          if(d[1]/10 < 1){
             testSize = 0;
+          }
+          else{
+            testSize = 1;
           }
         }
         return `${testSize}rem`
@@ -959,11 +970,11 @@ function drawBubblechart() {
     .text(current_restaurant_2.name);
 
     const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * (legendRows+2));    
-    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth/2, adjustedChartHeight], color, 0)
-    drawBubbleChartBubbles(bsvg, hierarchy2, [chartWidth/2, adjustedChartHeight], color, chartWidth/2)    
+    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth/2, adjustedChartHeight], color, 0, "1")
+    drawBubbleChartBubbles(bsvg, hierarchy2, [chartWidth/2, adjustedChartHeight], color, chartWidth/2, "2")    
   }
   else{
     const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * legendRows);      
-    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth, adjustedChartHeight], color, 0)
+    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth, adjustedChartHeight], color, 0, "1")
   }
 }
