@@ -14,15 +14,22 @@
   <script src="js/Restaurant.js"></script>
   <script src="js/process_data.js"></script>
   <script src="js/updateCharts.js"></script>
+
+  <!-- leaflet initialization needs to happen before running script.js -->
+  <!-- ref: https://unpkg.com/leaflet@1.9.4/dist/leaflet.css -->
+  <link rel="stylesheet" href="css/leaflet.css" />
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="js/leaflet.js"></script>
+
   <script src="js/script.js"></script>
   <script src="js/menu.js"></script>
-  <script src="js/tabs.js"></script>
   
   <!-- ref: https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css -->
   <link rel="stylesheet" href="css/skeleton.css"/>
   <link rel="stylesheet" href="/css/style.css"/>
   <!-- ref: https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css -->
   <link rel="stylesheet" href="css/datatables.css">
+  
 
 
 </head>
@@ -44,13 +51,15 @@
   <div class="password-item" id="password-incorrect">Password is incorrect. Please try again.</div>
 </div>
 
+<!-- The following is for our menu and map-->
+<!-- Create tab buttons above the menu, and the firstRow-->
 <div class="tab">
   <button class="tablinks" id="defaultOpen" onclick="openTab(event, 'menu')">Search</button>
-  <button class="tablinks" onclick="openTab(event, 'map')">Map</button>
+  <button class="tablinks" onclick="openTab(event, 'map-div')">Map</button>
 </div>
 <div id="firstRow">
-  <!-- The following is for our menu and map-->
   <!-- The tab selections -->
+  <!-- The search menu  -->
   <div id="menu" class="tabcontent">
     <div id="menu-search">
       <div id="multiselection">
@@ -100,8 +109,10 @@
       </thead>
       <tbody><!-- elements are added to the table as defined in table.js --></tbody>
     </table>
-
   </div>
+
+  <!-- The map div is added in map.js  -->
+  <div id="map-div" class="tabcontent"></div>
 
   <div id="barChart">
     <svg id="barChartSvg">
