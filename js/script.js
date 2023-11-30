@@ -41,6 +41,11 @@ function openTab(evt, tabName) {
   // Show the selected tab by adding the "active" class to the button that opened the tab
   document.getElementById(tabName).style.display = "table";
   evt.currentTarget.className += "active";
+
+  // if we're opening menu, create the map
+  if (tabName === "map-div") {
+    map = createMap();
+  }
 }
 
 // Create the map
@@ -55,17 +60,15 @@ function createMap() {
     .attr("class", "leaflet-container");
 
   //ref: https://leafletjs.com/examples/quick-start/
-  // initialize the map on the "map" div with a given center and zoom
-  var map = L.map("map", {
-    center: [51.505, -0.09],
-    zoom: 13,
-  });
-  //
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  const map = L.map("map").setView([51.505, -0.09], 13);
+
+  const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution:
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
+
+  return map;
 }
 
 function fetchJSONFile(path, callback) {
@@ -147,7 +150,6 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
   restaurant_list = pd.restaurants;
 
   createTable(restaurant_list);
-  createMap();
 
   // By deafult the drawAllgraphs() should show the first restaurant in the list
   defaultRestaurantSelection(restaurant_list);
