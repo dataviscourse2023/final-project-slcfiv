@@ -627,45 +627,22 @@ function drawBarChart() {
     .text(title);
 }
 
-// first is set to true if we are drawing bubble chart 1, and false if drawing bubble chart 2
-function drawBubblechart(first, small) {
+// Function to extract the first two parts of the id
+function getGroupKey(id) {
+  const parts = id.split(".");
+  return parts.slice(0, 1).join(".");
+}
 
-  let legendY = 30;
-  let legendYOffset = 20; // Space for title
-  let legendRowHeight = 22; // Adjust as necessary
-  let legendSquareSize = 12; // Size of the color square in the legend
-  let legendSquareSpacing = 4; // Space between square and text
-  let legendItemSpacing = 30; // space between items in the legend
-  let legendchartspace = 50; // space between legend and chart
+function bubbleChartDataProcessing(firstRestaurant){
 
+  let restaurant = current_restaurant
+  if( !firstRestaurant ){
+    restaurant = current_restaurant_2
+  }
 
-  // get the svg element
-  let svg = d3.select("#bubbleChart").select("svg");
-
-  // delete all bubblechart temporary elements
-  d3.selectAll(".bubbleChart-temp").remove();
-
-  // dynamically determine bubblechart width based on size of window
-  let boxWidth = parseInt(
-    svg.style("width").substring(0, svg.style("width").length - 2)
-  );
-  let boxHeight = parseInt(svg
-    .style("height")
-    .substring(0, svg.style("height").length - 2));
- 
-  let chartWidth = boxWidth - BUBBLECHART_MARGIN.right - BUBBLECHART_MARGIN.left;
-  let chartHeight = boxHeight - BUBBLECHART_MARGIN.bottom - BUBBLECHART_MARGIN.top;
-
-  const format = d3.format(",d");
-  const color = d3.scaleOrdinal(d3.schemeSet2); //It has 8 distinct colors
-
-
-
-
-  // Process the data
   const violationCounts = {};
 
-  current_restaurant.inspections.forEach((inspection) => {
+  restaurant.inspections.forEach((inspection) => {
     inspection.violations.forEach((violation) => {
       const code = `${violation.family}.${violation.code}`;
       // If the code doesn't exist in the violationCounts object, initialize it
@@ -708,11 +685,156 @@ function drawBubblechart(first, small) {
     hierarchy.children.push(codeFamilies[codeFamiliesKeys[i]]);
   }
 
-  // Function to extract the first two parts of the id
-  function getGroupKey(id) {
-    const parts = id.split(".");
-    return parts.slice(0, 1).join(".");
+  return [hierarchy, codeFamiliesKeys]
+}
+
+function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX){
+  let legendchartspace = 50; // space between legend and chart  
+  const format = d3.format(",d");  
+  const pack = d3.pack().size(size);
+  // const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
+  const root = pack(d3.hierarchy(hierarchy).sum( d => d.value ))
+
+  if( hierarchy.children.length != 0 ){
+        const packG = bsvg.append("g")
+        .attr("transform", `translate(${BUBBLECHART_MARGIN.left + translateX},${BUBBLECHART_MARGIN.top + legendchartspace})`)
+        .attr("class", "bubbleChart-temp")
+        .selectAll("g")
+        .data(root.leaves())
+        .enter().append("g")
+        .attr("transform", d => `translate(${d.x},${d.y})`)
+        .attr("class", "bubbleChart-temp");
+
+    // define the tooltip element
+    let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "bubbleChart-temp")
+    .attr("id", "tooltip")
+    .style("opacity", 0)
+    .style("position", "absolute")
+
+    packG.append("circle")
+      .attr("id", d => "c" + d.data.id.replace(".", "-"))
+      .attr("fill-opacity", 0.7)
+      .attr("fill", d => color(getGroupKey(d.data.id)))
+      .attr("class", "bubbleChart-temp")
+      .attr("class", "bubbleChart-circle")
+      .attr("stroke", "black")
+      .attr("stroke-width", 3)
+      .attr("stroke-opacity", 0)          
+      .attr("r", d => d.r)
+      .on("mouseover", function(event, d) {
+        tooltip.style("opacity", 1);
+        tooltip.html(`4.${d.data.id}: ${d.data.description}`)
+            .style("left", (event.pageX) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        d3.selectAll(".bubbleChart-circle")
+          .attr("stroke-opacity", 0)
+        d3.select(this)
+          .attr("stroke-opacity", 0.5)
+    })
+    .on("mouseout", function(d) {
+        tooltip.style("opacity", 0);
+        d3.selectAll(".bubbleChart-circle")
+          .attr("stroke-opacity", 0)
+    });   
+
+    packG.append("text")
+      .selectAll("tspan")
+      .data(d => [[format(d.value), d.r]]) // Combine ID and value in one array
+      .enter().append("tspan")
+      .on("mouseover", function(event, d) {
+        tooltip.style("opacity", 1);
+        d3.selectAll(".bubbleChart-circle")
+          .attr("stroke-opacity", 0)
+        let parent = d3.select("#c" + d[2])
+          .attr("stroke-opacity", 0.5)
+        console.log(parent)
+      })
+      .on("mouseout", function(d) {
+          tooltip.style("opacity", 0);
+          d3.selectAll(".bubbleChart-circle")
+            .attr("stroke-opacity", 0)
+      })                    
+      .attr("text-anchor", "middle")
+      .attr("y", 2)
+      .text(d => d[0])
+      .attr("dominant-baseline", "central")
+      .style("alignment-baseline", "middle")          
+      .style("font-size", function(d,i){
+        testSize = d[1]/20
+        if(testSize > 5){
+          testSize = 5;
+        }
+        if(testSize < 1){
+          testSize = d[1]/10
+          if(testSize < 1){
+            testSize = 0;
+          }
+        }
+        return `${testSize}rem`
+      })
   }
+  else{
+    bsvg.append("text")
+    .attr("x", BUBBLECHART_MARGIN.left + size[0]/2 + translateX)
+    .attr("y", BUBBLECHART_MARGIN.top + size[1]/2)
+    .attr("text-anchor", "middle")
+    .attr("class", "bubbleChart-temp")
+    .text("this restaurant had no violations")    
+  }
+}
+
+function drawBubblechart() {
+
+  let legendY = 30;
+  let legendYOffset = 20; // Space for title
+  let legendRowHeight = 22; // Adjust as necessary
+  let legendSquareSize = 12; // Size of the color square in the legend
+  let legendSquareSpacing = 4; // Space between square and text
+  let legendItemSpacing = 30; // space between items in the legend
+
+
+  // get the svg element
+  let svg = d3.select("#bubbleChart").select("svg");
+
+  // delete all bubblechart temporary elements
+  d3.selectAll(".bubbleChart-temp").remove();
+
+  // dynamically determine bubblechart width based on size of window
+  let boxWidth = parseInt(
+    svg.style("width").substring(0, svg.style("width").length - 2)
+  );
+  let boxHeight = parseInt(svg
+    .style("height")
+    .substring(0, svg.style("height").length - 2));
+ 
+  let chartWidth = boxWidth - BUBBLECHART_MARGIN.right - BUBBLECHART_MARGIN.left;
+  let chartHeight = boxHeight - BUBBLECHART_MARGIN.bottom - BUBBLECHART_MARGIN.top;
+
+  const color = d3.scaleOrdinal(d3.schemeSet2); //It has 8 distinct colors
+
+
+
+  // Process the data
+  dataProcessing1Output = bubbleChartDataProcessing(true);
+  hierarchy = dataProcessing1Output[0]
+  codeFamilies = dataProcessing1Output[1]
+
+  let hierarchy2 = null
+  if( current_restaurant_2 ){
+    dataProcessing2Output = bubbleChartDataProcessing(false);
+    hierarchy2 = dataProcessing2Output[0]
+    codeFamilies2 = dataProcessing2Output[1]
+    for(let i = 0; i < codeFamilies2.length; i++){
+      if( !codeFamilies.includes(codeFamilies2[i]) )
+      codeFamilies.push(codeFamilies2[i])
+    }
+  }
+
+  codeFamilies.sort()
+
   
   const bsvg = d3.select("#bubbleChart").select("svg")
                   
@@ -732,9 +854,7 @@ function drawBubblechart(first, small) {
     "4.10": "Seasonal"
   };
 
-  let legendData = Object.keys(codeFamilies)
-                          .filter(key => codeFamilies[key].children.length > 0)
-                          .map(key => ({ key: key, code: "4." + key, text: legendDefs["4." + key] }));
+  let legendData = codeFamilies.map(key => ({ key: key, code: "4." + key, text: legendDefs["4." + key] }));
 
   console.log(legendData)
 
@@ -754,16 +874,8 @@ function drawBubblechart(first, small) {
   .attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${BUBBLECHART_MARGIN.top})`);
 
 
-  // Legend data preparation
-  let legendRows = 1;
-  let currentRow = legendContainer.append("g")
-  let currentRowWidth = 0;
-
-  // Create legend items and measure widths
-  legendData.forEach((legend, index) => {
-    let legendItem = currentRow.append("g");
-     // Group for the legend item
-    
+  // helper function for creating the legend
+  function populateLegendItem(legend, legendItem){
     // Add color square
     legendItem.append("rect")
       .attr("width", legendSquareSize)
@@ -779,6 +891,21 @@ function drawBubblechart(first, small) {
       .attr("class", "bubbleChart-temp")
       .attr("dominant-baseline", "central")
       .style("alignment-baseline", "middle");
+    
+    return text
+  }
+
+  // Legend data preparation
+  let legendRows = 1;
+  let currentRow = legendContainer.append("g")
+  let currentRowWidth = 0;
+
+  // Create legend items and measure widths
+
+  legendData.forEach((legend, index) => {
+    let legendItem = currentRow.append("g");
+    let text = populateLegendItem(legend, legendItem)
+     // Group for the legend item
 
     // Measure width
     let itemWidth = legendSquareSize + legendSquareSpacing + text.node().getComputedTextLength();
@@ -786,16 +913,16 @@ function drawBubblechart(first, small) {
     if (currentRowWidth + itemWidth > chartWidth) {
       // If adding item to the row would take up too much space, put the current row into place and start a new row
       currentRowWidth -= legendItemSpacing;
-      let newRow = legendContainer.append("g")
-      newRow.append(() => legendItem.node())
       legendItem.remove()
 
       //currentRowWidth -= legendItemSpacing;
       currentRow.attr("transform", `translate(${(chartWidth - currentRowWidth)/2}, ${ (legendRows-1)*legendRowHeight })`)
 
       legendRows++;
-      currentRowWidth = 0;
-      currentRow = newRow
+      currentRow = legendContainer.append("g")
+      legendItem = currentRow.append("g")
+      populateLegendItem(legend, legendItem)
+      currentRowWidth = itemWidth + legendItemSpacing;
     }
     else{
       // otherwise, put the element into place
@@ -815,78 +942,28 @@ function drawBubblechart(first, small) {
   // Adjust height for legend container based on number of rows
   legendContainer.attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${legendYOffset+30})`);
 
-  
-  const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * legendRows);
-  const pack = d3.pack().size([chartWidth, adjustedChartHeight]);
-    // const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
-  const root = pack(d3.hierarchy(hierarchy).sum( d => d.value ))
-
-  const packG = bsvg.append("g")
-            .attr("transform", `translate(${BUBBLECHART_MARGIN.left},${BUBBLECHART_MARGIN.top + legendchartspace})`)
-            .attr("class", "bubbleChart-temp")
-            .selectAll("g")
-            .data(root.leaves())
-            .enter().append("g")
-            .attr("transform", d => `translate(${d.x},${d.y})`)
-            .attr("class", "bubbleChart-temp");
-
-  // define the tooltip element
-  let tooltip = d3
-    .select("body")
-    .append("div")
+  if(current_restaurant_2){
+    // draw individual chart titles
+    bsvg.append("text")
+    .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 4)
+    .attr("y", BUBBLECHART_MARGIN.top + legendRowHeight * (legendRows+1))
+    .attr("text-anchor", "middle")
     .attr("class", "bubbleChart-temp")
-    .attr("id", "tooltip")
-    .style("opacity", 0)
-    .style("position", "absolute")
+    .text(current_restaurant.name);
 
-  packG.append("circle")
-          .attr("id", d => "c" + d.data.id.replace(".", "-"))
-          .attr("fill-opacity", 0.7)
-          .attr("fill", d => color(getGroupKey(d.data.id)))
-          .attr("class", "bubbleChart-temp")
-          .attr("class", "bubbleChart-circle")
-          .attr("stroke", "black")
-          .attr("stroke-width", 3)
-          .attr("stroke-opacity", 0)          
-          .attr("r", d => d.r)
-          .on("mouseover", function(event, d) {
-            tooltip.style("opacity", 1);
-            tooltip.html(`4.${d.data.id}: ${d.data.description}`)
-                .style("left", (event.pageX) + "px")
-                .style("top", (event.pageY - 28) + "px");
-            d3.selectAll(".bubbleChart-circle")
-              .attr("stroke-opacity", 0)
-            d3.select(this)
-              .attr("stroke-opacity", 0.5)
-        })
-        .on("mouseout", function(d) {
-            tooltip.style("opacity", 0);
-            d3.selectAll(".bubbleChart-circle")
-              .attr("stroke-opacity", 0)
-    });   
+    bsvg.append("text")
+    .attr("x", BUBBLECHART_MARGIN.left + 3*chartWidth / 4)
+    .attr("y", BUBBLECHART_MARGIN.top + legendRowHeight * (legendRows+1))
+    .attr("text-anchor", "middle")
+    .attr("class", "bubbleChart-temp")
+    .text(current_restaurant_2.name);
 
-  packG.append("text")
-          .selectAll("tspan")
-          .data(d => [[d.data.id, d.r, d.data.id.replace(".", "-")], [format(d.value), d.r, d.data.id.replace(".", "-")]]) // Combine ID and value in one array
-          .enter().append("tspan")
-          .on("mouseover", function(event, d) {
-            tooltip.style("opacity", 1);
-            d3.selectAll(".bubbleChart-circle")
-              .attr("stroke-opacity", 0)
-            let parent = d3.select("#c" + d[2])
-              .attr("stroke-opacity", 0.5)
-            console.log(parent)
-          })
-          .on("mouseout", function(d) {
-              tooltip.style("opacity", 0);
-              d3.selectAll(".bubbleChart-circle")
-                .attr("stroke-opacity", 0)
-          })                    
-          .attr("text-anchor", "middle")
-          .attr("x", 0)
-          .attr("y", (d, i) => `${i * 1.2}em`)
-          .text(d => d[0])
-          .attr("fill-opacity", (d, i) => i ? 0.8 : 1) // Reduce opacity for the value
-          .style("font-size", (d,i) => i ? `${d[1]/30}rem` : `${d[1]/20}rem`)
-  
+    const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * (legendRows+2));    
+    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth/2, adjustedChartHeight], color, 0)
+    drawBubbleChartBubbles(bsvg, hierarchy2, [chartWidth/2, adjustedChartHeight], color, chartWidth/2)    
+  }
+  else{
+    const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * legendRows);      
+    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth, adjustedChartHeight], color, 0)
+  }
 }
