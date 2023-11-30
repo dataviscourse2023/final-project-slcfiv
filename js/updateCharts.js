@@ -849,7 +849,7 @@ function drawBubblechart() {
   
   const bsvg = d3.select("#bubbleChart").select("svg")
                   
-  let title = "Number of violations per code family";
+  let title = "Breakdown of Violations";
 
   // Legend definitions
   const legendDefs = {
