@@ -2,7 +2,6 @@ body, h1, h2, h3, p, ul, li {
     margin: 0;
     padding: 20px;
 }
-
 .container {
   max-width: 800px;
   margin: 0 auto;
@@ -19,6 +18,7 @@ body, h1, h2, h3, p, ul, li {
 #firstRow{
   display: flex;
   flex-direction: row;
+  padding-bottom: 90px;
   height: var(--firstRowHeight);
 }
 
@@ -50,8 +50,64 @@ body, h1, h2, h3, p, ul, li {
   color: red;
   display: none;
 }
+/* MENU TABS */
+/* ref: https: //www.w3schools.com/howto/howto_js_tabs.asp */
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 25vw;
+}
 
-/* MENU */
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 5px 20px;
+  height: 100%;
+  /* explicitly set to 0, to override skeleton.css */
+  margin-bottom: 0rem;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.tabcontent {
+  animation: fadeEffect .5s;
+}
+
+/* Go from zero to full opacity */
+@keyframes fadeEffect {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+/* SEARCH MENU */
 
 #ascending{
   width: 110px;
@@ -120,6 +176,18 @@ body, h1, h2, h3, p, ul, li {
   height: 300px;
   overflow-y: scroll;
   padding: 10px; 
+}
+
+/* MAP */
+#map {
+  width: 50vw;
+  height: 50vw;
+}
+.leaflet-container {
+  height: 50vw;
+  width: 50vw;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /* BUBBLE GRAPH */

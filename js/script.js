@@ -23,6 +23,54 @@ function drawAllGraphs() {
   drawBubblechart();
 }
 
+// For selecting tabs in the menu
+// ref: https://www.w3schools.com/howto/howto_js_tabs.asp
+function openTab(evt, tabName) {
+  // Hide all tab content
+  let tabcontent = document.getElementsByClassName("tabcontent");
+  for (let i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Remove class "active" from all tablinks buttons
+  tablinks = document.getElementsByClassName("tablinks");
+  for (let i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace("active", "");
+  }
+
+  // Show the selected tab by adding the "active" class to the button that opened the tab
+  document.getElementById(tabName).style.display = "table";
+  evt.currentTarget.className += "active";
+
+  // if we're opening menu, create the map
+  if (tabName === "map-div") {
+    map = createMap();
+  }
+}
+
+// Create the map
+function createMap() {
+  /* This uses the Leaflet library and is done with their quick start tutorial*/
+  // first delete any map currently drawn
+  d3.select("#map").remove();
+  // add the div first before running the code to create map, only do this once
+  d3.select("#map-div")
+    .append("div")
+    .attr("id", "map")
+    .attr("class", "leaflet-container");
+
+  //ref: https://leafletjs.com/examples/quick-start/
+  const map = L.map("map").setView([51.505, -0.09], 13);
+
+  const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map);
+
+  return map;
+}
+
 function fetchJSONFile(path, callback) {
   const httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = function () {
@@ -145,6 +193,9 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
   } else {
     document.getElementById("password").style.display = "none";
   }
+
+  // Open the search tab
+  document.getElementById("defaultOpen").click();
 
   // Attach event listener to redraw all graphs on window resize
   window.addEventListener("resize", (event) => {

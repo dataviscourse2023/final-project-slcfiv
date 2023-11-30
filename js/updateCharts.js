@@ -321,7 +321,7 @@ function drawLineGraph() {
     averageTitleY = 60;
   }
 
-  let legendBaseY = legendOffset
+  let legendBaseY = legendOffset;
   svg
     .append("circle")
     .attr("cx", LINECHART_MARGIN.left)
@@ -467,7 +467,10 @@ function drawBarChart() {
 
   //draw the x-axis
   d3.select("#barChart-x-axis")
-    .attr("transform", `translate(0, ${yoffset + chartHeight - BARCHART_MARGIN.bottom})`)
+    .attr(
+      "transform",
+      `translate(0, ${yoffset + chartHeight - BARCHART_MARGIN.bottom})`
+    )
     .call(d3.axisBottom(xScale).tickFormat((d, i) => tickLabels[i]))
     .selectAll("text")
     .style("text-anchor", "end")
@@ -638,10 +641,10 @@ function drawBubblechart(first, small) {
 
   // get the svg element
   let svg = d3.select("#bubbleChart").select("svg");
-  
+
   // delete all bubblechart temporary elements
   d3.selectAll(".bubbleChart-temp").remove();
- 
+
   // dynamically determine bubblechart width based on size of window
   let boxWidth = parseInt(
     svg.style("width").substring(0, svg.style("width").length - 2)
@@ -662,45 +665,47 @@ function drawBubblechart(first, small) {
   // Process the data
   const violationCounts = {};
 
-  current_restaurant.inspections.forEach(inspection => {
-    inspection.violations.forEach(violation => {
+  current_restaurant.inspections.forEach((inspection) => {
+    inspection.violations.forEach((violation) => {
       const code = `${violation.family}.${violation.code}`;
       // If the code doesn't exist in the violationCounts object, initialize it
       if (!violationCounts[code]) {
         violationCounts[code] = {
           occurrences: 0,
-          description: violation.description // assuming `description` is a property of violation
+          description: violation.description, // assuming `description` is a property of violation
         };
       }
       // Add the occurrences for this violation
       violationCounts[code].occurrences += violation.occurrences;
-      
     });
   });
 
   // assemble the hierarchy
-  let codeFamilies = {}
-  let data = Object.keys(violationCounts)
+  let codeFamilies = {};
+  let data = Object.keys(violationCounts);
 
   // first, make lists of all codes grouped by parent
-  for(let i = 0; i < data.length; i++){
-    let code = data[i]
-    let parts = code.split(".")
-    let leaf = { id: parts[1] + "." + parts[2], value: violationCounts[code].occurrences, description: violationCounts[code].description }
-    if( parts[1] in codeFamilies ){
-      codeFamilies[parts[1]].children.push(leaf)
-    }
-    else{
-      codeFamilies[parts[1]] = {id: parts[1], children: [leaf]}
+  for (let i = 0; i < data.length; i++) {
+    let code = data[i];
+    let parts = code.split(".");
+    let leaf = {
+      id: parts[1] + "." + parts[2],
+      value: violationCounts[code].occurrences,
+      description: violationCounts[code].description,
+    };
+    if (parts[1] in codeFamilies) {
+      codeFamilies[parts[1]].children.push(leaf);
+    } else {
+      codeFamilies[parts[1]] = { id: parts[1], children: [leaf] };
     }
   }
 
   // then assemble all of the parents into one rooted hierarchy
-  let codeFamiliesKeys = Object.keys(codeFamilies)
-  let hierarchy = { children: [] }
-  for( let i = 0; i < codeFamiliesKeys.length; i++ ){
-    codeFamilies[codeFamiliesKeys[i]]["value"] = 0
-    hierarchy.children.push( codeFamilies[codeFamiliesKeys[i]] )
+  let codeFamiliesKeys = Object.keys(codeFamilies);
+  let hierarchy = { children: [] };
+  for (let i = 0; i < codeFamiliesKeys.length; i++) {
+    codeFamilies[codeFamiliesKeys[i]]["value"] = 0;
+    hierarchy.children.push(codeFamilies[codeFamiliesKeys[i]]);
   }
 
   // Function to extract the first two parts of the id
