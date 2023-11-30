@@ -633,7 +633,7 @@ function drawBubblechart(first, small) {
   let legendSquareSize = 12; // Size of the color square in the legend
   let legendSquareSpacing = 4; // Space between square and text
   let legendItemSpacing = 30; // space between items in the legend
-  let legendchartspace = 50 // space between legend and chart
+  let legendchartspace = 50; // space between legend and chart
 
 
   // get the svg element
@@ -769,9 +769,10 @@ function drawBubblechart(first, small) {
     // Add text
     let text = legendItem.append("text")
       .attr("x", legendSquareSize + legendSquareSpacing)
-      .attr("y", legendSquareSize )
+      .attr("y", legendSquareSize/2 + legendSquareSpacing/2)
       .text(`${legend.code}: ${legend.text}`)
       .attr("class", "bubbleChart-temp")
+      .attr("dominant-baseline", "central")
       .style("alignment-baseline", "middle");
 
     // Measure width
@@ -845,7 +846,7 @@ function drawBubblechart(first, small) {
           .attr("r", d => d.r)
           .on("mouseover", function(event, d) {
             tooltip.style("opacity", 1);
-            tooltip.html(`${d.data.id}: ${d.data.description}`)
+            tooltip.html(`4.${d.data.id}: ${d.data.description}`)
                 .style("left", (event.pageX) + "px")
                 .style("top", (event.pageY - 28) + "px");
             d3.selectAll(".bubbleChart-circle")
