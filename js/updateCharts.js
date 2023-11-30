@@ -1,7 +1,7 @@
 // Constants for the charts, that would be useful.
 const BARCHART_MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
-const BUBBLECHART_MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
-const LINECHART_MARGIN = { left: 30, bottom: 20, top: 150, right: 30 };
+const BUBBLECHART_MARGIN = { left: 50, bottom: 10, top: 50, right: 100};
+const LINECHART_MARGIN = {left: 30, bottom: 20, top: 150, right: 30};
 
 // these update based on the window size
 let titleFontSize = 20;
@@ -629,6 +629,16 @@ function drawBarChart() {
 
 // first is set to true if we are drawing bubble chart 1, and false if drawing bubble chart 2
 function drawBubblechart(first, small) {
+
+  let legendY = 30;
+  let legendYOffset = 20; // Space for title
+  let legendRowHeight = 22; // Adjust as necessary
+  let legendSquareSize = 12; // Size of the color square in the legend
+  let legendSquareSpacing = 4; // Space between square and text
+  let legendItemSpacing = 30; // space between items in the legend
+  let legendchartspace = 50; // space between legend and chart
+
+
   // get the svg element
   let svg = d3.select("#bubbleChart").select("svg");
 
@@ -639,16 +649,18 @@ function drawBubblechart(first, small) {
   let boxWidth = parseInt(
     svg.style("width").substring(0, svg.style("width").length - 2)
   );
-  let boxHeight = svg
+  let boxHeight = parseInt(svg
     .style("height")
-    .substring(0, svg.style("height").length - 2);
-
-  let chartWidth = boxWidth - BUBBLECHART_MARGIN.right;
-  let chartHeight = boxHeight - BUBBLECHART_MARGIN.bottom;
+    .substring(0, svg.style("height").length - 2));
+ 
+  let chartWidth = boxWidth - BUBBLECHART_MARGIN.right - BUBBLECHART_MARGIN.left;
+  let chartHeight = boxHeight - BUBBLECHART_MARGIN.bottom - BUBBLECHART_MARGIN.top;
 
   const format = d3.format(",d");
   const color = d3.scaleOrdinal(d3.schemeSet2); //It has 8 distinct colors
-  const pack = d3.pack().size([chartWidth, chartHeight]).padding(3);
+
+
+
 
   // Process the data
   const violationCounts = {};
@@ -665,8 +677,6 @@ function drawBubblechart(first, small) {
       }
       // Add the occurrences for this violation
       violationCounts[code].occurrences += violation.occurrences;
-
-      // violationCounts[code] = (violationCounts[code] || 0) + violation.occurrences;
     });
   });
 
@@ -698,37 +708,127 @@ function drawBubblechart(first, small) {
     hierarchy.children.push(codeFamilies[codeFamiliesKeys[i]]);
   }
 
-  // let data =  Object.keys(violationCounts).map(code => {
-  //   const parts = code.split(".");
-  //   console.log(parts)
-  //   all_families.push(parts)
-  //   return { family: parts[1], member: parts[2], value: violationCounts[code].occurrences, description: violationCounts[code].description };
-  // });
-
   // Function to extract the first two parts of the id
   function getGroupKey(id) {
     const parts = id.split(".");
     return parts.slice(0, 1).join(".");
   }
+  
+  const bsvg = d3.select("#bubbleChart").select("svg")
+                  
+  let title = "Number of violations per code family";
 
-  // const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
-  const root = pack(d3.hierarchy(hierarchy).sum((d) => d.value));
+  // Legend definitions
+  const legendDefs = {
+    "4.1": "Employee Training and Certification",
+    "4.2": "Management and Personnel",
+    "4.3": "Food Characteristics",
+    "4.4": "Equipment",
+    "4.5": "Water, Plumbing and Waste",
+    "4.6": "Physical Facilities",
+    "4.7": "Poisonous or Toxic Materials",
+    "4.8": "Plan Submitted or Approved",
+    "4.9": "Stands and Food Trucks",
+    "4.10": "Seasonal"
+  };
 
-  const bsvg = d3.select("#bubbleChart").select("svg");
+  let legendData = Object.keys(codeFamilies)
+                          .filter(key => codeFamilies[key].children.length > 0)
+                          .map(key => ({ key: key, code: "4." + key, text: legendDefs["4." + key] }));
 
-  const node = bsvg
-    .append("g")
-    .selectAll("g")
-    .data(root.leaves())
-    .enter()
-    .append("g")
-    .attr("transform", (d) => `translate(${d.x},${d.y})`)
-    .attr("class", "bubbleChart-temp");
+  console.log(legendData)
 
-  node
-    .append("chart-title")
-    .text((d) => `${d.data.id}\n${format(d.value)}`)
-    .attr("class", "bubbleChart-temp");
+  bsvg.append("text")
+      .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 2)
+      .attr("y", legendY)
+      .attr("text-anchor", "middle")
+      .attr("class", "bubbleChart-temp")
+      .attr("id", "chart-title")
+      .text(title);
+  
+  // Add the legend
+
+  // Legend container
+  const legendContainer = bsvg.append("g")
+  .attr("class", "bubbleChart-temp")
+  .attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${BUBBLECHART_MARGIN.top})`);
+
+
+  // Legend data preparation
+  let legendRows = 1;
+  let currentRow = legendContainer.append("g")
+  let currentRowWidth = 0;
+
+  // Create legend items and measure widths
+  legendData.forEach((legend, index) => {
+    let legendItem = currentRow.append("g");
+     // Group for the legend item
+    
+    // Add color square
+    legendItem.append("rect")
+      .attr("width", legendSquareSize)
+      .attr("height", legendSquareSize)
+      .attr("class", "bubbleChart-temp")
+      .style("fill", color(getGroupKey(legend.key)));
+
+    // Add text
+    let text = legendItem.append("text")
+      .attr("x", legendSquareSize + legendSquareSpacing)
+      .attr("y", legendSquareSize/2 + legendSquareSpacing/2)
+      .text(`${legend.code}: ${legend.text}`)
+      .attr("class", "bubbleChart-temp")
+      .attr("dominant-baseline", "central")
+      .style("alignment-baseline", "middle");
+
+    // Measure width
+    let itemWidth = legendSquareSize + legendSquareSpacing + text.node().getComputedTextLength();
+
+    if (currentRowWidth + itemWidth > chartWidth) {
+      // If adding item to the row would take up too much space, put the current row into place and start a new row
+      currentRowWidth -= legendItemSpacing;
+      let newRow = legendContainer.append("g")
+      newRow.append(() => legendItem.node())
+      legendItem.remove()
+
+      //currentRowWidth -= legendItemSpacing;
+      currentRow.attr("transform", `translate(${(chartWidth - currentRowWidth)/2}, ${ (legendRows-1)*legendRowHeight })`)
+
+      legendRows++;
+      currentRowWidth = 0;
+      currentRow = newRow
+    }
+    else{
+      // otherwise, put the element into place
+
+      // Position group
+      legendItem.attr("transform", `translate(${currentRowWidth}, 0)`);
+
+      // Update current width
+      currentRowWidth += itemWidth + legendItemSpacing;
+    }
+  });
+
+  // put final row into place
+  currentRowWidth -= legendItemSpacing;
+  currentRow.attr("transform", `translate(${(chartWidth - currentRowWidth)/2}, ${ (legendRows-1)*legendRowHeight })`)    
+
+  // Adjust height for legend container based on number of rows
+  legendContainer.attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${legendYOffset+30})`);
+
+  
+  const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * legendRows);
+  const pack = d3.pack().size([chartWidth, adjustedChartHeight]);
+    // const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
+  const root = pack(d3.hierarchy(hierarchy).sum( d => d.value ))
+
+  const packG = bsvg.append("g")
+            .attr("transform", `translate(${BUBBLECHART_MARGIN.left},${BUBBLECHART_MARGIN.top + legendchartspace})`)
+            .attr("class", "bubbleChart-temp")
+            .selectAll("g")
+            .data(root.leaves())
+            .enter().append("g")
+            .attr("transform", d => `translate(${d.x},${d.y})`)
+            .attr("class", "bubbleChart-temp");
 
   // define the tooltip element
   let tooltip = d3
@@ -737,70 +837,56 @@ function drawBubblechart(first, small) {
     .attr("class", "bubbleChart-temp")
     .attr("id", "tooltip")
     .style("opacity", 0)
-    .style("position", "absolute");
+    .style("position", "absolute")
 
-  node
-    .append("circle")
-    .attr("id", (d) => "c" + d.data.id.replace(".", "-"))
-    .attr("fill-opacity", 0.7)
-    .attr("fill", (d) => color(getGroupKey(d.data.id)))
-    .attr("class", "bubbleChart-temp")
-    .attr("class", "bubbleChart-circle")
-    .attr("stroke", "black")
-    .attr("stroke-width", 3)
-    .attr("stroke-opacity", 0)
-    .attr("r", (d) => d.r)
-    .on("mouseover", function (event, d) {
-      tooltip.style("opacity", 1);
-      tooltip
-        .html(d.data.description)
-        .style("left", event.pageX + "px")
-        .style("top", event.pageY - 28 + "px");
-      d3.selectAll(".bubbleChart-circle").attr("stroke-opacity", 0);
-      d3.select(this).attr("stroke-opacity", 0.5);
-    })
-    .on("mouseout", function (d) {
-      tooltip.style("opacity", 0);
-      d3.selectAll(".bubbleChart-circle").attr("stroke-opacity", 0);
-    });
+  packG.append("circle")
+          .attr("id", d => "c" + d.data.id.replace(".", "-"))
+          .attr("fill-opacity", 0.7)
+          .attr("fill", d => color(getGroupKey(d.data.id)))
+          .attr("class", "bubbleChart-temp")
+          .attr("class", "bubbleChart-circle")
+          .attr("stroke", "black")
+          .attr("stroke-width", 3)
+          .attr("stroke-opacity", 0)          
+          .attr("r", d => d.r)
+          .on("mouseover", function(event, d) {
+            tooltip.style("opacity", 1);
+            tooltip.html(`4.${d.data.id}: ${d.data.description}`)
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY - 28) + "px");
+            d3.selectAll(".bubbleChart-circle")
+              .attr("stroke-opacity", 0)
+            d3.select(this)
+              .attr("stroke-opacity", 0.5)
+        })
+        .on("mouseout", function(d) {
+            tooltip.style("opacity", 0);
+            d3.selectAll(".bubbleChart-circle")
+              .attr("stroke-opacity", 0)
+    });   
 
-  node
-    .append("text")
-    .selectAll("tspan")
-    .data((d) => [
-      [d.data.id, d.value, d.data.id.replace(".", "-")],
-      [format(d.value), d.value, d.data.id.replace(".", "-")],
-    ]) // Combine ID and value in one array
-    .enter()
-    .append("tspan")
-    .on("mouseover", function (event, d) {
-      tooltip.style("opacity", 1);
-      d3.selectAll(".bubbleChart-circle").attr("stroke-opacity", 0);
-      d3.select("#c" + d[2]).attr("stroke-opacity", 0.5);
-      console.log(d);
-    })
-    .on("mouseout", function (d) {
-      tooltip.style("opacity", 0);
-      d3.selectAll(".bubbleChart-circle").attr("stroke-opacity", 0);
-    })
-    .attr("text-anchor", "middle")
-    .attr("x", 0)
-    .attr("y", (d, i) => `${i * 1.2}em`)
-    .text((d) => d[0])
-    .attr("fill-opacity", (d, i) => (i ? 0.8 : 1)) // Reduce opacity for the value
-    .style("font-size", function (d, i) {
-      if (d[1] == 1) {
-        if (i == 0) {
-          return "14px";
-        } else {
-          return "12px";
-        }
-      } else {
-        if (i == 0) {
-          return "18px";
-        } else {
-          return "14px";
-        }
-      }
-    }); // Smaller font size for value, larger for ID)
+  packG.append("text")
+          .selectAll("tspan")
+          .data(d => [[d.data.id, d.r, d.data.id.replace(".", "-")], [format(d.value), d.r, d.data.id.replace(".", "-")]]) // Combine ID and value in one array
+          .enter().append("tspan")
+          .on("mouseover", function(event, d) {
+            tooltip.style("opacity", 1);
+            d3.selectAll(".bubbleChart-circle")
+              .attr("stroke-opacity", 0)
+            let parent = d3.select("#c" + d[2])
+              .attr("stroke-opacity", 0.5)
+            console.log(parent)
+          })
+          .on("mouseout", function(d) {
+              tooltip.style("opacity", 0);
+              d3.selectAll(".bubbleChart-circle")
+                .attr("stroke-opacity", 0)
+          })                    
+          .attr("text-anchor", "middle")
+          .attr("x", 0)
+          .attr("y", (d, i) => `${i * 1.2}em`)
+          .text(d => d[0])
+          .attr("fill-opacity", (d, i) => i ? 0.8 : 1) // Reduce opacity for the value
+          .style("font-size", (d,i) => i ? `${d[1]/30}rem` : `${d[1]/20}rem`)
+  
 }
