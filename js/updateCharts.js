@@ -1,6 +1,6 @@
 // Constants for the charts, that would be useful.
 const BARCHART_MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
-const BUBBLECHART_MARGIN = { left: 50, bottom: 50, top: 50, right: 100};
+const BUBBLECHART_MARGIN = { left: 50, bottom: 10, top: 50, right: 100};
 const LINECHART_MARGIN = {left: 30, bottom: 20, top: 150, right: 30};
 
 // these update based on the window size
@@ -629,10 +629,10 @@ function drawBubblechart(first, small) {
 
   let legendY = 30;
   let legendYOffset = 20; // Space for title
-  let legendXOffset = 0;
-  let legendRowHeight = 20; // Adjust as necessary
+  let legendRowHeight = 22; // Adjust as necessary
   let legendSquareSize = 12; // Size of the color square in the legend
-  let legendSpacing = 4; // Space between square and text
+  let legendSquareSpacing = 4; // Space between square and text
+  let legendItemSpacing = 30; // space between items in the legend
   let legendchartspace = 50 // space between legend and chart
 
 
@@ -703,23 +703,14 @@ function drawBubblechart(first, small) {
     hierarchy.children.push( codeFamilies[codeFamiliesKeys[i]] )
   }
 
-  // let data =  Object.keys(violationCounts).map(code => {
-  //   const parts = code.split(".");
-  //   console.log(parts)
-  //   all_families.push(parts)
-  //   return { family: parts[1], member: parts[2], value: violationCounts[code].occurrences, description: violationCounts[code].description };
-  // });
-
   // Function to extract the first two parts of the id
   function getGroupKey(id) {
     const parts = id.split(".");
     return parts.slice(0, 1).join(".");
   }
-
   
   const bsvg = d3.select("#bubbleChart").select("svg")
-                
-  
+                  
   let title = "Number of violations per code family";
 
   // Legend definitions
@@ -751,69 +742,82 @@ function drawBubblechart(first, small) {
       .text(title);
   
   // Add the legend
-  const availableLegendWidth = chartWidth;
 
   // Legend container
   const legendContainer = bsvg.append("g")
   .attr("class", "bubbleChart-temp")
   .attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${BUBBLECHART_MARGIN.top})`);
 
+
   // Legend data preparation
-  let legendWidths = [];
-  let legendHeight = 0;
-  let currentWidth = 0;
-  let currentHeight = 0;
   let legendRows = 1;
+  let currentRow = legendContainer.append("g")
+  let currentRowWidth = 0;
 
   // Create legend items and measure widths
   legendData.forEach((legend, index) => {
-    let group = legendContainer.append("g");
+    let legendItem = currentRow.append("g");
      // Group for the legend item
     
     // Add color square
-    group.append("rect")
+    legendItem.append("rect")
       .attr("width", legendSquareSize)
       .attr("height", legendSquareSize)
       .attr("class", "bubbleChart-temp")
       .style("fill", color(getGroupKey(legend.key)));
 
     // Add text
-    let text = group.append("text")
-      .attr("x", legendSquareSize + legendSpacing)
-      .attr("y", legendSquareSize / 2)
+    let text = legendItem.append("text")
+      .attr("x", legendSquareSize + legendSquareSpacing)
+      .attr("y", legendSquareSize )
       .text(`${legend.code}: ${legend.text}`)
       .attr("class", "bubbleChart-temp")
       .style("alignment-baseline", "middle");
 
     // Measure width
-    let totalWidth = legendSquareSize + legendSpacing + text.node().getComputedTextLength() + legendSpacing;
-    legendWidths.push(totalWidth);
+    let itemWidth = legendSquareSize + legendSquareSpacing + text.node().getComputedTextLength();
 
-    if (currentWidth + totalWidth > availableLegendWidth) {
-      // Start new row
+    if (currentRowWidth + itemWidth > chartWidth) {
+      // If adding item to the row would take up too much space, put the current row into place and start a new row
+      currentRowWidth -= legendItemSpacing;
+      let newRow = legendContainer.append("g")
+      newRow.append(() => legendItem.node())
+      legendItem.remove()
+
+      //currentRowWidth -= legendItemSpacing;
+      currentRow.attr("transform", `translate(${(chartWidth - currentRowWidth)/2}, ${ (legendRows-1)*legendRowHeight })`)
+
       legendRows++;
-      currentWidth = 0;
-      currentHeight += legendRowHeight;
+      currentRowWidth = 0;
+      currentRow = newRow
     }
+    else{
+      // otherwise, put the element into place
 
-    // Position group
-    group.attr("transform", `translate(${currentWidth}, ${currentHeight})`);
+      // Position group
+      legendItem.attr("transform", `translate(${currentRowWidth}, 0)`);
 
-    // Update current width
-    currentWidth += totalWidth;
+      // Update current width
+      currentRowWidth += itemWidth + legendItemSpacing;
+    }
   });
 
+  // put final row into place
+  currentRowWidth -= legendItemSpacing;
+  currentRow.attr("transform", `translate(${(chartWidth - currentRowWidth)/2}, ${ (legendRows-1)*legendRowHeight })`)    
+
   // Adjust height for legend container based on number of rows
-  legendContainer.attr("transform", `translate(${(chartWidth - currentWidth) / 2}, ${legendYOffset+30})`);
+  legendContainer.attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${legendYOffset+30})`);
 
   
   const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * legendRows);
-  const pack = d3.pack().size([chartWidth, adjustedChartHeight]).padding(3);
+  const pack = d3.pack().size([chartWidth, adjustedChartHeight]);
     // const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
   const root = pack(d3.hierarchy(hierarchy).sum( d => d.value ))
 
-  const node = bsvg.append("g")
+  const packG = bsvg.append("g")
             .attr("transform", `translate(${BUBBLECHART_MARGIN.left},${BUBBLECHART_MARGIN.top + legendchartspace})`)
+            .attr("class", "bubbleChart-temp")
             .selectAll("g")
             .data(root.leaves())
             .enter().append("g")
@@ -829,7 +833,7 @@ function drawBubblechart(first, small) {
     .style("opacity", 0)
     .style("position", "absolute")
 
-  node.append("circle")
+  packG.append("circle")
           .attr("id", d => "c" + d.data.id.replace(".", "-"))
           .attr("fill-opacity", 0.7)
           .attr("fill", d => color(getGroupKey(d.data.id)))
@@ -855,17 +859,17 @@ function drawBubblechart(first, small) {
               .attr("stroke-opacity", 0)
     });   
 
-  node.append("text")
+  packG.append("text")
           .selectAll("tspan")
-          .data(d => [[d.data.id, d.value, d.data.id.replace(".", "-")], [format(d.value), d.value, d.data.id.replace(".", "-")]]) // Combine ID and value in one array
+          .data(d => [[d.data.id, d.r, d.data.id.replace(".", "-")], [format(d.value), d.r, d.data.id.replace(".", "-")]]) // Combine ID and value in one array
           .enter().append("tspan")
           .on("mouseover", function(event, d) {
             tooltip.style("opacity", 1);
             d3.selectAll(".bubbleChart-circle")
               .attr("stroke-opacity", 0)
-            d3.select("#c" + d[2])
-              .attr("stroke-opacity", 0.5)              
-            console.log(d)
+            let parent = d3.select("#c" + d[2])
+              .attr("stroke-opacity", 0.5)
+            console.log(parent)
           })
           .on("mouseout", function(d) {
               tooltip.style("opacity", 0);
@@ -877,23 +881,6 @@ function drawBubblechart(first, small) {
           .attr("y", (d, i) => `${i * 1.2}em`)
           .text(d => d[0])
           .attr("fill-opacity", (d, i) => i ? 0.8 : 1) // Reduce opacity for the value
-          .style("font-size", function(d, i){ 
-            if(d[1] == 1){ 
-              if(i == 0){
-                return "14px"
-              }
-              else{
-                return "12px"
-              }
-            }
-            else{
-              if(i == 0){
-                return "18px"
-              }
-              else{
-                return "14px"
-              }
-            } 
-          }); // Smaller font size for value, larger for ID)
+          .style("font-size", (d,i) => i ? `${d[1]/30}rem` : `${d[1]/20}rem`)
   
 }

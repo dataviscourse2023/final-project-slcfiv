@@ -13,7 +13,7 @@ body, h1, h2, h3, p, ul, li {
 
 :root{
   --firstRowHeight: 60vh;
-  --secondRowHeight: 60vh;
+  --secondRowHeight: 70vh;
 }
 
 #firstRow{
@@ -126,7 +126,7 @@ body, h1, h2, h3, p, ul, li {
 
 #bubbleChartSvg {
   width: 50vw;
-  height: 100%;
+  height: var(--secondRowHeight);
 }
 
 /* BAR GRAPH */
@@ -154,7 +154,7 @@ rect {
   display: flex;
   flex-direction: column;
   width: 50%;
-  height: 100%;
+  height: calc(100% - 50px);
 }
 
 #lineGraphSvg{
