@@ -188,7 +188,7 @@ body, h1, h2, h3, p, ul, li {
 
 /* MAP */
 #map {
-  width: 50vw;
+  width: 100%;
   height: calc(var(--firstRowHeight) - 68px);
 }
 .leaflet-container {
