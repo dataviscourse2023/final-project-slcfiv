@@ -124,7 +124,7 @@ body, h1, h2, h3, p, ul, li {
 }
 
 #filter-what{
-  width: calc(100% - 95px);
+  width: calc(100% - 100px);
   box-sizing: border-box;
 }
 
