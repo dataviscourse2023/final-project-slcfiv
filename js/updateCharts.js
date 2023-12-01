@@ -204,7 +204,6 @@ function drawLineGraph() {
     .attr("fill", "none")
     .attr("stroke", "red")
     .attr("stroke-width", "3px")
-    // .attr("stroke-dasharray", "1,3");
     .attr("stroke-dasharray", "5,3");
 
   let title = "Number of violations per inspection";
