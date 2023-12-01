@@ -8,6 +8,7 @@
 let pd = null;
 let current_restaurant = null;
 let current_restaurant_2 = null;
+let map = null;
 
 let require_password = false;
 
@@ -60,15 +61,15 @@ function createMap() {
     .attr("class", "leaflet-container");
 
   //ref: https://leafletjs.com/examples/quick-start/
-  const map = L.map("map").setView([51.505, -0.09], 13);
+  var tmpmap = L.map("map").setView([51.505, -0.09], 13);
 
   const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution:
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(map);
+  }).addTo(tmpmap);
 
-  return map;
+  return tmpmap;
 }
 
 function fetchJSONFile(path, callback) {
@@ -142,7 +143,7 @@ function checkPassword() {
 
 // call fetchJSONFile
 // this is the function executed as a callback when parsing is done
-fetchJSONFile("data/data_with_towns.json", function (data) {
+fetchJSONFile("data/data_with_towns_and_coords.json", function (data) {
   // Create a new ProcessData object and get list of restaurants
   // pd is also called in drawAllGraphs() functions
   pd = new ProcessData(data);
