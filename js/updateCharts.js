@@ -1,7 +1,7 @@
 // Constants for the charts, that would be useful.
 const BARCHART_MARGIN = { left: 50, bottom: 50, top: 50, right: 100 };
-const BUBBLECHART_MARGIN = { left: 50, bottom: 10, top: 50, right: 100};
-const LINECHART_MARGIN = {left: 30, bottom: 20, top: 150, right: 30};
+const BUBBLECHART_MARGIN = { left: 50, bottom: 10, top: 50, right: 100 };
+const LINECHART_MARGIN = { left: 30, bottom: 20, top: 150, right: 30 };
 
 // these update based on the window size
 let titleFontSize = 20;
@@ -225,7 +225,7 @@ function drawLineGraph() {
   // do the tooltip hovering
   // based on this article: https://medium.com/@kj_schmidt/show-data-on-mouse-over-with-d3-js-3bf598ff8fc2
 
-  tooltip = d3.select("#tooltip")
+  tooltip = d3.select("#tooltip");
 
   // add vertices to each line:
   svg
@@ -367,9 +367,8 @@ function drawLineGraph() {
     .style("font-size", `${legendFontSize}px`)
     .attr("dominant-baseline", "central")
     .style("alignment-baseline", "middle");
-  
-  // adjusting dropdown
 
+  // adjusting dropdown
 }
 
 function drawBarChart() {
@@ -446,7 +445,7 @@ function drawBarChart() {
     .substring(0, svg.style("height").length - 2);
   let chartWidth = boxWidth - BARCHART_MARGIN.right - BARCHART_MARGIN.right;
   let chartHeight = boxHeight - BARCHART_MARGIN.bottom - BARCHART_MARGIN.top;
-  console.log(`chartHeight:chartWidth = ${chartHeight}:${chartWidth}`);
+  // console.log(`chartHeight:chartWidth = ${chartHeight}:${chartWidth}`);
 
   /* Create X-Axis */
   // an array of the appropriate tick labels
@@ -506,7 +505,7 @@ function drawBarChart() {
 
   // as done by Nathan above
   // based on this article: https://medium.com/@kj_schmidt/show-data-on-mouse-over-with-d3-js-3bf598ff8fc2
-  let tooltip = d3.select("#tooltip")
+  let tooltip = d3.select("#tooltip");
 
   // define bar width
   let barWidth = chartWidth / 10;
@@ -627,11 +626,10 @@ function getGroupKey(id) {
   return parts.slice(0, 1).join(".");
 }
 
-function bubbleChartDataProcessing(firstRestaurant){
-
-  let restaurant = current_restaurant
-  if( !firstRestaurant ){
-    restaurant = current_restaurant_2
+function bubbleChartDataProcessing(firstRestaurant) {
+  let restaurant = current_restaurant;
+  if (!firstRestaurant) {
+    restaurant = current_restaurant_2;
   }
 
   const violationCounts = {};
@@ -679,121 +677,135 @@ function bubbleChartDataProcessing(firstRestaurant){
     hierarchy.children.push(codeFamilies[codeFamiliesKeys[i]]);
   }
 
-  return [hierarchy, codeFamiliesKeys]
+  return [hierarchy, codeFamiliesKeys];
 }
 
-function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX, number){
-  let legendchartspace = 50; // space between legend and chart  
-  const format = d3.format(",d");  
+function drawBubbleChartBubbles(
+  bsvg,
+  hierarchy,
+  size,
+  color,
+  translateX,
+  number
+) {
+  let legendchartspace = 50; // space between legend and chart
+  const format = d3.format(",d");
   const pack = d3.pack().size(size);
   // const root = pack(d3.hierarchy({ children: data }).sum(d => d.value));
-  const root = pack(d3.hierarchy(hierarchy).sum( d => d.value ))
+  const root = pack(d3.hierarchy(hierarchy).sum((d) => d.value));
 
-  if( hierarchy.children.length != 0 ){
-        const packG = bsvg.append("g")
-        .attr("transform", `translate(${BUBBLECHART_MARGIN.left + translateX},${BUBBLECHART_MARGIN.top + legendchartspace})`)
-        .attr("class", "bubbleChart-temp")
-        .selectAll("g")
-        .data(root.leaves())
-        .enter().append("g")
-        .attr("transform", d => `translate(${d.x},${d.y})`)
-        .attr("class", "bubbleChart-temp");
+  if (hierarchy.children.length != 0) {
+    const packG = bsvg
+      .append("g")
+      .attr(
+        "transform",
+        `translate(${BUBBLECHART_MARGIN.left + translateX},${
+          BUBBLECHART_MARGIN.top + legendchartspace
+        })`
+      )
+      .attr("class", "bubbleChart-temp")
+      .selectAll("g")
+      .data(root.leaves())
+      .enter()
+      .append("g")
+      .attr("transform", (d) => `translate(${d.x},${d.y})`)
+      .attr("class", "bubbleChart-temp");
 
     // define the tooltip element
-    let tooltip = d3.select("#tooltip")
+    let tooltip = d3.select("#tooltip");
 
-    function sIfPlural(number){
-      if(number == 1){
-        return ""
-      }
-      else{
-        return "s"
+    function sIfPlural(number) {
+      if (number == 1) {
+        return "";
+      } else {
+        return "s";
       }
     }
 
-    packG.append("circle")
-      .attr("id", d => "c" + number +"-" + d.data.id.replace(".", "-"))
+    packG
+      .append("circle")
+      .attr("id", (d) => "c" + number + "-" + d.data.id.replace(".", "-"))
       .attr("fill-opacity", 0.7)
-      .attr("fill", d => color(getGroupKey(d.data.id)))
+      .attr("fill", (d) => color(getGroupKey(d.data.id)))
       .attr("class", "bubbleChart-temp")
       .attr("class", "bubbleChart-circle")
       .attr("stroke", "black")
       .attr("stroke-width", 3)
-      .attr("stroke-opacity", 0)          
-      .attr("r", d => d.r)
-      .on("mouseover", function(event, d) {
+      .attr("stroke-opacity", 0)
+      .attr("r", (d) => d.r)
+      .on("mouseover", function (event, d) {
         tooltip.style("opacity", 1);
-        tooltip.html(`4.${d.data.id}: ${d.data.description.replaceAll("*","")} (${d.data.value} occurrence${sIfPlural(d.data.value)})`)
-            .style("left", (event.pageX) + "px")
-            .style("top", (event.pageY - 28) + "px");
-        d3.selectAll(".bubbleChart-circle")
-          .attr("stroke-opacity", 0)
-        d3.select(this)
-          .attr("stroke-opacity", 0.5)
-    })
-    .on("mouseout", function(d) {
-        tooltip.style("opacity", 0);
-        d3.selectAll(".bubbleChart-circle")
-          .attr("stroke-opacity", 0)
-    });   
-
-    packG.append("text")
-      .selectAll("tspan")
-      .data(d => [[format(d.value), d.r, d.data.id]]) // Combine ID and value in one array
-      .enter().append("tspan")
-      .on("mouseover", function(event, d) {
-        tooltip.style("opacity", 1);
-        d3.selectAll(".bubbleChart-circle")
-          .attr("stroke-opacity", 0)
-        let parent = d3.select("#c" + number + "-" + d[2].replace(".","-"))
-          .attr("stroke-opacity", 0.5)
+        tooltip
+          .html(
+            `4.${d.data.id}: ${d.data.description.replaceAll("*", "")} (${
+              d.data.value
+            } occurrence${sIfPlural(d.data.value)})`
+          )
+          .style("left", event.pageX + "px")
+          .style("top", event.pageY - 28 + "px");
+        d3.selectAll(".bubbleChart-circle").attr("stroke-opacity", 0);
+        d3.select(this).attr("stroke-opacity", 0.5);
       })
-      .on("mouseout", function(d) {
-          tooltip.style("opacity", 0);
-          d3.selectAll(".bubbleChart-circle")
-            .attr("stroke-opacity", 0)
+      .on("mouseout", function (d) {
+        tooltip.style("opacity", 0);
+        d3.selectAll(".bubbleChart-circle").attr("stroke-opacity", 0);
+      });
+
+    packG
+      .append("text")
+      .selectAll("tspan")
+      .data((d) => [[format(d.value), d.r, d.data.id]]) // Combine ID and value in one array
+      .enter()
+      .append("tspan")
+      .on("mouseover", function (event, d) {
+        tooltip.style("opacity", 1);
+        d3.selectAll(".bubbleChart-circle").attr("stroke-opacity", 0);
+        let parent = d3
+          .select("#c" + number + "-" + d[2].replace(".", "-"))
+          .attr("stroke-opacity", 0.5);
+      })
+      .on("mouseout", function (d) {
+        tooltip.style("opacity", 0);
+        d3.selectAll(".bubbleChart-circle").attr("stroke-opacity", 0);
       })
       .attr("text-anchor", "middle")
       .attr("y", 2)
-      .text(d => d[0])
+      .text((d) => d[0])
       .attr("dominant-baseline", "central")
-      .style("alignment-baseline", "middle")          
+      .style("alignment-baseline", "middle")
       .style("cursor", "default")
-      .style("font-size", function(d,i){
-        testSize = d[1]/20
-        if(testSize > 5){
+      .style("font-size", function (d, i) {
+        testSize = d[1] / 20;
+        if (testSize > 5) {
           testSize = 5;
         }
-        if(testSize < 1){
-          if(d[1]/10 < 1){
+        if (testSize < 1) {
+          if (d[1] / 10 < 1) {
             testSize = 0;
-          }
-          else{
+          } else {
             testSize = 1;
           }
         }
-        return `${testSize}rem`
-      })
-  }
-  else{
-    bsvg.append("text")
-    .attr("x", BUBBLECHART_MARGIN.left + size[0]/2 + translateX)
-    .attr("y", BUBBLECHART_MARGIN.top + size[1]/2)
-    .attr("text-anchor", "middle")
-    .attr("class", "bubbleChart-temp")
-    .text("this restaurant had no violations")    
+        return `${testSize}rem`;
+      });
+  } else {
+    bsvg
+      .append("text")
+      .attr("x", BUBBLECHART_MARGIN.left + size[0] / 2 + translateX)
+      .attr("y", BUBBLECHART_MARGIN.top + size[1] / 2)
+      .attr("text-anchor", "middle")
+      .attr("class", "bubbleChart-temp")
+      .text("this restaurant had no violations");
   }
 }
 
 function drawBubblechart() {
-
   let legendY = 30;
   let legendYOffset = 20; // Space for title
   let legendRowHeight = 22; // Adjust as necessary
   let legendSquareSize = 12; // Size of the color square in the legend
   let legendSquareSpacing = 4; // Space between square and text
   let legendItemSpacing = 30; // space between items in the legend
-
 
   // get the svg element
   let svg = d3.select("#bubbleChart").select("svg");
@@ -805,125 +817,141 @@ function drawBubblechart() {
   let boxWidth = parseInt(
     svg.style("width").substring(0, svg.style("width").length - 2)
   );
-  let boxHeight = parseInt(svg
-    .style("height")
-    .substring(0, svg.style("height").length - 2));
- 
-  let chartWidth = boxWidth - BUBBLECHART_MARGIN.right - BUBBLECHART_MARGIN.left;
-  let chartHeight = boxHeight - BUBBLECHART_MARGIN.bottom - BUBBLECHART_MARGIN.top;
+  let boxHeight = parseInt(
+    svg.style("height").substring(0, svg.style("height").length - 2)
+  );
+
+  let chartWidth =
+    boxWidth - BUBBLECHART_MARGIN.right - BUBBLECHART_MARGIN.left;
+  let chartHeight =
+    boxHeight - BUBBLECHART_MARGIN.bottom - BUBBLECHART_MARGIN.top;
 
   const color = d3.scaleOrdinal(d3.schemeSet2); //It has 8 distinct colors
 
-
-
   // Process the data
   dataProcessing1Output = bubbleChartDataProcessing(true);
-  hierarchy = dataProcessing1Output[0]
-  codeFamilies = dataProcessing1Output[1]
+  hierarchy = dataProcessing1Output[0];
+  codeFamilies = dataProcessing1Output[1];
 
-  let hierarchy2 = null
-  if( current_restaurant_2 ){
+  let hierarchy2 = null;
+  if (current_restaurant_2) {
     dataProcessing2Output = bubbleChartDataProcessing(false);
-    hierarchy2 = dataProcessing2Output[0]
-    codeFamilies2 = dataProcessing2Output[1]
-    for(let i = 0; i < codeFamilies2.length; i++){
-      if( !codeFamilies.includes(codeFamilies2[i]) )
-      codeFamilies.push(codeFamilies2[i])
+    hierarchy2 = dataProcessing2Output[0];
+    codeFamilies2 = dataProcessing2Output[1];
+    for (let i = 0; i < codeFamilies2.length; i++) {
+      if (!codeFamilies.includes(codeFamilies2[i]))
+        codeFamilies.push(codeFamilies2[i]);
     }
   }
 
-  codeFamilies.sort()
+  codeFamilies.sort();
 
-  
-  const bsvg = d3.select("#bubbleChart").select("svg")
-                  
+  const bsvg = d3.select("#bubbleChart").select("svg");
+
   let title = "Breakdown of Violations";
 
   // Legend definitions
   const legendDefs = {
-    "4.1": "Employee Training and Certification",
-    "4.2": "Management and Personnel",
-    "4.3": "Food Characteristics",
-    "4.4": "Equipment",
-    "4.5": "Water, Plumbing and Waste",
-    "4.6": "Physical Facilities",
-    "4.7": "Poisonous or Toxic Materials",
-    "4.8": "Plan Submitted or Approved",
-    "4.9": "Stands and Food Trucks",
-    "4.10": "Seasonal"
+    4.1: "Employee Training and Certification",
+    4.2: "Management and Personnel",
+    4.3: "Food Characteristics",
+    4.4: "Equipment",
+    4.5: "Water, Plumbing and Waste",
+    4.6: "Physical Facilities",
+    4.7: "Poisonous or Toxic Materials",
+    4.8: "Plan Submitted or Approved",
+    4.9: "Stands and Food Trucks",
+    "4.10": "Seasonal",
   };
 
-  let legendData = codeFamilies.map(key => ({ key: key, code: "4." + key, text: legendDefs["4." + key] }));
+  let legendData = codeFamilies.map((key) => ({
+    key: key,
+    code: "4." + key,
+    text: legendDefs["4." + key],
+  }));
 
-  console.log(legendData)
+  // console.log(legendData)
 
-  bsvg.append("text")
-      .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 2)
-      .attr("y", legendY)
-      .attr("text-anchor", "middle")
-      .attr("class", "bubbleChart-temp")
-      .attr("id", "chart-title")
-      .text(title);
-  
+  bsvg
+    .append("text")
+    .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 2)
+    .attr("y", legendY)
+    .attr("text-anchor", "middle")
+    .attr("class", "bubbleChart-temp")
+    .attr("id", "chart-title")
+    .text(title);
+
   // Add the legend
 
   // Legend container
-  const legendContainer = bsvg.append("g")
-  .attr("class", "bubbleChart-temp")
-  .attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${BUBBLECHART_MARGIN.top})`);
-
+  const legendContainer = bsvg
+    .append("g")
+    .attr("class", "bubbleChart-temp")
+    .attr(
+      "transform",
+      `translate(${BUBBLECHART_MARGIN.left}, ${BUBBLECHART_MARGIN.top})`
+    );
 
   // helper function for creating the legend
-  function populateLegendItem(legend, legendItem){
+  function populateLegendItem(legend, legendItem) {
     // Add color square
-    legendItem.append("rect")
+    legendItem
+      .append("rect")
       .attr("width", legendSquareSize)
       .attr("height", legendSquareSize)
       .attr("class", "bubbleChart-temp")
       .style("fill", color(getGroupKey(legend.key)));
 
     // Add text
-    let text = legendItem.append("text")
+    let text = legendItem
+      .append("text")
       .attr("x", legendSquareSize + legendSquareSpacing)
-      .attr("y", legendSquareSize/2 + legendSquareSpacing/2)
+      .attr("y", legendSquareSize / 2 + legendSquareSpacing / 2)
       .text(`${legend.code}: ${legend.text}`)
       .attr("class", "bubbleChart-temp")
       .attr("dominant-baseline", "central")
       .style("alignment-baseline", "middle");
-    
-    return text
+
+    return text;
   }
 
   // Legend data preparation
   let legendRows = 1;
-  let currentRow = legendContainer.append("g")
+  let currentRow = legendContainer.append("g");
   let currentRowWidth = 0;
 
   // Create legend items and measure widths
 
   legendData.forEach((legend, index) => {
     let legendItem = currentRow.append("g");
-    let text = populateLegendItem(legend, legendItem)
-     // Group for the legend item
+    let text = populateLegendItem(legend, legendItem);
+    // Group for the legend item
 
     // Measure width
-    let itemWidth = legendSquareSize + legendSquareSpacing + text.node().getComputedTextLength();
+    let itemWidth =
+      legendSquareSize +
+      legendSquareSpacing +
+      text.node().getComputedTextLength();
 
     if (currentRowWidth + itemWidth > chartWidth) {
       // If adding item to the row would take up too much space, put the current row into place and start a new row
       currentRowWidth -= legendItemSpacing;
-      legendItem.remove()
+      legendItem.remove();
 
       //currentRowWidth -= legendItemSpacing;
-      currentRow.attr("transform", `translate(${(chartWidth - currentRowWidth)/2}, ${ (legendRows-1)*legendRowHeight })`)
+      currentRow.attr(
+        "transform",
+        `translate(${(chartWidth - currentRowWidth) / 2}, ${
+          (legendRows - 1) * legendRowHeight
+        })`
+      );
 
       legendRows++;
-      currentRow = legendContainer.append("g")
-      legendItem = currentRow.append("g")
-      populateLegendItem(legend, legendItem)
+      currentRow = legendContainer.append("g");
+      legendItem = currentRow.append("g");
+      populateLegendItem(legend, legendItem);
       currentRowWidth = itemWidth + legendItemSpacing;
-    }
-    else{
+    } else {
       // otherwise, put the element into place
 
       // Position group
@@ -936,45 +964,76 @@ function drawBubblechart() {
 
   // put final row into place
   currentRowWidth -= legendItemSpacing;
-  currentRow.attr("transform", `translate(${(chartWidth - currentRowWidth)/2}, ${ (legendRows-1)*legendRowHeight })`)    
+  currentRow.attr(
+    "transform",
+    `translate(${(chartWidth - currentRowWidth) / 2}, ${
+      (legendRows - 1) * legendRowHeight
+    })`
+  );
 
   // Adjust height for legend container based on number of rows
-  legendContainer.attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${legendYOffset+30})`);
+  legendContainer.attr(
+    "transform",
+    `translate(${BUBBLECHART_MARGIN.left}, ${legendYOffset + 30})`
+  );
 
-  if(current_restaurant_2){
-
-    
+  if (current_restaurant_2) {
     // draw individual chart titles
-    bsvg.append("text")
-    .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 4)
-    .attr("y", chartHeight)
-    .attr("text-anchor", "middle")
-    .attr("class", "bubbleChart-temp")
-    .text(current_restaurant.name);
+    bsvg
+      .append("text")
+      .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 4)
+      .attr("y", chartHeight)
+      .attr("text-anchor", "middle")
+      .attr("class", "bubbleChart-temp")
+      .text(current_restaurant.name);
 
-    bsvg.append("text")
-    .attr("x", BUBBLECHART_MARGIN.left + 3.18*chartWidth / 4)
-    .attr("y", chartHeight)
-    .attr("text-anchor", "middle")
-    .attr("class", "bubbleChart-temp")
-    .text(current_restaurant_2.name);
+    bsvg
+      .append("text")
+      .attr("x", BUBBLECHART_MARGIN.left + (3.18 * chartWidth) / 4)
+      .attr("y", chartHeight)
+      .attr("text-anchor", "middle")
+      .attr("class", "bubbleChart-temp")
+      .text(current_restaurant_2.name);
 
-    const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * (legendRows+2));   
+    const adjustedChartHeight =
+      chartHeight - legendYOffset - legendRowHeight * (legendRows + 2);
     // Drawing the dividing line
-    bsvg.append("line")
-    .attr("x1", chartWidth/2 + BUBBLECHART_MARGIN.left)
-    .attr("y1", BUBBLECHART_MARGIN.top + legendRowHeight * (legendRows+1))
-    .attr("x2", chartWidth/2 + BUBBLECHART_MARGIN.left)
-    .attr("y2", chartHeight+BUBBLECHART_MARGIN.bottom)
-    .attr("stroke", "#ccc") // Color of the line
-    .attr("class", "bubbleChart-temp")
-    .attr("stroke-width", 1); // Thickness of the line
+    bsvg
+      .append("line")
+      .attr("x1", chartWidth / 2 + BUBBLECHART_MARGIN.left)
+      .attr("y1", BUBBLECHART_MARGIN.top + legendRowHeight * (legendRows + 1))
+      .attr("x2", chartWidth / 2 + BUBBLECHART_MARGIN.left)
+      .attr("y2", chartHeight + BUBBLECHART_MARGIN.bottom)
+      .attr("stroke", "#ccc") // Color of the line
+      .attr("class", "bubbleChart-temp")
+      .attr("stroke-width", 1); // Thickness of the line
 
-    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth/2-20, adjustedChartHeight], color, 0, "1")
-    drawBubbleChartBubbles(bsvg, hierarchy2, [chartWidth/2-20, adjustedChartHeight], color, chartWidth/2+40, "2")    
-  }
-  else{
-    const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * legendRows);      
-    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth, adjustedChartHeight], color, 0, "1")
+    drawBubbleChartBubbles(
+      bsvg,
+      hierarchy,
+      [chartWidth / 2 - 20, adjustedChartHeight],
+      color,
+      0,
+      "1"
+    );
+    drawBubbleChartBubbles(
+      bsvg,
+      hierarchy2,
+      [chartWidth / 2 - 20, adjustedChartHeight],
+      color,
+      chartWidth / 2 + 40,
+      "2"
+    );
+  } else {
+    const adjustedChartHeight =
+      chartHeight - legendYOffset - legendRowHeight * legendRows;
+    drawBubbleChartBubbles(
+      bsvg,
+      hierarchy,
+      [chartWidth, adjustedChartHeight],
+      color,
+      0,
+      "1"
+    );
   }
 }

@@ -67,7 +67,9 @@ function swapInMapView(viewMap) {
 
 // Create the map
 function createMap() {
-  console.log("creating map");
+  // ref: https://leafletjs.com/2012/08/20/guest-post-markerclusterer-0-1-released.html
+  let markers = new L.MarkerClusterGroup();
+
   /* This uses the Leaflet library and is done with their quick start tutorial*/
   // first delete any map currently drawn
   d3.select("#map").remove();
@@ -93,11 +95,10 @@ function createMap() {
     layers = {};
     towns = [];
 
-    console.log(L.MarkerClusterGroup());
+    // console.log(L.MarkerClusterGroup());
 
     if (restaurant_list[i].coords != [0, 0]) {
       let marker = L.marker(restaurant_list[i].coords)
-        .addTo(map)
         .bindPopup(restaurant_list[i].name)
         .on("mouseover", function () {
           this.openPopup();
@@ -118,8 +119,10 @@ function createMap() {
           drawAllGraphs();
         });
       restaurantMarkers[restaurant_list[i].coords] = marker;
+      markers.addLayer(marker);
     }
   }
+  map.addLayer(markers);
 }
 
 function fetchJSONFile(path, callback) {
