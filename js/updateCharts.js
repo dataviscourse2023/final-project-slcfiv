@@ -942,22 +942,34 @@ function drawBubblechart() {
   legendContainer.attr("transform", `translate(${BUBBLECHART_MARGIN.left}, ${legendYOffset+30})`);
 
   if(current_restaurant_2){
+
+    
     // draw individual chart titles
     bsvg.append("text")
     .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 4)
-    .attr("y", BUBBLECHART_MARGIN.top + legendRowHeight * (legendRows+1))
+    .attr("y", chartHeight)
     .attr("text-anchor", "middle")
     .attr("class", "bubbleChart-temp")
     .text(current_restaurant.name);
 
     bsvg.append("text")
     .attr("x", BUBBLECHART_MARGIN.left + 3*chartWidth / 4)
-    .attr("y", BUBBLECHART_MARGIN.top + legendRowHeight * (legendRows+1))
+    .attr("y", chartHeight)
     .attr("text-anchor", "middle")
     .attr("class", "bubbleChart-temp")
     .text(current_restaurant_2.name);
 
-    const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * (legendRows+2));    
+    const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * (legendRows+2));   
+    // Drawing the dividing line
+    bsvg.append("line")
+    .attr("x1", chartWidth/2 + BUBBLECHART_MARGIN.left)
+    .attr("y1", BUBBLECHART_MARGIN.top + legendRowHeight * (legendRows+1))
+    .attr("x2", chartWidth/2 + BUBBLECHART_MARGIN.left)
+    .attr("y2", chartHeight+BUBBLECHART_MARGIN.bottom)
+    .attr("stroke", "#ccc") // Color of the line
+    .attr("class", "bubbleChart-temp")
+    .attr("stroke-width", 1); // Thickness of the line
+
     drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth/2, adjustedChartHeight], color, 0, "1")
     drawBubbleChartBubbles(bsvg, hierarchy2, [chartWidth/2, adjustedChartHeight], color, chartWidth/2, "2")    
   }
