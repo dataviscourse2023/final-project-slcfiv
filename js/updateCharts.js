@@ -225,13 +225,7 @@ function drawLineGraph() {
   // do the tooltip hovering
   // based on this article: https://medium.com/@kj_schmidt/show-data-on-mouse-over-with-d3-js-3bf598ff8fc2
 
-  // define the tooltip element
-  let tooltip = d3
-    .select("body")
-    .append("div")
-    .attr("class", "temp")
-    .attr("id", "tooltip")
-    .style("opacity", 0);
+  tooltip = d3.select("#tooltip")
 
   // add vertices to each line:
   svg
@@ -512,12 +506,7 @@ function drawBarChart() {
 
   // as done by Nathan above
   // based on this article: https://medium.com/@kj_schmidt/show-data-on-mouse-over-with-d3-js-3bf598ff8fc2
-  let tooltip = d3
-    .select("#barChart")
-    .append("div")
-    .attr("class", "barChart-temp")
-    .attr("id", "tooltip")
-    .style("opacity", 0);
+  let tooltip = d3.select("#tooltip")
 
   // define bar width
   let barWidth = chartWidth / 10;
@@ -711,13 +700,7 @@ function drawBubbleChartBubbles(bsvg, hierarchy, size, color, translateX, number
         .attr("class", "bubbleChart-temp");
 
     // define the tooltip element
-    let tooltip = d3
-    .select("body")
-    .append("div")
-    .attr("class", "bubbleChart-temp")
-    .attr("id", "tooltip")
-    .style("opacity", 0)
-    .style("position", "absolute")
+    let tooltip = d3.select("#tooltip")
 
     function sIfPlural(number){
       if(number == 1){
