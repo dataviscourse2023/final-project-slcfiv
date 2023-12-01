@@ -190,7 +190,7 @@ function drawLineGraph() {
       .datum(restaurant_data_2)
       .attr("d", (d) => lineFunction(d))
       .attr("fill", "none")
-      .attr("stroke", "red")
+      .attr("stroke", "steelblue")
       .attr("stroke-width", "3px")
       .style("display", "inline");
   } else {
@@ -202,8 +202,10 @@ function drawLineGraph() {
     .datum(averages_data)
     .attr("d", (d) => lineFunction(d))
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", "3px");
+    .attr("stroke", "red")
+    .attr("stroke-width", "3px")
+    // .attr("stroke-dasharray", "1,3");
+    .attr("stroke-dasharray", "5,3");
 
   let title = "Number of violations per inspection";
   if (mode == 1) {
@@ -263,7 +265,7 @@ function drawLineGraph() {
       .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
       .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
       .attr("r", 5)
-      .attr("fill", "maroon")
+      .attr("fill", "darkblue")
       .on("mouseover", function (e, d) {
         d3.select(this).attr("fill", "black");
         tooltip
@@ -273,7 +275,7 @@ function drawLineGraph() {
           .style("top", (e.pageY - 15).toString() + "px");
       })
       .on("mouseout", function (e, d) {
-        d3.select(this).attr("fill", "maroon");
+        d3.select(this).attr("fill", "darkblue");
         tooltip.style("opacity", 0);
       });
   }
@@ -288,7 +290,7 @@ function drawLineGraph() {
     .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
     .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
     .attr("r", 5)
-    .attr("fill", "darkblue")
+    .attr("fill", "maroon")
     .on("mouseover", function (e, d) {
       d3.select(this).attr("fill", "black");
       tooltip
@@ -303,7 +305,7 @@ function drawLineGraph() {
         .style("top", (e.pageY - 15).toString() + "px");
     })
     .on("mouseout", function (e, d) {
-      d3.select(this).attr("fill", "darkblue");
+      d3.select(this).attr("fill", "maroon");
       tooltip.style("opacity", 0);
     });
 
@@ -339,7 +341,7 @@ function drawLineGraph() {
       .attr("cy", legendBaseY + 30)
       .attr("r", 5)
       .attr("class", "temp")
-      .style("fill", "maroon");
+      .style("fill", "darkblue");
     svg
       .append("text")
       .attr("x", 20 + LINECHART_MARGIN.left)
@@ -357,7 +359,7 @@ function drawLineGraph() {
     .attr("cy", legendBaseY + averageTitleY)
     .attr("r", 5)
     .attr("class", "temp")
-    .style("fill", "darkblue");
+    .style("fill", "maroon");
   svg
     .append("text")
     .attr("x", 20 + LINECHART_MARGIN.left)
