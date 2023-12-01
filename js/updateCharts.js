@@ -28,7 +28,6 @@ function drawLineGraph() {
 
   // clean up elements from the previous line graph
   svg.selectAll(".temp").remove();
-  d3.selectAll("#tooltip").remove();
 
   // the max value for the y axis
   let max_y_axis_value = -1;

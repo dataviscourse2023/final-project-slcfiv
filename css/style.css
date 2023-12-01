@@ -218,10 +218,11 @@ rect {
 
 #lineGraphTypeSelection{
   align-self: flex-end; /* Align to the top */
+  position: relative;
+  top: 100px;
 }
 
 #lineGraph{
-  padding-top: 50px;
   display: flex;
   flex-direction: column;
   width: 50%;
