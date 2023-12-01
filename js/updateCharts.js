@@ -953,7 +953,7 @@ function drawBubblechart() {
     .text(current_restaurant.name);
 
     bsvg.append("text")
-    .attr("x", BUBBLECHART_MARGIN.left + 3*chartWidth / 4)
+    .attr("x", BUBBLECHART_MARGIN.left + 3.18*chartWidth / 4)
     .attr("y", chartHeight)
     .attr("text-anchor", "middle")
     .attr("class", "bubbleChart-temp")
