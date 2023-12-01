@@ -216,9 +216,11 @@ fetchJSONFile("data/data_with_towns_and_coords.json", function (data) {
   document.getElementById("filter-by").addEventListener("change", function () {
     applyFilterAndSort();
   });
-  document.getElementById("filter-what").addEventListener("input", function () {
-    applyFilterAndSort();
-  });
+  document
+    .getElementById("filter-submit")
+    .addEventListener("click", function () {
+      applyFilterAndSort();
+    });
   document.getElementById("sort-by").addEventListener("change", function () {
     applyFilterAndSort();
   });
