@@ -76,6 +76,7 @@ function applyFilterAndSort() {
 // Update the table in the menu
 // ref: https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array
 function createTable(dataObj) {
+  console.log("Creating table with data:", dataObj);
   // select the table body in index.html
   // ref: https://stackoverflow.com/questions/43612014/how-to-get-values-of-tbody-element-from-the-table-using-the-table-id-and-without
   var tableBody = document.getElementsByTagName("tbody")[0];
@@ -122,7 +123,9 @@ function createTable(dataObj) {
     scrollCollapse: true,
     scrollY: "50vh",
     searching: false,
-    pageLength: 20,
+    drawCallback: function () {
+      tableIntegrationwithCharts(dataObj);
+    }
   });
 
   // create column filters
@@ -147,6 +150,8 @@ function createTable(dataObj) {
           select.append($('<option value="' + d + '">' + d + "</option>"));
         });
     });
+
+    tableIntegrationwithCharts(dataObj);
 }
 
 function multiselectionButton(mode) {

@@ -217,12 +217,17 @@ rect {
 }
 /* LINE GRAPH */
 
+#lineGraphTypeSelection{
+  align-self: flex-end; /* Align to the top */
+}
+
 #lineGraph{
   padding-top: 50px;
   display: flex;
   flex-direction: column;
   width: 50%;
   height: calc(100% - 50px);
+  /* flex-grow: 999; */
 }
 
 #lineGraphSvg{
@@ -230,9 +235,9 @@ rect {
   height: 100%
 }
 
-#lineGraphSvgWrapper{
+/* #lineGraphSvgWrapper{
   flex-grow: 999;
-}
+} */
 
 /* ALL GRAPHS */
 #chart-title{

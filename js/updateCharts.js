@@ -321,7 +321,7 @@ function drawLineGraph() {
     averageTitleY = 60;
   }
 
-  let legendBaseY = legendOffset;
+  let legendBaseY = legendOffset + 15;
   svg
     .append("circle")
     .attr("cx", LINECHART_MARGIN.left)
@@ -332,11 +332,12 @@ function drawLineGraph() {
   svg
     .append("text")
     .attr("x", 20 + LINECHART_MARGIN.left)
-    .attr("y", legendBaseY + 5)
+    .attr("y", legendBaseY)
     .attr("class", "temp")
     .text(current_restaurant.name)
     .style("font-size", `${legendFontSize}px`)
-    .attr("alignment-baseline", "middle");
+    .attr("dominant-baseline", "central")
+    .style("alignment-baseline", "middle");
 
   if (current_restaurant_2) {
     svg
@@ -349,11 +350,12 @@ function drawLineGraph() {
     svg
       .append("text")
       .attr("x", 20 + LINECHART_MARGIN.left)
-      .attr("y", legendBaseY + 35)
+      .attr("y", legendBaseY + 30)
       .attr("class", "temp")
       .text(current_restaurant_2.name)
       .style("font-size", `${legendFontSize}px`)
-      .attr("alignment-baseline", "middle");
+      .attr("dominant-baseline", "central")
+      .style("alignment-baseline", "middle");
   }
 
   svg
@@ -366,11 +368,15 @@ function drawLineGraph() {
   svg
     .append("text")
     .attr("x", 20 + LINECHART_MARGIN.left)
-    .attr("y", legendBaseY + averageTitleY + 5)
+    .attr("y", legendBaseY + averageTitleY)
     .attr("class", "temp")
     .text("Salt Lake County Average")
     .style("font-size", `${legendFontSize}px`)
-    .attr("alignment-baseline", "middle");
+    .attr("dominant-baseline", "central")
+    .style("alignment-baseline", "middle");
+  
+  // adjusting dropdown
+
 }
 
 function drawBarChart() {
