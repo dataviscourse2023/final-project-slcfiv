@@ -118,11 +118,10 @@ function createTable(dataObj) {
 
   var table = tableElement.DataTable({
     aaSorting: [],
-    paging: true,
+    paging: false,
     scrollCollapse: true,
     scrollY: "50vh",
     searching: false,
-    pageLength: 20,
   });
 
   // create column filters
