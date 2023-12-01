@@ -615,7 +615,7 @@ function drawBarChart() {
     .attr("class", "barChart-temp")
     .attr("id", "chart-title")
     .attr("x", boxWidth / 2)
-    .attr("y", yoffset + BARCHART_MARGIN.top - chartHeight / 20)
+    .attr("y", yoffset + BARCHART_MARGIN.top - chartHeight / 15)
     .attr("text-anchor", "middle")
     .text(title);
 }

@@ -123,9 +123,10 @@ function createTable(dataObj) {
     scrollCollapse: true,
     scrollY: "50vh",
     searching: false,
+    ordering: false,
     drawCallback: function () {
       tableIntegrationwithCharts(dataObj);
-    }
+    },
   });
 
   // create column filters
@@ -151,7 +152,7 @@ function createTable(dataObj) {
         });
     });
 
-    tableIntegrationwithCharts(dataObj);
+  tableIntegrationwithCharts(dataObj);
 }
 
 function multiselectionButton(mode) {
