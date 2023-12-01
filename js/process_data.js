@@ -38,7 +38,8 @@ class ProcessData {
       first_row[0],
       first_row[2],
       first_row[3],
-      first_row[4]
+      first_row[4],
+      first_row[12]
     );
     let inspection = new Inspection(first_row[1]);
 
@@ -60,7 +61,7 @@ class ProcessData {
         }
 
         // make a new restaurant and inspection
-        restaurant = new Restaurant(row[0], row[2], row[3], row[4]);
+        restaurant = new Restaurant(row[0], row[2], row[3], row[4], row[12]);
         inspection = new Inspection(row[1]);
       } else if (inspection.date !== row[1]) {
         // check if we are done with the current inspection

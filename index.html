@@ -17,7 +17,10 @@
 
   <!-- leaflet initialization needs to happen before running script.js -->
   <!-- ref: https://unpkg.com/leaflet@1.9.4/dist/leaflet.css -->
-  <link rel="stylesheet" href="css/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""/>  
+  <!-- <link rel="stylesheet" href="css/leaflet.css" /> -->
   <!-- Make sure you put this AFTER Leaflet's CSS -->
   <script src="js/leaflet.js"></script>
 
@@ -55,22 +58,23 @@
 <!-- The following is for our menu and map-->
 <!-- Create tab buttons above the menu, and the firstRow-->
 <div class="tab">
-  <button class="tablinks" id="defaultOpen" onclick="openTab(event, 'menu')">Search</button>
-  <button class="tablinks" onclick="openTab(event, 'map-div')">Map</button>
+  <button class="tablinks" id="defaultOpen" onclick="swapInMapView(false)">Search</button>
+  <button class="tablinks" onclick="swapInMapView(true)">Map</button>
 </div>
 <div id="firstRow">
   <!-- The tab selections -->
   <!-- The search menu  -->
-  <div id="menu" class="tabcontent">
-    <div id="menu-search">
-      <div id="multiselection">
-        <span id="multiselection-buttons">
-          <button id="multiselection-button-1" class="button-primary">Restaurant 1</button>
-          <button id="multiselection-button-2">Restaurant 2</button>
-        </span>
-        <span id="multiselection-title">Loading...</span>
-        <button id="multiselection-clear" style="display:none">clear</button>
-      </div>
+  <div id="menu">
+    <div id="multiselection">
+      <span id="multiselection-buttons">
+        <button id="multiselection-button-1" class="button-primary">Restaurant 1</button>
+        <button id="multiselection-button-2">Restaurant 2</button>
+      </span>
+      <span id="multiselection-title">Loading...</span>
+      <button id="multiselection-clear" style="display:none">clear</button>
+    </div>
+    <div id="map-wrapper"></div>    
+    <div id="menu-search">      
       <div id="filter">
         <label>Filter by:</label>
         <div id="filter-input-wrapper">
@@ -111,9 +115,6 @@
       <tbody><!-- elements are added to the table as defined in table.js --></tbody>
     </table>
   </div>
-
-  <!-- The map div is added in map.js  -->
-  <div id="map-div" class="tabcontent"></div>
 
   <div id="barChart">
     <svg id="barChartSvg">

@@ -11,6 +11,10 @@ let current_restaurant_2 = null;
 
 let require_password = false;
 
+// used for leaflet
+let map = null;
+let restaurantMarkers = {}
+
 // to use for timing out execution while window resizes
 let timeOut;
 
@@ -23,28 +27,42 @@ function drawAllGraphs() {
   drawBubblechart();
 }
 
-// For selecting tabs in the menu
-// ref: https://www.w3schools.com/howto/howto_js_tabs.asp
-function openTab(evt, tabName) {
-  // Hide all tab content
-  let tabcontent = document.getElementsByClassName("tabcontent");
-  for (let i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
+// // For selecting tabs in the menu
+// // ref: https://www.w3schools.com/howto/howto_js_tabs.asp
+// function openTab(evt, tabName) {
+//   // Hide all tab content
+//   let tabcontent = document.getElementsByClassName("tabcontent");
+//   for (let i = 0; i < tabcontent.length; i++) {
+//     tabcontent[i].style.display = "none";
+//   }
+
+//   // Remove class "active" from all tablinks buttons
+//   tablinks = document.getElementsByClassName("tablinks");
+//   for (let i = 0; i < tablinks.length; i++) {
+//     tablinks[i].className = tablinks[i].className.replace("active", "");
+//   }
+
+//   // Show the selected tab by adding the "active" class to the button that opened the tab
+//   document.getElementById(tabName).style.display = "table";
+//   evt.currentTarget.className += "active";
+
+//   // if we're opening menu, create the map
+//   if (tabName === "map-div") {
+//     map = createMap();
+//   }
+// }
+
+function swapInMapView(viewMap){
+  if(viewMap){
+    document.getElementById("menu-search").style.display = "none";
+    document.getElementById("menuOptions_wrapper").style.display = "none";
+    document.getElementById("map-wrapper").style.display = "block";
+    map.invalidateSize()
   }
-
-  // Remove class "active" from all tablinks buttons
-  tablinks = document.getElementsByClassName("tablinks");
-  for (let i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace("active", "");
-  }
-
-  // Show the selected tab by adding the "active" class to the button that opened the tab
-  document.getElementById(tabName).style.display = "table";
-  evt.currentTarget.className += "active";
-
-  // if we're opening menu, create the map
-  if (tabName === "map-div") {
-    map = createMap();
+  else{
+    document.getElementById("menu-search").style.display = "block";
+    document.getElementById("menuOptions_wrapper").style.display = "block";    
+    document.getElementById("map-wrapper").style.display = "none";
   }
 }
 
@@ -54,13 +72,13 @@ function createMap() {
   // first delete any map currently drawn
   d3.select("#map").remove();
   // add the div first before running the code to create map, only do this once
-  d3.select("#map-div")
+  d3.select("#map-wrapper")
     .append("div")
     .attr("id", "map")
     .attr("class", "leaflet-container");
 
   //ref: https://leafletjs.com/examples/quick-start/
-  const map = L.map("map").setView([51.505, -0.09], 13);
+  const map = L.map("map").setView([40.772422972586696, -111.91244602324893], 13);
 
   const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
@@ -68,6 +86,29 @@ function createMap() {
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
 
+  // // add restaurant markers
+  // let tooltip = d3.select("#tooltip")
+
+  for(let i = 0; i < restaurant_list.length; i++){
+    if( restaurant_list[i].coords != [0,0] ){
+      let marker = L.marker(restaurant_list[i].coords).addTo(map).bindPopup(restaurant_list[i].name).on("mouseover", function(){
+        this.openPopup()
+      }).on("mouseout", function(){
+        this.closePopup()
+      }).on("click", function(){
+        if(selectionMode == 1){
+          current_restaurant = restaurant_list[i]
+          document.getElementById("multiselection-title").innerHTML = current_restaurant.name;
+        }
+        else{
+          current_restaurant_2 = restaurant_list[i]
+          document.getElementById("multiselection-title").innerHTML = current_restaurant_2.name;        
+        }
+        drawAllGraphs();
+      })
+      restaurantMarkers[restaurant_list[i].coords] = marker
+    }
+  }
   return map;
 }
 
@@ -142,7 +183,7 @@ function checkPassword() {
 
 // call fetchJSONFile
 // this is the function executed as a callback when parsing is done
-fetchJSONFile("data/data_with_towns.json", function (data) {
+fetchJSONFile("data/data_with_towns_and_coords.json", function (data) {
   // Create a new ProcessData object and get list of restaurants
   // pd is also called in drawAllGraphs() functions
   pd = new ProcessData(data);
@@ -213,4 +254,5 @@ fetchJSONFile("data/data_with_towns.json", function (data) {
     });
 
   drawAllGraphs();
+  map = createMap();
 });

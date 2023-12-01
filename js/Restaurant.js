@@ -1,11 +1,12 @@
 // Represents a restaurant and stores all of the inspections of the restaurant
 class Restaurant {
   // parameters are direct from the spreadsheet. All are strings.
-  constructor(id, name, address, town) {
+  constructor(id, name, address, town, coords) {
     this.id = id;
     this.name = name
     this.address = address;
     this.town = town
+    this.coords = coords
 
     // array holding objects of type inspection. Must be added with add_inspection.
     this.inspections = [];
