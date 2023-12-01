@@ -970,8 +970,8 @@ function drawBubblechart() {
     .attr("class", "bubbleChart-temp")
     .attr("stroke-width", 1); // Thickness of the line
 
-    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth/2, adjustedChartHeight], color, 0, "1")
-    drawBubbleChartBubbles(bsvg, hierarchy2, [chartWidth/2, adjustedChartHeight], color, chartWidth/2, "2")    
+    drawBubbleChartBubbles(bsvg, hierarchy, [chartWidth/2-20, adjustedChartHeight], color, 0, "1")
+    drawBubbleChartBubbles(bsvg, hierarchy2, [chartWidth/2-20, adjustedChartHeight], color, chartWidth/2+40, "2")    
   }
   else{
     const adjustedChartHeight = chartHeight - legendYOffset - (legendRowHeight * legendRows);      

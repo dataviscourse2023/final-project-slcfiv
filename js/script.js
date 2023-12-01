@@ -90,6 +90,12 @@ function createMap() {
   // let tooltip = d3.select("#tooltip")
 
   for(let i = 0; i < restaurant_list.length; i++){
+
+    layers = {}
+    towns = []
+
+    console.log(L.MarkerClusterGroup())
+
     if( restaurant_list[i].coords != [0,0] ){
       let marker = L.marker(restaurant_list[i].coords).addTo(map).bindPopup(restaurant_list[i].name).on("mouseover", function(){
         this.openPopup()
