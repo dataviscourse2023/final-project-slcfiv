@@ -1,5 +1,9 @@
 # Salt Lake City Food Inspection Visualization (SLCFVIS)
 
+Please note, there is a password to view the visualization. 
+The password is "Rosen"
+You may disable the password in script.js.
+
 The following is an overview of our final submission.
 ## Deliverables
 Here is a link to our website:
