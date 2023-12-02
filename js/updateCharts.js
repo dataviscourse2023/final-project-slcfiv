@@ -607,7 +607,7 @@ function drawBarChart() {
     .style("font-size", `${legendFontSize}px`);
 
   // create title
-  let title = "Total Average Violations";
+  let title = "Average Violations per Inspection";
   // update the title
   // d3.select("#barChart-title").remove();
   svg
