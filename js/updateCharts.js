@@ -37,6 +37,7 @@ function drawLineGraph() {
 
   // the data that will be applied for each restaurant
   let restaurant_data = [];
+
   for (let i = 0; i < current_restaurant.inspections.length; i++) {
     total_violations = current_restaurant.inspections[i].total_violations();
     if (mode == 1) {
@@ -328,7 +329,15 @@ function drawLineGraph() {
     .attr("x", 20 + LINECHART_MARGIN.left)
     .attr("y", legendBaseY)
     .attr("class", "temp")
-    .text(current_restaurant.name)
+    .text(function () {
+      if (current_restaurant_2) {
+        return current_restaurant_2.name === current_restaurant.name
+          ? `${current_restaurant.name} (${current_restaurant.address})`
+          : current_restaurant.name;
+      } else {
+        return current_restaurant.name;
+      }
+    })
     .style("font-size", `${legendFontSize}px`)
     .attr("dominant-baseline", "central")
     .style("alignment-baseline", "middle");
@@ -346,7 +355,11 @@ function drawLineGraph() {
       .attr("x", 20 + LINECHART_MARGIN.left)
       .attr("y", legendBaseY + 30)
       .attr("class", "temp")
-      .text(current_restaurant_2.name)
+      .text(function () {
+        return current_restaurant_2.name === current_restaurant.name
+          ? `${current_restaurant_2.name} (${current_restaurant_2.address})`
+          : current_restaurant_2.name;
+      })
       .style("font-size", `${legendFontSize}px`)
       .attr("dominant-baseline", "central")
       .style("alignment-baseline", "middle");
@@ -392,20 +405,23 @@ function drawBarChart() {
 
   // get selected restaurants
   restaurants = [];
-  if (current_restaurant) {
-    restaurants.push(current_restaurant);
-  }
   if (current_restaurant_2) {
     // if the second restaurant has the same name as the first selected restaurant,
     // add in parentheses "(Restaurant 2)"
     if (current_restaurant_2.name === current_restaurant.name) {
       // ref: https://stackoverflow.com/questions/29050004/modifying-a-copy-of-a-javascript-object-is-causing-the-original-object-to-change
-      let tmp_restaurant = Object.assign({}, current_restaurant_2);
-      tmp_restaurant.name = current_restaurant_2.name + " (Restaurant 2)";
-      restaurants.push(tmp_restaurant);
+      let tmp1_restaurant = Object.assign({}, current_restaurant);
+      let tmp2_restaurant = Object.assign({}, current_restaurant_2);
+      tmp1_restaurant.name = `${current_restaurant.name} (${current_restaurant.address})`;
+      tmp2_restaurant.name = `${current_restaurant_2.name} (${current_restaurant_2.address})`;
+      restaurants.push(tmp1_restaurant);
+      restaurants.push(tmp2_restaurant);
     } else {
+      restaurants.push(current_restaurant);
       restaurants.push(current_restaurant_2);
     }
+  } else {
+    restaurants.push(current_restaurant);
   }
 
   // calculate averages of restaurant's inspections and store in dictionary
