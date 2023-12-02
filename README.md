@@ -4,8 +4,8 @@ The following is an overview of our final submission.
 
 ## Folders and files
 These are short descriptions of all the folders and files in our submission.
----------
-<pre>
+<!-- ---------
+<pre> -->
 ./                              - Top directory.
 ./README.md                     - This readme file.
 ./index.html                    - The HTML file we created
@@ -35,4 +35,4 @@ These are short descriptions of all the folders and files in our submission.
     |--- script.js              - Primary script for connecting all the libraries and other scripts we wrote
     |--- updateCharts.js        - Implementation for all our visualizations, the line chart, bar chart, and bubble chart
     |--- Violation.js           - Definition of the 'Violation' class
-</pre>
+<!-- </pre> -->
