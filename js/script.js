@@ -56,6 +56,7 @@ function swapInMapView(viewMap) {
   if (viewMap) {
     document.getElementById("menu-search").style.display = "none";
     document.getElementById("menuOptions_wrapper").style.display = "none";
+    document.getElementById("map-disclaimer").style.display = "block";
     document.getElementById("map-wrapper").style.display = "block";
     map.invalidateSize();
   } else {
@@ -233,6 +234,14 @@ fetchJSONFile("data/data_with_towns_and_coords.json", function (data) {
     .addEventListener("click", function () {
       applyFilterAndSort();
     });
+  // ref: https://stackoverflow.com/questions/14542062/eventlistener-enter-key
+  document
+    .getElementById("filter-what")
+    .addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        applyFilterAndSort();
+      }
+    });
   document.getElementById("sort-by").addEventListener("change", function () {
     applyFilterAndSort();
   });
@@ -259,6 +268,13 @@ fetchJSONFile("data/data_with_towns_and_coords.json", function (data) {
       .getElementById("password-confirm")
       .addEventListener("click", function () {
         checkPassword();
+      });
+    document
+      .getElementById("password-entry")
+      .addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          checkPassword();
+        }
       });
   } else {
     document.getElementById("password").style.display = "none";
