@@ -46,8 +46,7 @@ class ProcessData {
     // go through all of the data and put it into our lists
     for (let i = 0; i < this.data.length; i++) {
       let row = this.data[i];
-
-      if (restaurant.id !== row[0]) {
+      if (restaurant.name !== row[2] || restaurant.address !== row[3]) {
         // check if we are done with the current restaurant
 
         // add the current inspection to the restaurant
