@@ -63,6 +63,7 @@ function swapInMapView(viewMap) {
     document.getElementById("menu-search").style.display = "block";
     document.getElementById("menuOptions_wrapper").style.display = "block";
     document.getElementById("map-wrapper").style.display = "none";
+    document.getElementById("map-disclaimer").style.display = "none";    
   }
 }
 
