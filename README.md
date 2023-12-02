@@ -1,6 +1,12 @@
 # Salt Lake City Food Inspection Visualization (SLCFVIS)
 
 The following is an overview of our final submission.
+## Deliverables
+Here is a link to our website:
+https://dataviscourse2023.github.io/final-project-slcfiv/
+
+Here is a link to our screencast:
+https://www.youtube.com/watch?v=vjCMOghALrs
 
 ## Folders and files
 These are short descriptions of all the folders and files in our submission.
