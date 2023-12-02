@@ -9,7 +9,7 @@ let pd = null;
 let current_restaurant = null;
 let current_restaurant_2 = null;
 
-let require_password = false;
+let require_password = true;
 
 // used for leaflet
 let map = null;
