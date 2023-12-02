@@ -122,13 +122,21 @@ function createMap() {
         })
         .on("click", function () {
           if (selectionMode == 1) {
-            current_restaurant = restaurant_list[i];
-            document.getElementById("multiselection-title").innerHTML =
-              current_restaurant.name;
+            if( restaurant_list[i] != current_restaurant_2 ){
+              current_restaurant = restaurant_list[i];
+              document.getElementById("multiselection-title").innerHTML = current_restaurant.name;
+            }
+            else{
+              document.getElementById("multiselection-title").innerHTML = "Already Selected as Restaurant 2"
+            }
           } else {
-            current_restaurant_2 = restaurant_list[i];
-            document.getElementById("multiselection-title").innerHTML =
-              current_restaurant_2.name;
+            if( restaurant_list[i] != current_restaurant ){
+              current_restaurant_2 = restaurant_list[i];
+              document.getElementById("multiselection-title").innerHTML = current_restaurant_2.name;
+            }
+            else{
+              document.getElementById("multiselection-title").innerHTML = "Already Selected as Restaurant 1"              
+            }
           }
           drawAllGraphs();
         });
