@@ -39,11 +39,14 @@ These are short descriptions of all the folders and files in our submission.
 
 ## Attributions
 Our project uses the following libraries and tools:
+These are used for the visualization:
 - [Leaflet](https://leafletjs.com/)
 - [DataTables](https://datatables.net/)
 - [Skeleton stylesheet by Dave Gamache](https://github.com/dhg/Skeleton)
 - [D3](https://d3js.org/)
 - [JQuery](https://jquery.com/)
+
+These were used for data processing:
 - [Pandas](https://pandas.pydata.org/)
 - [NumPy](https://numpy.org/doc/stable/index.html)
 - [UGRC Web API Explorer](https://api.mapserv.utah.gov/)
