@@ -181,7 +181,7 @@ function drawLineGraph() {
     .datum(restaurant_data)
     .attr("d", (d) => lineFunction(d))
     .attr("fill", "none")
-    .attr("stroke", "green")
+    .attr("stroke", "grey")
     .attr("stroke-width", "3px");
 
   if (current_restaurant_2) {
@@ -239,7 +239,7 @@ function drawLineGraph() {
     .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
     .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
     .attr("r", 5)
-    .attr("fill", "darkgreen")
+    .attr("fill", "black")
     .on("mouseover", function (e, d) {
       d3.select(this).attr("fill", "black");
       tooltip
@@ -249,7 +249,7 @@ function drawLineGraph() {
         .style("top", (e.pageY - 15).toString() + "px");
     })
     .on("mouseout", function (e, d) {
-      d3.select(this).attr("fill", "darkgreen");
+      d3.select(this).attr("fill", "black");
       tooltip.style("opacity", 0);
     });
 
@@ -322,7 +322,7 @@ function drawLineGraph() {
     .attr("cy", legendBaseY)
     .attr("r", 5)
     .attr("class", "temp")
-    .style("fill", "darkgreen");
+    .style("fill", "black");
   svg
     .append("text")
     .attr("x", 20 + LINECHART_MARGIN.left)
@@ -331,7 +331,9 @@ function drawLineGraph() {
     .text(current_restaurant.name)
     .style("font-size", `${legendFontSize}px`)
     .attr("dominant-baseline", "central")
-    .style("alignment-baseline", "middle");
+    .style("alignment-baseline", "middle")
+    .style("font-weight", "bold")
+    .style("fill", "grey");
 
   if (current_restaurant_2) {
     svg
@@ -349,7 +351,9 @@ function drawLineGraph() {
       .text(current_restaurant_2.name)
       .style("font-size", `${legendFontSize}px`)
       .attr("dominant-baseline", "central")
-      .style("alignment-baseline", "middle");
+      .style("alignment-baseline", "middle")
+      .style("font-weight", "bold")
+      .style("fill", "steelblue");
   }
 
   svg
@@ -367,7 +371,9 @@ function drawLineGraph() {
     .text("Salt Lake County Average")
     .style("font-size", `${legendFontSize}px`)
     .attr("dominant-baseline", "central")
-    .style("alignment-baseline", "middle");
+    .style("alignment-baseline", "middle")
+    .style("font-weight", "bold")
+    .style("fill", "red");
 
   // adjusting dropdown
 }
@@ -475,7 +481,15 @@ function drawBarChart() {
     .style("text-anchor", "end")
     .attr("dx", ".16em")
     // .attr("dy", "-.30em")
-    .attr("transform", "rotate(-15)");
+    .attr("transform", "rotate(-15)")
+    .style("fill", function(d, i) {
+      // Set color based on index
+      if (i === 0) return "red";    // First tick label
+      if (i === 1) return "grey";   // Second tick label
+      if (i === 2) return "steelblue";   // Third tick label
+      return "black"; // Default color
+    })
+    .style("font-weight", "bold");
 
   /* Create Y-Axis */
   // determine domain for y-axis
@@ -796,7 +810,8 @@ function drawBubbleChartBubbles(
       .attr("y", BUBBLECHART_MARGIN.top + size[1] / 2)
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
-      .text("this restaurant had no violations");
+      .text("This restaurant had no violations")
+      .style("fill", "green") // Setting the text color to green;
   }
 }
 
@@ -986,7 +1001,9 @@ function drawBubblechart() {
       .attr("y", chartHeight)
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
-      .text(current_restaurant.name);
+      .text(current_restaurant.name)
+      .style("font-weight", "bold")
+      .style("fill", "grey");
 
     bsvg
       .append("text")
@@ -994,7 +1011,9 @@ function drawBubblechart() {
       .attr("y", chartHeight)
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
-      .text(current_restaurant_2.name);
+      .text(current_restaurant_2.name)
+      .style("font-weight", "bold")
+      .style("fill", "steelblue");
 
     const adjustedChartHeight =
       chartHeight - legendYOffset - legendRowHeight * (legendRows + 2);
