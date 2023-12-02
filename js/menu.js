@@ -123,7 +123,7 @@ function createTable(dataObj) {
     scrollCollapse: true,
     scrollY: "50vh",
     searching: false,
-    ordering: true,
+    ordering: false,
     drawCallback: function () {
       tableIntegrationwithCharts(dataObj);
     },

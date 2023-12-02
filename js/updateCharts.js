@@ -331,9 +331,7 @@ function drawLineGraph() {
     .text(current_restaurant.name)
     .style("font-size", `${legendFontSize}px`)
     .attr("dominant-baseline", "central")
-    .style("alignment-baseline", "middle")
-    .style("font-weight", "bold")
-    .style("fill", "grey");
+    .style("alignment-baseline", "middle");
 
   if (current_restaurant_2) {
     svg
@@ -351,9 +349,7 @@ function drawLineGraph() {
       .text(current_restaurant_2.name)
       .style("font-size", `${legendFontSize}px`)
       .attr("dominant-baseline", "central")
-      .style("alignment-baseline", "middle")
-      .style("font-weight", "bold")
-      .style("fill", "steelblue");
+      .style("alignment-baseline", "middle");
   }
 
   svg
@@ -371,11 +367,8 @@ function drawLineGraph() {
     .text("Salt Lake County Average")
     .style("font-size", `${legendFontSize}px`)
     .attr("dominant-baseline", "central")
-    .style("alignment-baseline", "middle")
-    .style("font-weight", "bold")
-    .style("fill", "red");
-
-  // adjusting dropdown
+    .style("alignment-baseline", "middle");
+    
 }
 
 function drawBarChart() {
@@ -481,15 +474,7 @@ function drawBarChart() {
     .style("text-anchor", "end")
     .attr("dx", ".16em")
     // .attr("dy", "-.30em")
-    .attr("transform", "rotate(-15)")
-    .style("fill", function(d, i) {
-      // Set color based on index
-      if (i === 0) return "red";    // First tick label
-      if (i === 1) return "grey";   // Second tick label
-      if (i === 2) return "steelblue";   // Third tick label
-      return "black"; // Default color
-    })
-    .style("font-weight", "bold");
+    .attr("transform", "rotate(-15)");
 
   /* Create Y-Axis */
   // determine domain for y-axis
@@ -810,8 +795,7 @@ function drawBubbleChartBubbles(
       .attr("y", BUBBLECHART_MARGIN.top + size[1] / 2)
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
-      .text("This restaurant had no violations")
-      .style("fill", "green") // Setting the text color to green;
+      .text("This restaurant had no violations");
   }
 }
 
@@ -1002,8 +986,6 @@ function drawBubblechart() {
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
       .text(current_restaurant.name)
-      .style("font-weight", "bold")
-      .style("fill", "grey");
 
     bsvg
       .append("text")
@@ -1012,8 +994,6 @@ function drawBubblechart() {
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
       .text(current_restaurant_2.name)
-      .style("font-weight", "bold")
-      .style("fill", "steelblue");
 
     const adjustedChartHeight =
       chartHeight - legendYOffset - legendRowHeight * (legendRows + 2);
