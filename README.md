@@ -3,7 +3,7 @@
 The following is an overview of our final submission.
 ## Deliverables
 Here is a link to our website:
-http://username.github.io/repository.
+https://dataviscourse2023.github.io/final-project-slcfiv/
 
 ## Folders and files
 These are short descriptions of all the folders and files in our submission.
