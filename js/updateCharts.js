@@ -239,7 +239,7 @@ function drawLineGraph() {
     .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
     .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
     .attr("r", 5)
-    .attr("fill", "black")
+    .attr("fill", "#4a4a4a")
     .on("mouseover", function (e, d) {
       d3.select(this).attr("fill", "black");
       tooltip
@@ -249,7 +249,7 @@ function drawLineGraph() {
         .style("top", (e.pageY - 15).toString() + "px");
     })
     .on("mouseout", function (e, d) {
-      d3.select(this).attr("fill", "black");
+      d3.select(this).attr("fill", "#4a4a4a");
       tooltip.style("opacity", 0);
     });
 
@@ -264,7 +264,7 @@ function drawLineGraph() {
       .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
       .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
       .attr("r", 5)
-      .attr("fill", "darkblue")
+      .attr("fill", "#0013ba")
       .on("mouseover", function (e, d) {
         d3.select(this).attr("fill", "black");
         tooltip
@@ -274,7 +274,7 @@ function drawLineGraph() {
           .style("top", (e.pageY - 15).toString() + "px");
       })
       .on("mouseout", function (e, d) {
-        d3.select(this).attr("fill", "darkblue");
+        d3.select(this).attr("fill", "#0013ba");
         tooltip.style("opacity", 0);
       });
   }
@@ -289,7 +289,7 @@ function drawLineGraph() {
     .attr("cx", (d) => xscale(d[0]) + LINECHART_MARGIN.left)
     .attr("cy", (d) => yscale(d[1]) + LINECHART_MARGIN.top)
     .attr("r", 5)
-    .attr("fill", "maroon")
+    .attr("fill", "#ab0000")
     .on("mouseover", function (e, d) {
       d3.select(this).attr("fill", "black");
       tooltip
@@ -304,7 +304,7 @@ function drawLineGraph() {
         .style("top", (e.pageY - 15).toString() + "px");
     })
     .on("mouseout", function (e, d) {
-      d3.select(this).attr("fill", "maroon");
+      d3.select(this).attr("fill", "#ab0000");
       tooltip.style("opacity", 0);
     });
 
@@ -322,7 +322,7 @@ function drawLineGraph() {
     .attr("cy", legendBaseY)
     .attr("r", 5)
     .attr("class", "temp")
-    .style("fill", "black");
+    .style("fill", "#4a4a4a");
   svg
     .append("text")
     .attr("x", 20 + LINECHART_MARGIN.left)
@@ -340,7 +340,7 @@ function drawLineGraph() {
       .attr("cy", legendBaseY + 30)
       .attr("r", 5)
       .attr("class", "temp")
-      .style("fill", "darkblue");
+      .style("fill", "#0013ba");
     svg
       .append("text")
       .attr("x", 20 + LINECHART_MARGIN.left)
@@ -358,7 +358,7 @@ function drawLineGraph() {
     .attr("cy", legendBaseY + averageTitleY)
     .attr("r", 5)
     .attr("class", "temp")
-    .style("fill", "maroon");
+    .style("fill", "#ab0000");
   svg
     .append("text")
     .attr("x", 20 + LINECHART_MARGIN.left)
