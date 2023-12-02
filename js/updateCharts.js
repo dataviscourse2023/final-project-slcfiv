@@ -1009,7 +1009,11 @@ function drawBubblechart() {
       .attr("y", chartHeight)
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
-      .text(current_restaurant.name);
+      .text(function () {
+        return current_restaurant_2.name === current_restaurant.name
+          ? `${current_restaurant.name} (${current_restaurant.address})`
+          : current_restaurant.name;
+      });
 
     bsvg
       .append("text")
@@ -1017,7 +1021,11 @@ function drawBubblechart() {
       .attr("y", chartHeight)
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
-      .text(current_restaurant_2.name);
+      .text(function () {
+        return current_restaurant_2.name === current_restaurant.name
+          ? `${current_restaurant_2.name} (${current_restaurant_2.address})`
+          : current_restaurant_2.name;
+      });
 
     const adjustedChartHeight =
       chartHeight - legendYOffset - legendRowHeight * (legendRows + 2);
