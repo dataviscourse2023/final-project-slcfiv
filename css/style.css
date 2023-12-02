@@ -124,8 +124,12 @@ body, h1, h2, h3, p, ul, li {
 }
 
 #filter-what{
-  width: calc(100% - 100px);
+  width: calc(70% - 100px);
   box-sizing: border-box;
+}
+
+#filter-submit{
+  min-width: 75px;
 }
 
 #menu{
