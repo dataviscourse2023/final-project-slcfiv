@@ -86,7 +86,7 @@ function createMap() {
     maxZoom: 19,
     attribution:
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(tmpmap);
+  }).addTo(map);
 
   // // add restaurant markers
   // let tooltip = d3.select("#tooltip")

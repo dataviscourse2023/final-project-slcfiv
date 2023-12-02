@@ -119,7 +119,7 @@ function createTable(dataObj) {
 
   var table = tableElement.DataTable({
     aaSorting: [],
-    paging: false,
+    paging: true,
     scrollCollapse: true,
     scrollY: "50vh",
     searching: false,
