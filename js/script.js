@@ -97,7 +97,11 @@ function createMap() {
 
     // console.log(L.MarkerClusterGroup());
 
-    if (restaurant_list[i].coords != [0, 0]) {
+    if (restaurant_list[i].coords != [0, 0] &&
+      !( (restaurant_list[i].coords[0] < 40.782800 && restaurant_list[i].coords[0] > 40.76925 ) 
+      && ((restaurant_list[i].coords[1] > -111.87824 && restaurant_list[i].coords[1] < -111.8692)
+          || (restaurant_list[i].coords[1] > -111.87432 && restaurant_list[i].coords[1] < -111.8491)
+          ||  (restaurant_list[i].coords[1] > -111.85719 && restaurant_list[i].coords[1] < -111.85615) )  )) {
       let marker = L.marker(restaurant_list[i].coords)
         .bindPopup(restaurant_list[i].name)
         .on("mouseover", function () {
