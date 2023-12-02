@@ -36,3 +36,14 @@ These are short descriptions of all the folders and files in our submission.
     |--- updateCharts.js        - Implementation for all our visualizations, the line chart, bar chart, and bubble chart
     |--- Violation.js           - Definition of the 'Violation' class
 </pre>
+
+## Attributions
+Our project uses the following libraries and tools:
+- [Leaflet](https://leafletjs.com/)
+- [DataTables](https://datatables.net/)
+- [Skeleton stylesheet by Dave Gamache](https://github.com/dhg/Skeleton)
+- [D3](https://d3js.org/)
+- [JQuery](https://jquery.com/)
+- [Pandas](https://pandas.pydata.org/)
+- [NumPy](https://numpy.org/doc/stable/index.html)
+- [UGRC Web API Explorer](https://api.mapserv.utah.gov/)
