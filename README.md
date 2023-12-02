@@ -10,11 +10,12 @@ These are short descriptions of all the folders and files in our submission.
 ./README.md                     - This readme file.
 ./index.html                    - The HTML file we created
 ./SLCFIV Project Proposal.pdf   - Our original project proposal
+./Process Book.pdf              - Our final process book
 |css/                           - All the stylesheets used in our project that work offline. All stylesheets used are in index.html
     |--- datatables.css         - The stylesheet required for using the [DataTables](https://datatables.net/) library
     |--- leaflet.css            - The stylesheet required for using the [Leaflet](https://leafletjs.com/) library
     |--- skeleton.css           - The stylesheet used for stylizing our HTML elements obtained from [Dave Gamache](https://github.com/dhg/Skeleton)
-    |--- leaflet.css/           - The stylesheet required for using the [Leaflet](https://leafletjs.com/) library
+    |--- style.css/             - All of the CSS styling we added ourselves
 |data/                          - The data we use within the project, already processed
     |--- data_with_towns_and_coords.json - The data we processed with town and coordinates added. This is the final one used.
     |--- data_with_towns.json   - The data we processed with towns added
