@@ -115,6 +115,7 @@ function createTable(dataObj) {
 
     // append the row to the table body
     tableBody.appendChild(row);
+    row.setAttribute('data-listener-attached', 'false');
   });
 
   var table = tableElement.DataTable({
