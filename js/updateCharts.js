@@ -223,7 +223,7 @@ function drawLineGraph() {
     .attr("id", "chart-title")
     .text(title);
 
-    let descriptionString = "Each vertex on one of the lines corresponding to a restaurant corresponds to a specific health inspection. If a restaurant has very few data points, that likely means that it closed. As you might imagine, this is very common with restaurants with very high numbers of violations. However, surprisingly, there are some restaurants that consistently do very poorly and remain open for a long time."
+    let descriptionString = "Each vertex on one of the lines corresponding to a restaurant corresponds to a specific health inspection. If a restaurant has very few data points, that likely means that it closed. As you might imagine, it not common for restaurants with many violations to stay open for very long. However, as you may see it happens more than you realize."
 
     svg.append("circle")
     .attr("cx", LINECHART_MARGIN.left + chartWidth / 2 + titleElt.node().getComputedTextLength() / 2 + 30)
