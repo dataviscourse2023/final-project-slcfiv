@@ -27,18 +27,41 @@ function drawAllGraphs() {
   drawBubblechart();
 }
 
+// // For selecting tabs in the menu
+// // ref: https://www.w3schools.com/howto/howto_js_tabs.asp
+// function openTab(evt, tabName) {
+//   // Hide all tab content
+//   let tabcontent = document.getElementsByClassName("tabcontent");
+//   for (let i = 0; i < tabcontent.length; i++) {
+//     tabcontent[i].style.display = "none";
+//   }
+
+//   // Remove class "active" from all tablinks buttons
+//   tablinks = document.getElementsByClassName("tablinks");
+//   for (let i = 0; i < tablinks.length; i++) {
+//     tablinks[i].className = tablinks[i].className.replace("active", "");
+//   }
+
+//   // Show the selected tab by adding the "active" class to the button that opened the tab
+//   document.getElementById(tabName).style.display = "table";
+//   evt.currentTarget.className += "active";
+
+//   // if we're opening menu, create the map
+//   if (tabName === "map-div") {
+//     map = createMap();
+//   }
+// }
+
 function swapInMapView(viewMap) {
   if (viewMap) {
     document.getElementById("menu-search").style.display = "none";
     document.getElementById("menuOptions_wrapper").style.display = "none";
     document.getElementById("map-wrapper").style.display = "block";
-    document.getElementById("map-disclaimer").style.display = "block";
     map.invalidateSize();
   } else {
     document.getElementById("menu-search").style.display = "block";
     document.getElementById("menuOptions_wrapper").style.display = "block";
     document.getElementById("map-wrapper").style.display = "none";
-    document.getElementById("map-disclaimer").style.display = "none";
   }
 }
 
@@ -74,11 +97,19 @@ function createMap() {
 
     // console.log(L.MarkerClusterGroup());
 
-    if (restaurant_list[i].coords != [0, 0] &&
-      !( (restaurant_list[i].coords[0] < 40.78342 && restaurant_list[i].coords[0] > 40.76925 ) 
-      && ((restaurant_list[i].coords[1] > -111.87824 && restaurant_list[i].coords[1] < -111.8692)
-          || (restaurant_list[i].coords[1] > -111.87432 && restaurant_list[i].coords[1] < -111.8491)
-          ||  (restaurant_list[i].coords[1] > -111.85719 && restaurant_list[i].coords[1] < -111.85615) )  )) {
+    if (
+      restaurant_list[i].coords != [0, 0] &&
+      !(
+        restaurant_list[i].coords[0] < 40.78342 &&
+        restaurant_list[i].coords[0] > 40.76925 &&
+        ((restaurant_list[i].coords[1] > -111.87824 &&
+          restaurant_list[i].coords[1] < -111.8692) ||
+          (restaurant_list[i].coords[1] > -111.87432 &&
+            restaurant_list[i].coords[1] < -111.8491) ||
+          (restaurant_list[i].coords[1] > -111.85719 &&
+            restaurant_list[i].coords[1] < -111.85615))
+      )
+    ) {
       let marker = L.marker(restaurant_list[i].coords)
         .bindPopup(restaurant_list[i].name)
         .on("mouseover", function () {
@@ -178,7 +209,7 @@ function checkPassword() {
 // call fetchJSONFile
 // this is the function executed as a callback when parsing is done
 fetchJSONFile("data/data_with_towns_and_coords.json", function (data) {
-  console.log(data);
+  // console.log(data);
   // Create a new ProcessData object and get list of restaurants
   // pd is also called in drawAllGraphs() functions
   pd = new ProcessData(data);
