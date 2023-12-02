@@ -275,4 +275,23 @@ rect {
   border-radius: 8px;
   pointer-events: none;
   font-size: 1.3rem;
+  z-index: 99;
+  max-width: 400px;
+}
+
+#top{
+  display: flex;
+  justify-content: space-between;
+}
+
+#links{
+  display: flex;
+}
+
+#links p{
+  display: hidden;
+}
+
+#links a{
+  margin: 10px;
 }

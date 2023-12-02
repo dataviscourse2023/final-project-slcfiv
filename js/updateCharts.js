@@ -214,7 +214,7 @@ function drawLineGraph() {
   }
 
   // add the title
-  svg
+  let titleElt = svg
     .append("text")
     .attr("x", LINECHART_MARGIN.left + chartWidth / 2)
     .attr("y", 30)
@@ -222,6 +222,44 @@ function drawLineGraph() {
     .attr("class", "temp")
     .attr("id", "chart-title")
     .text(title);
+
+    let descriptionString = "Each vertex on one of the lines corresponding to a restaurant corresponds to a specific health inspection. If a restaurant has very few data points, that likely means that it closed. As you might imagine, this is very common with restaurants with very high numbers of violations. However, surprisingly, there are some restaurants that consistently do very poorly and remain open for a long time."
+
+    svg.append("circle")
+    .attr("cx", LINECHART_MARGIN.left + chartWidth / 2 + titleElt.node().getComputedTextLength() / 2 + 30)
+    .attr("cy", 22)
+    .attr("r", 12)
+    .attr("class", "temp")
+    .attr("fill", "#33C3F0")
+    .on("mouseover", function (e, d) {
+      tooltip
+        .html(descriptionString)
+        .style("opacity", 1)
+        .style("left", (e.pageX + 10).toString() + "px")
+        .style("top", (e.pageY - 15).toString() + "px");
+    })
+    .on("mouseout", function (e, d) {
+      tooltip.style("opacity", 0);
+    });    
+  
+  svg.append("text")
+    .style("fill", "white")
+    .attr("class", "temp")    
+    .text("?")
+    .attr("x", LINECHART_MARGIN.left + chartWidth / 2 + titleElt.node().getComputedTextLength() / 2 + 25)
+    .attr("y", 29)
+    .style("font-size", "17px")
+    .style("font-weight", "bold")
+    .on("mouseover", function (e, d) {
+      tooltip
+        .html(descriptionString)
+        .style("opacity", 1)
+        .style("left", (e.pageX + 10).toString() + "px")
+        .style("top", (e.pageY - 15).toString() + "px");
+    })
+    .on("mouseout", function (e, d) {
+      tooltip.style("opacity", 0);
+    });   
 
   // do the tooltip hovering
   // based on this article: https://medium.com/@kj_schmidt/show-data-on-mouse-over-with-d3-js-3bf598ff8fc2
@@ -618,14 +656,53 @@ function drawBarChart() {
   let title = "Average Violations per Inspection";
   // update the title
   // d3.select("#barChart-title").remove();
-  svg
-    .append("text")
+  let titleElt =
+    svg.append("text")
     .attr("class", "barChart-temp")
     .attr("id", "chart-title")
     .attr("x", boxWidth / 2)
     .attr("y", yoffset + BARCHART_MARGIN.top - chartHeight / 15)
     .attr("text-anchor", "middle")
     .text(title);
+
+    let descriptionString = "The height of each bar corresponds to the average number of violations that occur per inspection. While not rigorously defined, a critical violation is a type of violation that could possibly lead to foodborne illness. A non-critical violation, while likely not to lead to illness, is still of concern."
+
+    svg.append("circle")
+    .attr("cx", boxWidth / 2 + titleElt.node().getComputedTextLength() / 2 + 30)
+    .attr("cy", yoffset + BARCHART_MARGIN.top - chartHeight / 15 - 8)
+    .attr("r", 12)
+    .attr("class", "barChart-temp")
+    .attr("fill", "#33C3F0")
+    .on("mouseover", function (e, d) {
+      tooltip
+        .html(descriptionString)
+        .style("opacity", 1)
+        .style("left", (e.pageX + 10).toString() + "px")
+        .style("top", (e.pageY - 15).toString() + "px");
+    })
+    .on("mouseout", function (e, d) {
+      tooltip.style("opacity", 0);
+    });    
+  
+  svg.append("text")
+    .style("fill", "white")
+    .attr("class", "barChart-temp")    
+    .text("?")
+    .attr("x", boxWidth / 2 + titleElt.node().getComputedTextLength() / 2 + 25)
+    .attr("y", yoffset + BARCHART_MARGIN.top - chartHeight / 15 - 1)
+    .style("font-size", "17px")
+    .style("font-weight", "bold")
+    .on("mouseover", function (e, d) {
+      tooltip
+        .html(descriptionString)
+        .style("opacity", 1)
+        .style("left", (e.pageX + 10).toString() + "px")
+        .style("top", (e.pageY - 15).toString() + "px");
+    })
+    .on("mouseout", function (e, d) {
+      tooltip.style("opacity", 0);
+    });        
+
 }
 
 // Function to extract the first two parts of the id
@@ -880,7 +957,7 @@ function drawBubblechart() {
 
   // console.log(legendData)
 
-  bsvg
+  let titleElt = bsvg
     .append("text")
     .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 2)
     .attr("y", legendY)
@@ -888,6 +965,44 @@ function drawBubblechart() {
     .attr("class", "bubbleChart-temp")
     .attr("id", "chart-title")
     .text(title);
+
+    let descriptionString = "A violation is a specific thing that a health inspector can find wrong with a restaurant. Each bubble corresponds to a different specific violation. Bubbles are coded by what overall category of violation they belong to according to the Salt Lake County Health Department."
+
+  bsvg.append("circle")
+    .attr("cx", BUBBLECHART_MARGIN.left + chartWidth / 2 + titleElt.node().getComputedTextLength() / 2 + 30)
+    .attr("cy", legendY - 8)
+    .attr("r", 12)
+    .attr("class", "bubbleChart-temp")    
+    .attr("fill", "#33C3F0")
+    .on("mouseover", function (e, d) {
+      tooltip
+        .html(descriptionString)
+        .style("opacity", 1)
+        .style("left", (e.pageX + 10).toString() + "px")
+        .style("top", (e.pageY - 15).toString() + "px");
+    })
+    .on("mouseout", function (e, d) {
+      tooltip.style("opacity", 0);
+    });    
+  
+  bsvg.append("text")
+    .style("fill", "white")
+    .text("?")
+    .attr("class", "bubbleChart-temp")
+    .attr("x", BUBBLECHART_MARGIN.left + chartWidth / 2 + titleElt.node().getComputedTextLength() / 2 + 25)
+    .attr("y", legendY-1)
+    .style("font-size", "17px")
+    .style("font-weight", "bold")
+    .on("mouseover", function (e, d) {
+      tooltip
+        .html(descriptionString)
+        .style("opacity", 1)
+        .style("left", (e.pageX + 10).toString() + "px")
+        .style("top", (e.pageY - 15).toString() + "px");
+    })
+    .on("mouseout", function (e, d) {
+      tooltip.style("opacity", 0);
+    });        
 
   // Add the legend
 

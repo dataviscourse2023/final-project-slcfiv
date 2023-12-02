@@ -9,7 +9,7 @@ let pd = null;
 let current_restaurant = null;
 let current_restaurant_2 = null;
 
-let require_password = true;
+let require_password = false;
 
 // used for leaflet
 let map = null;
@@ -121,6 +121,16 @@ function createMap() {
           this.closePopup();
         })
         .on("click", function () {
+          let selectedRestaurant = restaurant_list[i];
+          // Check if the selected restaurant is the same as the other selected restaurant
+          if (selectionMode == 1 && selectedRestaurant === current_restaurant_2) {
+            alert("This Restaurant Is Already Selected as Restaurant 2. Please Select A Different Restaurant.");
+            return;
+          } else if (selectionMode == 2 && selectedRestaurant === current_restaurant) {
+            alert("This Restaurant Is Already Selected as Restaurant 1. Please Select A Different Restaurant.");
+            return;
+          }
+
           if (selectionMode == 1) {
             current_restaurant = restaurant_list[i];
             document.getElementById("multiselection-title").innerHTML =
@@ -179,15 +189,33 @@ function tableIntegrationwithCharts(restaurants) {
 
         updateRestaurant = pd.filtered_by(updateRestaurant, "address", address);
 
-        if (selectionMode == 1) {
-          current_restaurant = updateRestaurant[0];
-        } else {
-          current_restaurant_2 = updateRestaurant[0];
+        let selectedRestaurant = updateRestaurant[0];
+        // Check if the selected restaurant is the same as the other selected restaurant
+        if (selectionMode == 1 && selectedRestaurant === current_restaurant_2) {
+          // alert("This Restaurant Is Already Selected as Restaurant 2. Please Select A Different Restaurant.");
+          // return;
+          selectedRestaurant = "Already Selected as Restaurant 2";
+        } else if (selectionMode == 2 && selectedRestaurant === current_restaurant) {
+          // alert("This Restaurant Is Already Selected as Restaurant 1. Please Select A Different Restaurant.");
+          // return;
+          selectedRestaurant = "Already Selected as Restaurant 1";
+        }
+        else{
+          if (selectionMode == 1) {
+            current_restaurant = updateRestaurant[0];
+          } else {
+            current_restaurant_2 = updateRestaurant[0];
+          }
         }
         if (!current_restaurant)
           throw new Error(`Restaurant "${restaurant_name}" not found.`);
+        if(selectedRestaurant === "Already Selected as Restaurant 1" || selectedRestaurant === "Already Selected as Restaurant 2") {
+            document.getElementById("multiselection-title").innerHTML =
+            selectedRestaurant;
+          } else {        
         document.getElementById("multiselection-title").innerHTML =
           updateRestaurant[0].name;
+        }
         drawAllGraphs();
       } catch (error) {
         console.error(error.message);
