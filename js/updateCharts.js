@@ -368,7 +368,6 @@ function drawLineGraph() {
     .style("font-size", `${legendFontSize}px`)
     .attr("dominant-baseline", "central")
     .style("alignment-baseline", "middle");
-    
 }
 
 function drawBarChart() {
@@ -397,7 +396,16 @@ function drawBarChart() {
     restaurants.push(current_restaurant);
   }
   if (current_restaurant_2) {
-    restaurants.push(current_restaurant_2);
+    // if the second restaurant has the same name as the first selected restaurant,
+    // add in parentheses "(Restaurant 2)"
+    if (current_restaurant_2.name === current_restaurant.name) {
+      // ref: https://stackoverflow.com/questions/29050004/modifying-a-copy-of-a-javascript-object-is-causing-the-original-object-to-change
+      let tmp_restaurant = Object.assign({}, current_restaurant_2);
+      tmp_restaurant.name = current_restaurant_2.name + " (Restaurant 2)";
+      restaurants.push(tmp_restaurant);
+    } else {
+      restaurants.push(current_restaurant_2);
+    }
   }
 
   // calculate averages of restaurant's inspections and store in dictionary
@@ -985,7 +993,7 @@ function drawBubblechart() {
       .attr("y", chartHeight)
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
-      .text(current_restaurant.name)
+      .text(current_restaurant.name);
 
     bsvg
       .append("text")
@@ -993,7 +1001,7 @@ function drawBubblechart() {
       .attr("y", chartHeight)
       .attr("text-anchor", "middle")
       .attr("class", "bubbleChart-temp")
-      .text(current_restaurant_2.name)
+      .text(current_restaurant_2.name);
 
     const adjustedChartHeight =
       chartHeight - legendYOffset - legendRowHeight * (legendRows + 2);
